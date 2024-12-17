@@ -1,5 +1,4 @@
-import React, { useState } from "react";
-import { useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { Bar } from "react-chartjs-2";
 import { getStudentsStats } from "@/utils/studentController";
 import {
@@ -44,7 +43,9 @@ export const DashboardGraph = () => {
           unregistered: data.unregistered,
         }));
       }
-    } catch (error) {}
+    } catch (error) {
+      console.error("Failed to fetch student stats", error);
+    }
   };
 
   // Sample data for the graph
@@ -54,12 +55,10 @@ export const DashboardGraph = () => {
       {
         label: "Un Registered",
         data: Object.values(classes.unregistered), // student numbers for group 1
-
         backgroundColor: "rgba(255, 99, 132, 0.6)", // Bar color for Group 1
         borderColor: "rgba(255, 99, 132, 1)",
         borderWidth: 1,
       },
-
       {
         label: "Registered",
         data: Object.values(classes.registered), // student numbers for group 3
@@ -73,10 +72,21 @@ export const DashboardGraph = () => {
   // Graph options
   const options = {
     responsive: true,
+    maintainAspectRatio: false, // Important for responsiveness
     plugins: {
       title: {
         display: true,
         text: "PAYMENT STATISTICS",
+        font: {
+          size: 14, // Smaller font size for mobile
+        },
+      },
+      legend: {
+        labels: {
+          font: {
+            size: 10, // Smaller legend font for mobile
+          },
+        },
       },
       tooltip: {
         callbacks: {
@@ -91,6 +101,14 @@ export const DashboardGraph = () => {
         title: {
           display: true,
           text: "Course",
+          font: {
+            size: 10, // Smaller axis title for mobile
+          },
+        },
+        ticks: {
+          font: {
+            size: 8, // Smaller tick labels for mobile
+          },
         },
         stacked: false,
       },
@@ -98,11 +116,20 @@ export const DashboardGraph = () => {
         title: {
           display: true,
           text: "Student %",
+          font: {
+            size: 10, // Smaller axis title for mobile
+          },
+        },
+        ticks: {
+          font: {
+            size: 8, // Smaller tick labels for mobile
+          },
         },
         stacked: false,
       },
     },
   };
+
   useEffect(() => {
     getStats();
     const interval = setInterval(() => {
@@ -113,9 +140,14 @@ export const DashboardGraph = () => {
       clearInterval(interval);
     };
   }, []);
+
   return (
-    <div className='w-full md:w-[55%] bg-white h-[100px] md:h-[380px] shadow-lg rounded-lg px-4 ml-6'>
-      <Bar data={data} options={options} />
+    <div className='w-full lg:block   lg:mb-0 md:mb-0 md:w-[55%] px-2 lg:max-w-full  lg:w-full  bg-white h-[250px] md:h-[380px]  shadow-lg rounded-lg '>
+      <div className='w-full  h-full'>
+        <Bar data={data} options={options} />
+      </div>
     </div>
   );
 };
+
+export default DashboardGraph;

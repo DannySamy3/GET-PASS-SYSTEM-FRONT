@@ -50,7 +50,7 @@ const DashBoard = () => {
 
     fetchInitialData();
 
-    const interval = setInterval(fetchInitialData, 5000);
+    const interval = setInterval(fetchInitialData, 6000);
     return () => clearInterval(interval);
   }, []);
 
@@ -189,8 +189,8 @@ const DashBoard = () => {
         </p>
       </section>
 
-      <div className='mb-8 flex justify-between items-center'>
-        <div className='w-3/5'>
+      <div className='mb-8 flex flex-col sm:w-full sm:flex-row justify-between items-center space-y-4 sm:space-y-0'>
+        <div className='w-full sm:w-3/5'>
           <label
             htmlFor='datePicker'
             className='block text-sm font-medium text-gray-700'
@@ -200,13 +200,15 @@ const DashBoard = () => {
           <input
             id='datePicker'
             type='date'
-            className='input input-bordered w-full max-w-xs mt-2'
+            className='input input-bordered w-full sm:max-w-xs max-w-full mt-2'
             value={selectedDate.toISOString().split("T")[0]}
             onChange={handleDateChange}
           />
         </div>
 
-        <button className='btn bg-blue-500 text-white w-[10%]'>Search</button>
+        <button className='btn bg-blue-500 text-white hidden sm:block w-full sm:w-[120px] py-2 mt-4 sm:mt-0'>
+          Search
+        </button>
       </div>
 
       <div className='hidden sm:grid grid-cols-2 lg:grid-cols-4 gap-4 place-items-center'>
@@ -233,7 +235,7 @@ const DashBoard = () => {
         </div>
       </div>
 
-      <div className='flex gap-8 mt-24 items-end'>
+      <div className=' mt-5 flex flex-col gap-4  md:flex md:flex-row   md:gap-4 lg:gap-8 lg:flex lg:mt-24 lg:flex-row md:mt-24  '>
         <DashboardGraph />
         <Calender />
       </div>
