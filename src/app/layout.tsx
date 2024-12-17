@@ -15,6 +15,10 @@ export default function RootLayout({
     setIsCollapsed(!isCollapsed);
   };
 
+  const closeNav = () => {
+    setIsCollapsed(false);
+  };
+
   return (
     <html lang='en'>
       <head>
@@ -27,7 +31,7 @@ export default function RootLayout({
       <body className='bg-[#F9F9F9]'>
         <div className='flex h-screen'>
           {/* Left Navigation */}
-          {isCollapsed && (
+          {!isCollapsed && (
             <button
               onClick={toggleCollapse}
               className=' p-2 absolute lg:hidden right-[2px] top-[2px]'
@@ -58,6 +62,7 @@ export default function RootLayout({
               setIsCollapsed={setIsCollapsed}
               isCollapsed={isCollapsed}
               toggleCollapse={toggleCollapse}
+              closeNav={closeNav}
             />
           </div>
 
@@ -67,12 +72,15 @@ export default function RootLayout({
           </div>
 
           {/* Mobile Navigation */}
-          {!isCollapsed && (
-            <div className='lg:hidden  fixed inset-0 bg-gray-200 z-50 transition-transform'>
+          {isCollapsed && (
+            <div
+              className={`  lg:hidden  fixed inset-0 bg-gray-200 z-50 transition-transform`}
+            >
               <LeftNavigation
                 setIsCollapsed={setIsCollapsed}
-                isCollapsed={isCollapsed}
+                isCollapsed={!isCollapsed}
                 toggleCollapse={toggleCollapse}
+                closeNav={closeNav}
               />
             </div>
           )}

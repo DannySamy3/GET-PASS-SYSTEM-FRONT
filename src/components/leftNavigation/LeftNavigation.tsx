@@ -18,12 +18,14 @@ interface props {
   isCollapsed: any;
   setIsCollapsed: any;
   toggleCollapse: any;
+  closeNav: any;
 }
 
 const LeftNavigation: React.FC<props> = ({
   isCollapsed,
   setIsCollapsed,
   toggleCollapse,
+  closeNav,
 }) => {
   // const [isCollapsed, setIsCollapsed] = useState(false);
   const pathname = usePathname();
@@ -39,15 +41,21 @@ const LeftNavigation: React.FC<props> = ({
   };
   const handleToggleCollapse = () => {
     toggleCollapse();
-    if (!isCollapsed) {
-      window.scrollTo({ top: 0, behavior: "smooth" });
-    }
+    // if (!isCollapsed) {
+    //   window.scrollTo({ top: 0, behavior: "smooth" });
+    // }
   };
 
+  const handleLinkClick = () => {
+    if (window.innerWidth < 1024) {
+      // Check if the screen width is less than 1024px (small and medium screens)
+      closeNav();
+    }
+  };
   return (
     <aside
       className={`  lg:fixed lg:top-0 lg:left-0  font-montserrat ${
-        isCollapsed ? "lg:w-20" : "lg:w-[300px]" // Adjust the width here (w-60 is a bit smaller than w-80)
+        isCollapsed ? "lg:w-20 " : "lg:w-[300px] " // Adjust the width here (w-60 is a bit smaller than w-80)
       } h-screen bg-white text-gray-900 shadow-lg z-50 transition-width duration-300 flex flex-col`}
     >
       <div
@@ -81,11 +89,16 @@ const LeftNavigation: React.FC<props> = ({
 
       {/* Sidebar Links */}
       <nav className='mt-4 flex-grow'>
-        <ul className={`space-y-2 px-4 ${isCollapsed ? "px-2" : ""}`}>
-          <li className=''>
+        <ul
+          className={`flex flex-col gap-4  lg:w-auto items-center lg:block lg:mx-0 space-y-2 px-4 ${
+            isCollapsed ? "px-2" : ""
+          }`}
+        >
+          <li className=' w-full lg:w-auto md:w-auto '>
             <Link
+              onClick={handleLinkClick}
               href={"/"}
-              className={`w-full flex items-center gap-4 py-3 px-4 text-lg rounded ${
+              className={`w-full flex justify-center md:justify-stretch lg:justify-stretch items-center gap-4 py-3 px-4 text-lg rounded ${
                 isCollapsed ? "justify-center" : ""
               } ${
                 pathname === "/"
@@ -111,10 +124,11 @@ const LeftNavigation: React.FC<props> = ({
               {!isCollapsed && "Dashboard"}
             </Link>
           </li>
-          <li>
+          <li className=' w-full lg:w-auto md:w-auto '>
             <Link
+              onClick={handleLinkClick}
               href={"/management"}
-              className={`w-full flex items-center gap-4 py-3 px-4 text-lg rounded ${
+              className={`w-full flex justify-center md:justify-stretch lg:justify-stretch items-center gap-4 py-3 px-4 text-lg rounded ${
                 isCollapsed ? "justify-center" : ""
               } ${
                 pathname === "/management"
@@ -140,10 +154,11 @@ const LeftNavigation: React.FC<props> = ({
               {!isCollapsed && "Management"}
             </Link>
           </li>
-          <li>
+          <li className=' w-full lg:w-auto md:w-auto '>
             <Link
+              onClick={handleLinkClick}
               href={"/category"}
-              className={`w-full flex items-center gap-4 py-3 px-4 text-lg rounded ${
+              className={`w-full flex justify-center md:justify-stretch lg:justify-stretch items-center gap-4 py-3 px-4 text-lg rounded ${
                 isCollapsed ? "justify-center" : ""
               } ${
                 pathname === "/category"
@@ -188,10 +203,11 @@ const LeftNavigation: React.FC<props> = ({
               {!isCollapsed && "Category"}
             </Link>
           </li>
-          <li>
+          <li className=' w-full lg:w-auto md:w-auto '>
             <Link
+              onClick={handleLinkClick}
               href={"/report"}
-              className={`w-full flex items-center gap-4 py-3 px-4 text-lg rounded ${
+              className={`w-full flex justify-center md:justify-stretch lg:justify-stretch items-center gap-4 py-3 px-4 text-lg rounded ${
                 isCollapsed ? "justify-center" : ""
               } ${
                 pathname === "/report"
@@ -219,10 +235,11 @@ const LeftNavigation: React.FC<props> = ({
               {!isCollapsed && "Report"}
             </Link>
           </li>
-          <li>
+          <li className=' w-full lg:w-auto md:w-auto '>
             <Link
+              onClick={handleLinkClick}
               href={"/setting"}
-              className={`w-full flex items-center gap-4 py-3 px-4 text-lg rounded ${
+              className={`w-full flex justify-center md:justify-stretch lg:justify-stretch items-center gap-4 py-3 px-4 text-lg rounded ${
                 isCollapsed ? "justify-center" : ""
               } ${
                 pathname === "/setting"
@@ -270,10 +287,11 @@ const LeftNavigation: React.FC<props> = ({
               {!isCollapsed && "Setting"}
             </Link>
           </li>
-          <li>
+          <li className=' w-full lg:w-auto md:w-auto '>
             <Link
+              onClick={handleLinkClick}
               href='/setting'
-              className={`w-full text-[##595959]  font-[500] leading-[31.69px]  flex items-center gap-4 py-3 px-4 text-lg rounded hover:bg-gray-200 ${
+              className={`w-full text-[##595959] justify-center lg:justify-stretch md:justify-stretch  font-[500] leading-[31.69px]  flex items-center gap-4 py-3 px-4 text-lg rounded hover:bg-gray-200 ${
                 isCollapsed ? "text-center" : ""
               } no-underline`}
             >
@@ -301,8 +319,8 @@ const LeftNavigation: React.FC<props> = ({
 
       <div className='absolute bottom-4 left-1/2 lg:left-auto lg:right-4 lg:transform-none lg:translate-x-0 transform -translate-x-1/2 lg:absolute  '>
         <button
-          onClick={toggleCollapse}
-          // onClick={handleToggleCollapse}
+          // onClick={toggleCollapse}
+          onClick={handleToggleCollapse}
           className='text-gray-900 focus:outline-none'
           aria-label={isCollapsed ? "Expand Sidebar" : "Collapse Sidebar"}
         >
