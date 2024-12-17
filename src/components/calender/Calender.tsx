@@ -114,22 +114,22 @@ const Calendar = () => {
             <div
               key={day.toString()}
               className={`
-                text-center 
-                p-2 
-                rounded-lg 
-                text-sm 
-                font-medium 
-                transition-colors 
-                duration-200
-                cursor-pointer
-                ${
-                  today
-                    ? "bg-blue-500 text-white font-bold"
-                    : sameMonth
-                    ? "text-gray-800 dark:text-white hover:bg-blue-100 dark:hover:bg-neutral-700"
-                    : "text-gray-400 dark:text-neutral-600 hover:bg-gray-100 dark:hover:bg-neutral-800"
-                }
-              `}
+                  text-center 
+                  p-2 
+                  rounded-lg 
+                  text-sm 
+                  font-medium 
+                  transition-colors 
+                  duration-200
+                  cursor-pointer
+                  ${
+                    today
+                      ? "bg-blue-500 text-white font-bold"
+                      : sameMonth
+                      ? "text-gray-800 dark:text-white hover:bg-blue-100 dark:hover:bg-neutral-700"
+                      : "text-gray-400 dark:text-neutral-600 hover:bg-gray-100 dark:hover:bg-neutral-800"
+                  }
+                `}
             >
               {day.getDate()}
             </div>
