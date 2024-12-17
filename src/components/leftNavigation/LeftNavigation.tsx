@@ -13,13 +13,23 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { usePathname } from "next/navigation";
 
-const LeftNavigation: React.FC = () => {
-  const [isCollapsed, setIsCollapsed] = useState(false);
+interface props {
+  isCollapsed: any;
+  setIsCollapsed: any;
+  toggleCollapse: any;
+}
+
+const LeftNavigation: React.FC<props> = ({
+  isCollapsed,
+  setIsCollapsed,
+  toggleCollapse,
+}) => {
+  // const [isCollapsed, setIsCollapsed] = useState(false);
   const pathname = usePathname();
 
-  const toggleCollapse = () => {
-    setIsCollapsed(!isCollapsed);
-  };
+  // const toggleCollapse = () => {
+  //   setIsCollapsed(!isCollapsed);
+  // };
 
   // User data (with user icon as avatar)
   const user = {
@@ -117,7 +127,7 @@ const LeftNavigation: React.FC = () => {
                   fillRule='evenodd'
                   clipRule='evenodd'
                   d='M0.599998 2.49998C0.599998 1.86346 0.852855 1.25301 1.30294 0.802919C1.75303 0.352832 2.36348 0.0999756 3 0.0999756H15C15.6365 0.0999756 16.247 0.352832 16.6971 0.802919C17.1471 1.25301 17.4 1.86346 17.4 2.49998V12.1C17.4 12.7365 17.1471 13.3469 16.6971 13.797C16.247 14.2471 15.6365 14.5 15 14.5H12.336L12.4836 15.0868L13.4484 16.0516C13.6162 16.2194 13.7304 16.4332 13.7767 16.6659C13.823 16.8987 13.7992 17.1399 13.7084 17.3592C13.6176 17.5784 13.4638 17.7658 13.2665 17.8977C13.0693 18.0295 12.8373 18.0999 12.6 18.1H5.4C5.1627 18.0999 4.93074 18.0295 4.73345 17.8977C4.53616 17.7658 4.38239 17.5784 4.29159 17.3592C4.20078 17.1399 4.17702 16.8987 4.2233 16.6659C4.26958 16.4332 4.38383 16.2194 4.5516 16.0516L5.5164 15.0868L5.664 14.5H3C2.36348 14.5 1.75303 14.2471 1.30294 13.797C0.852855 13.3469 0.599998 12.7365 0.599998 12.1V2.49998ZM7.5252 10.9H3V2.49998H15V10.9H7.5252Z'
-                  fill='#585858'
+                  fill={pathname === "/management" ? "#FFFFFF" : "#585858"}
                 />
               </svg>
 
@@ -135,6 +145,23 @@ const LeftNavigation: React.FC = () => {
                   : "text-gray-700 hover:bg-gray-200"
               }`}
             >
+              {/* <svg
+                width='25'
+                height='25'
+                viewBox='0 0 25 25'
+                fill=''
+                xmlns='http://www.w3.org/2000/svg'
+              >
+                <path
+                  d='M11.4583 4.5C11.4583 3.96957 11.6778 3.46086 12.0685 3.08579C12.4592 2.71071 12.9891 2.5 13.5417 2.5C14.0942 2.5 14.6241 2.71071 15.0148 3.08579C15.4055 3.46086 15.625 3.96957 15.625 4.5V5.5C15.625 5.76522 15.7347 6.01957 15.9301 6.20711C16.1254 6.39464 16.3904 6.5 16.6667 6.5H19.7917C20.0679 6.5 20.3329 6.60536 20.5282 6.79289C20.7236 6.98043 20.8333 7.23478 20.8333 7.5V10.5C20.8333 10.7652 20.7236 11.0196 20.5282 11.2071C20.3329 11.3946 20.0679 11.5 19.7917 11.5H18.75C18.1975 11.5 17.6676 11.7107 17.2769 12.0858C16.8862 12.4609 16.6667 12.9696 16.6667 13.5C16.6667 14.0304 16.8862 14.5391 17.2769 14.9142C17.6676 15.2893 18.1975 15.5 18.75 15.5H19.7917C20.0679 15.5 20.3329 15.6054 20.5282 15.7929C20.7236 15.9804 20.8333 16.2348 20.8333 16.5V19.5C20.8333 19.7652 20.7236 20.0196 20.5282 20.2071C20.3329 20.3946 20.0679 20.5 19.7917 20.5H16.6667C16.3904 20.5 16.1254 20.3946 15.9301 20.2071C15.7347 20.0196 15.625 19.7652 15.625 19.5V18.5C15.625 17.9696 15.4055 17.4609 15.0148 17.0858C14.6241 16.7107 14.0942 16.5 13.5417 16.5C12.9891 16.5 12.4592 16.7107 12.0685 17.0858C11.6778 17.4609 11.4583 17.9696 11.4583 18.5V19.5C11.4583 19.7652 11.3486 20.0196 11.1532 20.2071C10.9579 20.3946 10.6929 20.5 10.4167 20.5H7.29167C7.0154 20.5 6.75045 20.3946 6.5551 20.2071C6.35975 20.0196 6.25 19.7652 6.25 19.5V16.5C6.25 16.2348 6.14026 15.9804 5.94491 15.7929C5.74955 15.6054 5.4846 15.5 5.20834 15.5H4.16667C3.61413 15.5 3.08423 15.2893 2.69353 14.9142C2.30283 14.5391 2.08334 14.0304 2.08334 13.5C2.08334 12.9696 2.30283 12.4609 2.69353 12.0858C3.08423 11.7107 3.61413 11.5 4.16667 11.5H5.20834C5.4846 11.5 5.74955 11.3946 5.94491 11.2071C6.14026 11.0196 6.25 10.7652 6.25 10.5V7.5C6.25 7.23478 6.35975 6.98043 6.5551 6.79289C6.75045 6.60536 7.0154 6.5 7.29167 6.5H10.4167C10.6929 6.5 10.9579 6.39464 11.1532 6.20711C11.3486 6.01957 11.4583 5.76522 11.4583 5.5V4.5Z'
+                  stroke='#414141'
+                  strokeWidth='2'
+                  strokeLinecap='round'
+                  strokeLinejoin='round'
+                  // fill={pathname === "/category" ? "#FFFFFF" : "#585858"}
+                />
+              </svg> */}
+
               <svg
                 width='25'
                 height='25'
@@ -148,6 +175,7 @@ const LeftNavigation: React.FC = () => {
                   strokeWidth='2'
                   strokeLinecap='round'
                   strokeLinejoin='round'
+                  fill={pathname === "/category" ? "#FFFFFF" : ""}
                 />
               </svg>
 
@@ -178,6 +206,7 @@ const LeftNavigation: React.FC = () => {
                   strokeWidth='2'
                   strokeLinecap='round'
                   strokeLinejoin='round'
+                  fill={pathname === "/category" ? "#FFFFFF" : ""}
                 />
               </svg>
 
@@ -186,10 +215,14 @@ const LeftNavigation: React.FC = () => {
           </li>
           <li>
             <Link
-              href='/setting'
-              className={`w-full text-[##595959]  font-[500] leading-[31.69px]  flex items-center gap-4 py-3 px-4 text-lg rounded hover:bg-gray-200 ${
-                isCollapsed ? "text-center" : ""
-              } no-underline`}
+              href={"/setting"}
+              className={`w-full flex items-center gap-4 py-3 px-4 text-lg rounded ${
+                isCollapsed ? "justify-center" : ""
+              } ${
+                pathname === "/setting"
+                  ? "bg-blue-600 text-white"
+                  : "text-gray-700 hover:bg-gray-200"
+              }`}
             >
               <svg
                 width='24'
@@ -205,6 +238,7 @@ const LeftNavigation: React.FC = () => {
                     strokeWidth='2'
                     strokeLinecap='round'
                     strokeLinejoin='round'
+                    // fill={pathname === "/category" ? "#FFFFFF" : ""}
                   />
                   <path
                     d='M17 13.5C17 14.5609 16.5786 15.5783 15.8284 16.3284C15.0783 17.0786 14.0609 17.5 13 17.5C11.9391 17.5 10.9217 17.0786 10.1716 16.3284C9.42143 15.5783 9 14.5609 9 13.5C9 12.4391 9.42143 11.4217 10.1716 10.6716C10.9217 9.92143 11.9391 9.5 13 9.5C14.0609 9.5 15.0783 9.92143 15.8284 10.6716C16.5786 11.4217 17 12.4391 17 13.5Z'
@@ -212,6 +246,7 @@ const LeftNavigation: React.FC = () => {
                     strokeWidth='2'
                     strokeLinecap='round'
                     strokeLinejoin='round'
+                    // fill={pathname === "/category" ? "#FFFFFF" : ""}
                   />
                 </g>
                 <defs>

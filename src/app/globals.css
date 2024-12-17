@@ -3,9 +3,11 @@
 @tailwind utilities;
 @import "@fortawesome/fontawesome-svg-core/styles.css";
 @import "typeface-montserrat";
+@import "slick-carousel/slick/slick.css";
+@import "slick-carousel/slick/slick-theme.css";
 
 :root {
-  --background: #ffffff; /* Light mode background */
+  --background: #f9f9f9; /* Light mode background */
   --foreground: #171717; /* Light mode text color */
 }
 
