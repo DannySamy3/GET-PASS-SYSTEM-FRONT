@@ -4,6 +4,7 @@ import Link from "next/link";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faChevronLeft,
+  faChevronUp,
   faChevronRight, // Use Chevron Right instead of Arrow Right
   faHome,
   faInfoCircle,
@@ -36,14 +37,19 @@ const LeftNavigation: React.FC<props> = ({
     lastName: "Ntunduye",
     avatarIcon: faUser, // FontAwesome user icon
   };
+  const handleToggleCollapse = () => {
+    toggleCollapse();
+    if (!isCollapsed) {
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+  };
 
   return (
     <aside
-      className={`fixed top-0 left-0 font-montserrat ${
-        isCollapsed ? "w-20" : "w-[300px]" // Adjust the width here (w-60 is a bit smaller than w-80)
+      className={`  lg:fixed lg:top-0 lg:left-0  font-montserrat ${
+        isCollapsed ? "lg:w-20" : "lg:w-[300px]" // Adjust the width here (w-60 is a bit smaller than w-80)
       } h-screen bg-white text-gray-900 shadow-lg z-50 transition-width duration-300 flex flex-col`}
     >
-      {/* Sidebar Header with User Avatar Icon and Last Name */}
       <div
         className={`p-4 flex items-center justify-between ${
           isCollapsed ? "justify-center" : ""
@@ -51,13 +57,13 @@ const LeftNavigation: React.FC<props> = ({
       >
         {/* User icon inside a circle */}
         {!isCollapsed && (
-          <div className='flex items-center gap-[12px] mt-2 mb-3'>
-            <div className='w-10 h-10 rounded-full flex items-center justify-center'>
+          <div className='flex mt-1  flex-col w-full items-center gap-5 lg:w-fit lg:flex lg:flex-row lg:items-center lg:gap-[12px] lg:mt-2 mb-3'>
+            <div className='lg:w-10 lg:h-10 rounded-full flex items-center justify-center'>
               <svg
                 xmlns='http://www.w3.org/2000/svg'
                 viewBox='0 0 24 24'
                 fill='currentColor'
-                className='w-12 h-12'
+                className='lg:w-12 lg:h-12 w-20 h-20 '
               >
                 <path
                   fillRule='evenodd'
@@ -66,7 +72,7 @@ const LeftNavigation: React.FC<props> = ({
                 />
               </svg>
             </div>
-            <span className='text-lg font-semibold text-[#5D5D5D]'>
+            <span className='text-xl lg:text-lg font-semibold text-[#5D5D5D]'>
               {user.lastName}
             </span>
           </div>
@@ -293,16 +299,23 @@ const LeftNavigation: React.FC<props> = ({
         </ul>
       </nav>
 
-      {/* Sidebar Toggle Button at the Bottom Right */}
-      <div className='absolute bottom-4 right-4'>
+      <div className='absolute bottom-4 left-1/2 lg:left-auto lg:right-4 lg:transform-none lg:translate-x-0 transform -translate-x-1/2 lg:absolute  '>
         <button
           onClick={toggleCollapse}
+          // onClick={handleToggleCollapse}
           className='text-gray-900 focus:outline-none'
           aria-label={isCollapsed ? "Expand Sidebar" : "Collapse Sidebar"}
         >
           <FontAwesomeIcon
-            icon={isCollapsed ? faChevronRight : faChevronLeft} // Chevron Right and Left
-            className='transition-transform'
+            icon={isCollapsed ? faChevronRight : faChevronLeft}
+            className='transition-transform hidden lg:block'
+          />
+          <FontAwesomeIcon
+            // onClick={handleToggleCollapse}
+            icon={isCollapsed ? faChevronRight : faChevronUp}
+            className={`transition-transform lg:hidden ${
+              !isCollapsed ? "swipe-up" : ""
+            }`}
           />
         </button>
       </div>

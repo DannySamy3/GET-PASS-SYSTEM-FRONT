@@ -27,6 +27,28 @@ export default function RootLayout({
       <body className='bg-[#F9F9F9]'>
         <div className='flex h-screen'>
           {/* Left Navigation */}
+          {isCollapsed && (
+            <button
+              onClick={toggleCollapse}
+              className=' p-2 absolute lg:hidden right-[2px] top-[2px]'
+            >
+              <svg
+                xmlns='http://www.w3.org/2000/svg'
+                fill='none'
+                viewBox='0 0 24 24'
+                strokeWidth={1.5}
+                stroke='currentColor'
+                className='size-6 lg:hidden '
+              >
+                <path
+                  strokeLinecap='round'
+                  strokeLinejoin='round'
+                  d='M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5'
+                />
+              </svg>
+            </button>
+          )}
+
           <div
             className={`transition-width duration-300 ${
               isCollapsed ? "w-16" : "w-[300px]"
@@ -46,7 +68,7 @@ export default function RootLayout({
 
           {/* Mobile Navigation */}
           {!isCollapsed && (
-            <div className='lg:hidden fixed inset-0 bg-gray-200 z-50 transition-transform'>
+            <div className='lg:hidden  fixed inset-0 bg-gray-200 z-50 transition-transform'>
               <LeftNavigation
                 setIsCollapsed={setIsCollapsed}
                 isCollapsed={isCollapsed}
