@@ -1,3 +1,4 @@
+// filepath: /e:/CODE/Lisa/frontend/getpass/tailwind.config.ts
 import type { Config } from "tailwindcss";
 
 export default {
@@ -14,6 +15,7 @@ export default {
       },
       fontFamily: {
         montserrat: ["Montserrat", "sans-serif"],
+        inter: ["Inter", "sans-serif"], // Add Inter font here
       },
     },
   },

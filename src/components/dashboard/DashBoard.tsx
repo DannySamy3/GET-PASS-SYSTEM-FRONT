@@ -1,8 +1,10 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
+import Header from "../reUsables/Header";
 import Cards from "../cards/Cards";
-import { getOrdinalSuffix, getCurrentDate } from "@/utils/helper";
+
+import { getCurrentDate } from "@/utils/helper";
 import {
   getAllStudent,
   getRegisteredStudents,
@@ -73,13 +75,6 @@ const DashBoard = () => {
   const handleCardClick = () => {
     setCurrentCardIndex((prevIndex) => (prevIndex + 1) % cards.length);
   };
-
-  const currentDay = new Date();
-  const formattedDate = `${currentDay.getDate()}${getOrdinalSuffix(
-    currentDay.getDate()
-  )} ${currentDay.toLocaleString("default", {
-    month: "long",
-  })} ${currentDay.getFullYear()}`;
 
   const cards = [
     {
@@ -180,14 +175,7 @@ const DashBoard = () => {
 
   return (
     <div className='w-full max-w-full px-4 sm:px-6'>
-      <section className='flex flex-col sm:flex-row mb-7 items-center justify-between p-4 border-2 border-gray-300 rounded-lg'>
-        <h2 className='text-gray-600 font-medium text-base sm:text-lg mb-2 sm:mb-0'>
-          DashBoard
-        </h2>
-        <p className='text-gray-500 font-semibold text-sm sm:text-base'>
-          {formattedDate}
-        </p>
-      </section>
+      <Header title={"Dashboard"} />
 
       <div className='mb-8 flex flex-col sm:w-full sm:flex-row justify-between items-center space-y-4 sm:space-y-0'>
         <div className='w-full sm:w-3/5'>

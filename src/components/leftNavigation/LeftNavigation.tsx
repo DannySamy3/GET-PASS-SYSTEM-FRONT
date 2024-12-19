@@ -124,11 +124,11 @@ const LeftNavigation: React.FC<props> = ({
               {!isCollapsed && "Dashboard"}
             </Link>
           </li>
-          <li className=' w-full lg:w-auto md:w-auto '>
+          <li className='  w-full lg:w-auto md:w-auto '>
             <Link
               onClick={handleLinkClick}
               href={"/management"}
-              className={`w-full flex justify-center md:justify-stretch lg:justify-stretch items-center gap-4 py-3 px-4 text-lg rounded ${
+              className={`w-full  lg:ml-0 flex justify-center md:justify-stretch lg:justify-stretch items-center gap-4 py-3 px-4 text-lg rounded ${
                 isCollapsed ? "justify-center" : ""
               } ${
                 pathname === "/management"

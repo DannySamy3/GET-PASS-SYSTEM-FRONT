@@ -22,3 +22,22 @@ export const getStudentsStats = async () => {
     return response;
   } catch (error) {}
 };
+
+export const getAllStudents = async (query = {}) => {
+  try {
+    console.log(query);
+
+    if (query && Object.keys(query).length > 0) {
+      console.log("happenning");
+      const queryString = new URLSearchParams(query).toString().trim();
+
+      const response = await axiosInstance.get(
+        `/getPass/students?${queryString}`
+      );
+      return response;
+    } else {
+      const response = await axiosInstance.get("/getPass/students");
+      return response;
+    }
+  } catch (error) {}
+};
