@@ -92,6 +92,8 @@ export const StudentList = () => {
       const result = await getAllStudents(query);
       if (result) {
         const { data } = result;
+        console.log("this is query", query);
+        console.log("result data", data);
 
         setTotalResults(data.data.total);
         pageArray = Array.from(
@@ -231,16 +233,15 @@ export const StudentList = () => {
                 <select
                   onChange={(e: any) => {
                     setLimit(Number(e.target.value));
+                    setCurrentPage(1);
                     if (input) {
-                      setCurrentPage(1);
                       console.log(e.target.value);
                       fetchstudents({
                         limit: Number(e.target.value),
-                        query: input,
+                        name: input,
                         page: currentPage,
                       });
                     } else {
-                      setCurrentPage(1);
                       fetchstudents({
                         limit: Number(e.target.value),
                         page: currentPage,
