@@ -40,3 +40,10 @@ export const getAllStudents = async (query = {}) => {
     }
   } catch (error) {}
 };
+
+export const getStudentById = async (id: string) => {
+  try {
+    const response = await axiosInstance.get(`/getPass/students/${id}`);
+    return response;
+  } catch (error) {}
+};

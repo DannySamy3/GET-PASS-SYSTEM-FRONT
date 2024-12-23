@@ -5,6 +5,7 @@ import Header from "../reUsables/Header";
 import { getAllStudents } from "@/utils/studentController";
 import { getClassById } from "@/utils/classController";
 import { AddStudent } from "./AddStudent";
+import { Details } from "../studentDetails/Details";
 export const StudentList = () => {
   const [studentsData, setStudentData] = useState<any>({});
   const [currentPage, setCurrentPage] = useState<any>(1);
@@ -12,6 +13,7 @@ export const StudentList = () => {
   const [input, setInput] = useState("");
   const [limit, setLimit] = useState(10);
   const [toggleView, setToggleView] = useState(false);
+  const [viewDetails, setViewDetails] = useState({ view: false, id: null });
   const [totalResults, setTotalResults] = useState(0);
   // const [selectedPage, setSetSelectedPage] = useState("");
 
@@ -35,8 +37,6 @@ export const StudentList = () => {
     }
 
     fetchstudents(queryObj);
-
-    console.log("executed");
   };
 
   const containerRef = useRef<HTMLDivElement>(null);
@@ -55,7 +55,7 @@ export const StudentList = () => {
   const handlePagination = async (id: Number) => {
     // setSetSelectedPage(id.toString());
 
-    console.log("this is current page ", id);
+    // console.log("this is current page ", id);
     if (input) {
       fetchstudents({ page: id, name: input, limit });
       setCurrentPage(id);
@@ -92,15 +92,15 @@ export const StudentList = () => {
       const result = await getAllStudents(query);
       if (result) {
         const { data } = result;
-        console.log("this is query", query);
-        console.log("result data", data);
+        // console.log("this is query", query);
+        // console.log("result data", data);
 
         setTotalResults(data.data.total);
         pageArray = Array.from(
           { length: data.data.totalPages },
           (_, i) => i + 1
         );
-        console.log("search data", pageArray);
+        // console.log("search data", pageArray);
 
         // setStudentData(data.data);
         const studentsWithClass = await Promise.all(
@@ -125,7 +125,7 @@ export const StudentList = () => {
         const { data } = result;
         setTotalResults(data.data.total);
 
-        console.log("without query", data);
+        // console.log("without query", data);
 
         pageArray = Array.from(
           { length: data.data.totalPages },
@@ -183,9 +183,11 @@ export const StudentList = () => {
         view={{ setToggleView, toggleView }}
       />
 
-      {toggleView && <AddStudent viewer={setToggleView} />}
+      {toggleView && !viewDetails.view && <AddStudent viewer={setToggleView} />}
 
-      {!toggleView && (
+      {viewDetails.view && <Details id={viewDetails.id} />}
+
+      {!toggleView && !viewDetails.view && (
         <section className=' bg-white my-12  font-montserrat border overflow-y-hidden     border-[#D6D4D4] rounded-[12px] w-full '>
           <article
             ref={containerRef}
@@ -280,7 +282,17 @@ export const StudentList = () => {
                 </label>
                 <div className=' h-[2px] bg-[#D6D4D4] col-span-6  '></div>
                 {studentsData.students?.map((student: any, i: any) => (
-                  <button className=' contents  hover:bg-[#1CA2BB]' key={i}>
+                  <button
+                    onClick={() =>
+                      setViewDetails((prev) => ({
+                        ...prev,
+                        view: true,
+                        id: student._id,
+                      }))
+                    }
+                    className=' contents  hover:bg-[#1CA2BB]'
+                    key={i}
+                  >
                     <div className=' flex gap-8 text-start text-[#414141] font-[500] text-[15px]'>
                       <span className=' text-start text-[15px]'>
                         <span>{(currentPage - 1) * limit + i + 1}</span>
