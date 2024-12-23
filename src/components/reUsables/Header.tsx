@@ -1,22 +1,24 @@
 "use client";
-import React from "react";
+import React, { useState } from "react";
 import { useSelector } from "react-redux";
 import { RootState } from "@/utils/store";
 interface prop {
   title: any;
+  view: any;
 }
 
-const Header: React.FC<prop> = ({ title }) => {
+const Header: React.FC<prop> = ({ title, view }) => {
   const formattedDate = useSelector(
     (state: RootState) => state.date.currentDate
   );
+
   return (
     <section className='flex lg:mt-4 font-montserrat flex-col sm:flex-row mb-7 items-center justify-between p-4 border-2 border-gray-300 rounded-lg'>
       <h2 className='text-gray-600 font-medium text-base sm:text-lg mb-2 sm:mb-0'>
         {title}
       </h2>
 
-      {title !== "Management" && (
+      {view?.toggleView && (
         <p className='text-gray-500 font-semibold text-sm sm:text-base'>
           {formattedDate}
         </p>
@@ -26,13 +28,19 @@ const Header: React.FC<prop> = ({ title }) => {
         // <button className=' bg-white border border-[#1CA2BB] text-[#37ADC3] rounded-[6px] px-5  text-sm text-[22px] leading-[26px] font-[500] font-inter'>
         //   ADD STUDENT
         // </button>
+
         <svg
           xmlns='http://www.w3.org/2000/svg'
           fill='currentColor'
           viewBox='0 0 24 24'
           strokeWidth={1.5}
           stroke='currentColor'
-          className='w-7 h-7 cursor-pointer text-blue-500'
+          className={`w-7 h-7 ${
+            view?.toggleView ? "hidden" : ""
+          } cursor-pointer text-blue-500`}
+          onClick={() => {
+            view?.setToggleView(true);
+          }}
         >
           <path
             strokeLinecap='round'

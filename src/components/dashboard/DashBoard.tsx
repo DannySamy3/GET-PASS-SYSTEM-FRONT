@@ -15,6 +15,7 @@ import Calender from "@/components/calender/Calender";
 
 import "react-toastify/dist/ReactToastify.css";
 import "react-calendar/dist/Calendar.css";
+import { AddStudent } from "../studentList/AddStudent";
 
 const DashBoard = () => {
   const [currentCardIndex, setCurrentCardIndex] = useState(0);
@@ -45,9 +46,7 @@ const DashBoard = () => {
         });
 
         setSelectedDate(new Date(currentDate));
-      } catch (error) {
-        console.error("Error fetching data:", error);
-      }
+      } catch (error) {}
     };
 
     fetchInitialData();
@@ -175,7 +174,7 @@ const DashBoard = () => {
 
   return (
     <div className='w-full max-w-full px-4 sm:px-6'>
-      <Header title={"Dashboard"} />
+      <Header title={"Dashboard"} view={() => {}} />
 
       <div className='mb-8 flex flex-col sm:w-full sm:flex-row justify-between items-center space-y-4 sm:space-y-0'>
         <div className='w-full sm:w-3/5'>
