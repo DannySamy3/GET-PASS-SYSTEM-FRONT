@@ -323,6 +323,11 @@ export const StudentList = () => {
                         fill='none'
                         xmlns='http://www.w3.org/2000/svg'
                         className='group-hover:bg-white rounded'
+                        onClick={(e) => {
+                          e.stopPropagation(); // Prevents the button's onClick from firing
+                          console.log("Icon 1 clicked");
+                          // Add your icon-specific functionality here
+                        }}
                       >
                         <rect
                           x='0.5'
@@ -347,6 +352,11 @@ export const StudentList = () => {
                         fill='none'
                         xmlns='http://www.w3.org/2000/svg'
                         className='group-hover:bg-white rounded'
+                        onClick={(e) => {
+                          e.stopPropagation(); // Prevents the button's onClick from firing
+                          console.log("Icon 2 clicked");
+                          // Add your icon-specific functionality here
+                        }}
                       >
                         <rect
                           x='0.5'
