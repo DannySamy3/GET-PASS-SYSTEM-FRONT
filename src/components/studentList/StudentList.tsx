@@ -185,13 +185,15 @@ export const StudentList = () => {
 
       {toggleView && !viewDetails.view && <AddStudent viewer={setToggleView} />}
 
-      {viewDetails.view && <Details id={viewDetails.id} />}
+      {viewDetails.view && (
+        <Details id={viewDetails.id} setView={setViewDetails} />
+      )}
 
       {!toggleView && !viewDetails.view && (
-        <section className=' bg-white my-12  font-montserrat border overflow-y-hidden     border-[#D6D4D4] rounded-[12px] w-full '>
+        <section className=' bg-white mt-12  font-montserrat border overflow-y-hidden     border-[#D6D4D4] rounded-[12px] w-full '>
           <article
             ref={containerRef}
-            className=' py-12  px-14 flex flex-col gap-8 '
+            className=' pt-12 pb-6  px-14 flex flex-col gap-8 '
           >
             <section className='  flex justify-between items-center  '>
               <label className='input text-sm border border-[#D6D4D4] input-[5px] w-[85%] input-bordered flex items-center gap-2'>
@@ -241,7 +243,7 @@ export const StudentList = () => {
                       fetchstudents({
                         limit: Number(e.target.value),
                         name: input,
-                        page: currentPage,
+                        page: 1,
                       });
                     } else {
                       fetchstudents({
@@ -260,7 +262,7 @@ export const StudentList = () => {
                 </select>
               </div>
             </section>
-            <div className=' h-[490px] overflow-y-auto    '>
+            <div className=' h-[540px] overflow-y-auto    '>
               <section className=' h-auto  items-center     grid grid-cols-[0.3fr_0.3fr_0.3fr_0.3fr_0.3fr_0.1fr] gap-y-5 px-1 '>
                 <label className=' text-[#475053] font-[500] text-base '>
                   Name
@@ -290,10 +292,10 @@ export const StudentList = () => {
                         id: student._id,
                       }))
                     }
-                    className=' contents  hover:bg-[#1CA2BB]'
+                    className='group col-span-6 hover:text-white text-[#414141] grid grid-cols-[0.3fr_0.3fr_0.3fr_0.3fr_0.3fr_0.1fr] px-2 py-[10px] rounded-md hover:bg-[#1CA2BB]   '
                     key={i}
                   >
-                    <div className=' flex gap-8 text-start text-[#414141] font-[500] text-[15px]'>
+                    <div className=' flex gap-8 text-start  font-[500] text-[15px]'>
                       <span className=' text-start text-[15px]'>
                         <span>{(currentPage - 1) * limit + i + 1}</span>
                       </span>
@@ -301,16 +303,16 @@ export const StudentList = () => {
                       {student.firstName}
                     </div>
 
-                    <div className=' font-[500] text-[15px] text-start text-[#414141]'>
+                    <div className=' font-[500] text-[15px] text-start '>
                       {student.secondName}
                     </div>
-                    <div className=' font-[500] text-start text-[15px] text-[#414141]'>
+                    <div className=' font-[500] text-start text-[15px] '>
                       {student.lastName}
                     </div>
-                    <div className=' font-[500] text-[15px] text-start text-[#414141]'>
+                    <div className=' font-[500] text-[15px] text-start '>
                       {student.className}
                     </div>
-                    <div className=' font-[500] text-start text-[15px] text-[#595959]'>
+                    <div className=' font-[500] text-start text-[15px] text-[#595959]  group-hover:text-white '>
                       {student.regNo}
                     </div>
                     <div className=' flex justify-between'>
@@ -320,6 +322,7 @@ export const StudentList = () => {
                         viewBox='0 0 35 36'
                         fill='none'
                         xmlns='http://www.w3.org/2000/svg'
+                        className='group-hover:bg-white rounded'
                       >
                         <rect
                           x='0.5'
@@ -343,6 +346,7 @@ export const StudentList = () => {
                         viewBox='0 0 35 36'
                         fill='none'
                         xmlns='http://www.w3.org/2000/svg'
+                        className='group-hover:bg-white rounded'
                       >
                         <rect
                           x='0.5'
@@ -429,7 +433,7 @@ export const StudentList = () => {
                   </button>
                 ))}
                 <button
-                  className={`py-3 h-full ${
+                  className={` h-full ${
                     currentPage >= pageNumbers.length - 2 ? "hidden" : ""
                   } px-4 text-[#1F2937] text-sm font-normal hover:bg-[#D1D5DB]`}
                   onClick={() => handlePagination(currentPage + 1)}
