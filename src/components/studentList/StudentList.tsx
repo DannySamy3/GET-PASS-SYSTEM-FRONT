@@ -6,6 +6,7 @@ import { getAllStudents } from "@/utils/studentController";
 import { getClassById } from "@/utils/classController";
 import { AddStudent } from "./AddStudent";
 import { Details } from "../studentDetails/Details";
+import Card from "../idCard/card";
 export const StudentList = () => {
   const [studentsData, setStudentData] = useState<any>({});
   const [currentPage, setCurrentPage] = useState<any>(1);
@@ -13,8 +14,13 @@ export const StudentList = () => {
   const [input, setInput] = useState("");
   const [limit, setLimit] = useState(10);
   const [toggleView, setToggleView] = useState(false);
-  const [viewDetails, setViewDetails] = useState({ view: false, id: null });
+  const [viewDetails, setViewDetails] = useState({
+    view: false,
+    id: null,
+    cardId: "",
+  });
   const [totalResults, setTotalResults] = useState(0);
+  const [viewCard, setViewCard] = useState(false);
   // const [selectedPage, setSetSelectedPage] = useState("");
 
   const searchPlan = (searchQuery: string, limit: number) => {
@@ -169,7 +175,6 @@ export const StudentList = () => {
   //   }
   // };
 
-  console.log(studentsData);
   useEffect(() => {
     fetchstudents();
 
@@ -284,7 +289,7 @@ export const StudentList = () => {
                 </label>
                 <div className=' h-[2px] bg-[#D6D4D4] col-span-6  '></div>
                 {studentsData.students?.map((student: any, i: any) => (
-                  <button
+                  <div
                     onClick={() =>
                       setViewDetails((prev) => ({
                         ...prev,
@@ -292,59 +297,39 @@ export const StudentList = () => {
                         id: student._id,
                       }))
                     }
-                    className='group col-span-6 hover:text-white text-[#414141] grid grid-cols-[0.3fr_0.3fr_0.3fr_0.3fr_0.3fr_0.1fr] px-2 py-[10px] rounded-md hover:bg-[#1CA2BB]   '
+                    className='cursor-pointer group col-span-6 hover:text-white text-[#414141] grid grid-cols-[0.3fr_0.3fr_0.3fr_0.3fr_0.3fr_0.1fr] px-2 py-[10px] rounded-md hover:bg-[#1CA2BB]'
                     key={i}
                   >
-                    <div className=' flex gap-8 text-start  font-[500] text-[15px]'>
-                      <span className=' text-start text-[15px]'>
+                    {/* Conditionally rendering the Card component when the 'viewCard' state is true */}
+                    {viewCard && viewDetails.cardId === student._id && (
+                      <Card
+                        studentId={viewDetails.cardId} // Passing the student's ID from viewDetails state
+                        isOpen={viewCard}
+                        onClose={() => setViewCard(false)}
+                      />
+                    )}
+
+                    <div className='flex gap-8 text-start font-[500] text-[15px]'>
+                      <span className='text-start text-[15px]'>
                         <span>{(currentPage - 1) * limit + i + 1}</span>
                       </span>
-
                       {student.firstName}
                     </div>
 
-                    <div className=' font-[500] text-[15px] text-start '>
+                    <div className='font-[500] text-[15px] text-start'>
                       {student.secondName}
                     </div>
-                    <div className=' font-[500] text-start text-[15px] '>
+                    <div className='font-[500] text-start text-[15px]'>
                       {student.lastName}
                     </div>
-                    <div className=' font-[500] text-[15px] text-start '>
+                    <div className='font-[500] text-[15px] text-start'>
                       {student.className}
                     </div>
-                    <div className=' font-[500] text-start text-[15px] text-[#595959]  group-hover:text-white '>
+                    <div className='font-[500] text-start text-[15px] text-[#595959] group-hover:text-white'>
                       {student.regNo}
                     </div>
-                    <div className=' flex justify-between'>
-                      <svg
-                        width='24'
-                        height='24'
-                        viewBox='0 0 35 36'
-                        fill='none'
-                        xmlns='http://www.w3.org/2000/svg'
-                        className='group-hover:bg-white rounded'
-                        onClick={(e) => {
-                          e.stopPropagation(); // Prevents the button's onClick from firing
-                          console.log("Icon 1 clicked");
-                          // Add your icon-specific functionality here
-                        }}
-                      >
-                        <rect
-                          x='0.5'
-                          y='0.5'
-                          width='34'
-                          height='35'
-                          rx='5.5'
-                          stroke='#585858'
-                        />
-                        <path
-                          d='M23.5556 23.5556H25.7778C26.3671 23.5556 26.9324 23.3214 27.3491 22.9047C27.7659 22.4879 28 21.9227 28 21.3333V16.8889C28 16.2995 27.7659 15.7343 27.3491 15.3175C26.9324 14.9008 26.3671 14.6667 25.7778 14.6667H10.2222C9.63285 14.6667 9.06762 14.9008 8.65087 15.3175C8.23413 15.7343 8 16.2995 8 16.8889V21.3333C8 21.9227 8.23413 22.4879 8.65087 22.9047C9.06762 23.3214 9.63285 23.5556 10.2222 23.5556H12.4444M14.6667 28H21.3333C21.9227 28 22.4879 27.7659 22.9047 27.3491C23.3214 26.9324 23.5556 26.3671 23.5556 25.7778V21.3333C23.5556 20.744 23.3214 20.1787 22.9047 19.762C22.4879 19.3452 21.9227 19.1111 21.3333 19.1111H14.6667C14.0773 19.1111 13.5121 19.3452 13.0953 19.762C12.6786 20.1787 12.4444 20.744 12.4444 21.3333V25.7778C12.4444 26.3671 12.6786 26.9324 13.0953 27.3491C13.5121 27.7659 14.0773 28 14.6667 28ZM23.5556 14.6667V10.2222C23.5556 9.63285 23.3214 9.06762 22.9047 8.65087C22.4879 8.23413 21.9227 8 21.3333 8H14.6667C14.0773 8 13.5121 8.23413 13.0953 8.65087C12.6786 9.06762 12.4444 9.63285 12.4444 10.2222V14.6667H23.5556Z'
-                          stroke='black'
-                          //   stroke-linecap='round'
-                          //   stroke-linejoin='round'
-                        />
-                      </svg>
 
+                    <div className='flex w-full justify-between'>
                       <svg
                         width='24'
                         height='24'
@@ -353,9 +338,15 @@ export const StudentList = () => {
                         xmlns='http://www.w3.org/2000/svg'
                         className='group-hover:bg-white rounded'
                         onClick={(e) => {
-                          e.stopPropagation(); // Prevents the button's onClick from firing
+                          e.stopPropagation(); // Prevents the card's onClick from firing
                           console.log("Icon 2 clicked");
-                          // Add your icon-specific functionality here
+
+                          // Set the clicked student ID and show the card modal
+                          setViewDetails((prev) => ({
+                            ...prev,
+                            cardId: student._id, // Directly using the student's _id here
+                          }));
+                          setViewCard(true); // Open the card modal
                         }}
                       >
                         <rect
@@ -398,7 +389,7 @@ export const StudentList = () => {
                         />
                       </svg>
                     </div>
-                  </button>
+                  </div>
                 ))}
               </section>
             </div>

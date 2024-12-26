@@ -25,8 +25,6 @@ export const getStudentsStats = async () => {
 
 export const getAllStudents = async (query = {}) => {
   try {
-    console.log(query);
-
     if (query && Object.keys(query).length > 0) {
       const queryString = new URLSearchParams(query).toString().trim();
 
