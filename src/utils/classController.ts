@@ -6,3 +6,9 @@ export const getClassById = async (id: string) => {
     return response.data;
   } catch (error) {}
 };
+export const getClasses = async () => {
+  try {
+    const response = await axiosInstance.get(`/getPass/classes`);
+    return response.data;
+  } catch (error) {}
+};

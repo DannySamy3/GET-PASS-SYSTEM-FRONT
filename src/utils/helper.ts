@@ -1,3 +1,5 @@
+import axiosInstance from "./axioInstance";
+
 export const getOrdinalSuffix = (day: number) => {
   if (day > 3 && day < 21) return "th"; // covers 11th to 20th
   switch (day % 10) {
@@ -18,4 +20,20 @@ export const getCurrentDate = () => {
   const month = String(currentDate.getMonth() + 1).padStart(2, "0"); // Months are zero-based
   const day = String(currentDate.getDate()).padStart(2, "0");
   return `${year}-${month}-${day}`;
+};
+
+// utils/fetchCountries.ts
+
+export const fetchCountries = async () => {
+  try {
+    const response = await fetch("https://restcountries.com/v3.1/all");
+    if (!response.ok) {
+      throw new Error("Failed to fetch countries");
+    }
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error("Error fetching countries:", error);
+    return [];
+  }
 };

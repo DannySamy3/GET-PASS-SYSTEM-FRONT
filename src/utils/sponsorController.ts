@@ -5,3 +5,9 @@ export const getSponsorById = async (id: string) => {
     return response;
   } catch (error) {}
 };
+export const getSponsors = async () => {
+  try {
+    const response = await axiosInstance.get(`/getPass/sponsors`);
+    return response;
+  } catch (error) {}
+};

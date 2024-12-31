@@ -5,9 +5,10 @@ import { getSponsorById } from "@/utils/sponsorController";
 interface props {
   id: any;
   setView: any;
+  setDate: any;
 }
 
-export const Details: React.FC<props> = ({ id, setView }) => {
+export const Details: React.FC<props> = ({ id, setView, setDate }) => {
   const [student, setStudent] = useState<any>();
   const [selectStatus, setSelectStatus] = useState("");
   const [edit, setEdit] = useState(false);
@@ -47,7 +48,10 @@ export const Details: React.FC<props> = ({ id, setView }) => {
           <span className=' font-[600] text-lg'>STUDENT DETAILS</span>
           <div className=' w-[15%] flex justify-between items-center'>
             <button
-              onClick={() => setView((prev: any) => ({ ...prev, view: false }))}
+              onClick={() => {
+                setView((prev: any) => ({ ...prev, view: false }));
+                setDate(false);
+              }}
               className=' w-[45%] btn btn-error text-white'
             >
               CANCEL

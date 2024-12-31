@@ -184,14 +184,18 @@ export const StudentList = () => {
   return (
     <div className='w-full   max-w-full px-4 sm:px-6'>
       <Header
-        title={toggleView ? "Registration" : "Management"}
+        title={toggleView && !viewDetails.view ? "Registration" : "Management"}
         view={{ setToggleView, toggleView }}
       />
 
-      {toggleView && !viewDetails.view && <AddStudent viewer={setToggleView} />}
+      {toggleView && !viewDetails.view && <AddStudent />}
 
       {viewDetails.view && (
-        <Details id={viewDetails.id} setView={setViewDetails} />
+        <Details
+          id={viewDetails.id}
+          setView={setViewDetails}
+          setDate={setToggleView}
+        />
       )}
 
       {!toggleView && !viewDetails.view && (
@@ -268,7 +272,10 @@ export const StudentList = () => {
               </div>
             </section>
             <div className=' h-[540px] overflow-y-auto    '>
-              <section className=' h-auto  items-center     grid grid-cols-[0.3fr_0.3fr_0.3fr_0.3fr_0.3fr_0.1fr] gap-y-5 px-1 '>
+              <section className=' h-auto  items-center     grid grid-cols-[0.1fr_0.2fr_0.2fr_0.2fr_0.3fr_0.2fr_0.1fr] gap-y-4 px-1 '>
+                <label className=' text-[#475053] font-[500] text-base '>
+                  S/N
+                </label>
                 <label className=' text-[#475053] font-[500] text-base '>
                   Name
                 </label>
@@ -287,17 +294,18 @@ export const StudentList = () => {
                 <label className=' text-[#475053] font-[500] text-base'>
                   Actions
                 </label>
-                <div className=' h-[2px] bg-[#D6D4D4] col-span-6  '></div>
+                <div className=' h-[2px] bg-[#D6D4D4] col-span-7  '></div>
                 {studentsData.students?.map((student: any, i: any) => (
                   <div
-                    onClick={() =>
+                    onClick={() => {
                       setViewDetails((prev) => ({
                         ...prev,
                         view: true,
                         id: student._id,
-                      }))
-                    }
-                    className='cursor-pointer group col-span-6 hover:text-white text-[#414141] grid grid-cols-[0.3fr_0.3fr_0.3fr_0.3fr_0.3fr_0.1fr] px-2 py-[10px] rounded-md hover:bg-[#1CA2BB]'
+                      }));
+                      setToggleView(true);
+                    }}
+                    className='  cursor-pointer group col-span-7 hover:text-white text-[#414141] grid grid-cols-[0.1fr_0.2fr_0.2fr_0.2fr_0.3fr_0.2fr_0.1fr] px-2 py-[10px] rounded-md hover:bg-[#1CA2BB]'
                     key={i}
                   >
                     {/* Conditionally rendering the Card component when the 'viewCard' state is true */}
@@ -309,10 +317,10 @@ export const StudentList = () => {
                       />
                     )}
 
-                    <div className='flex gap-8 text-start font-[500] text-[15px]'>
-                      <span className='text-start text-[15px]'>
-                        <span>{(currentPage - 1) * limit + i + 1}</span>
-                      </span>
+                    <div className='text-start text-[15px]'>
+                      <span>{(currentPage - 1) * limit + i + 1}</span>
+                    </div>
+                    <div className=' text-start font-[500] text-[15px]'>
                       {student.firstName}
                     </div>
 
@@ -329,14 +337,14 @@ export const StudentList = () => {
                       {student.regNo}
                     </div>
 
-                    <div className='flex w-full justify-between'>
+                    <div className=' flex ml-5'>
                       <svg
                         width='24'
                         height='24'
                         viewBox='0 0 35 36'
                         fill='none'
                         xmlns='http://www.w3.org/2000/svg'
-                        className='group-hover:bg-white rounded'
+                        className='group-hover:bg-white rounded '
                         onClick={(e) => {
                           e.stopPropagation(); // Prevents the card's onClick from firing
                           console.log("Icon 2 clicked");

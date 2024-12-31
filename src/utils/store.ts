@@ -1,10 +1,12 @@
 // filepath: /e:/CODE/Lisa/frontend/getpass/src/utils/store.ts
 import { configureStore } from "@reduxjs/toolkit";
 import dateReducer from "./dateSlice";
+import toastReducer from "./toastSlice"; // Import toast slice
 
 export const store = configureStore({
   reducer: {
     date: dateReducer,
+    toast: toastReducer, // Add toast reducer
   },
 });
 

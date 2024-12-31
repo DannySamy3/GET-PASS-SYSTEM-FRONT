@@ -18,7 +18,7 @@ const Header: React.FC<prop> = ({ title, view }) => {
         {title}
       </h2>
 
-      {view?.toggleView && (
+      {view?.toggleView && title === "Management" && (
         <p className='text-gray-500 font-semibold text-sm sm:text-base'>
           {formattedDate}
         </p>
@@ -46,6 +46,36 @@ const Header: React.FC<prop> = ({ title, view }) => {
             strokeLinecap='round'
             strokeLinejoin='round'
             d='M18 7.5v3m0 0v3m0-3h3m-3 0h-3m-2.25-4.125a3.375 3.375 0 1 1-6.75 0 3.375 3.375 0 0 1 6.75 0ZM3 19.235v-.11a6.375 6.375 0 0 1 12.75 0v.109A12.318 12.318 0 0 1 9.374 21c-2.331 0-4.512-.645-6.374-1.766Z'
+          />
+        </svg>
+      )}
+
+      {title === "Registration" && (
+        // <div className=' flex justify-end w-full    '>
+        //   <button
+        //     onClick={() => view?.setToggleView(false)}
+        //     className='    rounded-full flex items-center justify-center h-7 w-7  py-1  bg-[#FB5959] text-white text-[15px] hover:text-white   '
+        //   >
+        //     x
+        //   </button>
+        // </div>
+
+        <svg
+          xmlns='http://www.w3.org/2000/svg'
+          viewBox='0 0 24 24'
+          fill=''
+          className='w-6 h-6 cursor-pointer'
+          onClick={() => view?.setToggleView(false)}
+        >
+          <path
+            fillRule='evenodd'
+            d='M10.72 11.47a.75.75 0 0 0 0 1.06l7.5 7.5a.75.75 0 1 0 1.06-1.06L12.31 12l6.97-6.97a.75.75 0 0 0-1.06-1.06l-7.5 7.5Z'
+            clipRule='evenodd'
+          />
+          <path
+            fillRule='evenodd'
+            d='M4.72 11.47a.75.75 0 0 0 0 1.06l7.5 7.5a.75.75 0 1 0 1.06-1.06L6.31 12l6.97-6.97a.75.75 0 0 0-1.06-1.06l-7.5 7.5Z'
+            clipRule='evenodd'
           />
         </svg>
       )}

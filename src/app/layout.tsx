@@ -5,6 +5,9 @@ import { useState } from "react";
 import LeftNavigation from "@/components/leftNavigation/LeftNavigation";
 import { Provider } from "react-redux";
 import { store } from "@/utils/store";
+import { ToastContainer } from "react-toastify";
+import { showToast } from "@/utils/toastSlice"; // Import the action
+import "react-toastify/dist/ReactToastify.css"; // Import the Toastify CSS
 
 export default function RootLayout({
   children,
@@ -88,6 +91,11 @@ export default function RootLayout({
               </div>
             )}
           </div>
+          <ToastContainer
+            position='top-right'
+            autoClose={3000}
+            style={{ zIndex: 9999 }}
+          />
         </Provider>
       </body>
     </html>
