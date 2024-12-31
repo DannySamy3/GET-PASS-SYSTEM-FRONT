@@ -11,3 +11,15 @@ export const getSponsors = async () => {
     return response;
   } catch (error) {}
 };
+export const createSponsors = async (data: any) => {
+  try {
+    const response = await axiosInstance.post(`/getPass/sponsors`, data);
+    return response;
+  } catch (error) {}
+};
+export const deleteSponsors = async (id: string) => {
+  try {
+    const response = await axiosInstance.delete(`/getPass/sponsors/${id}`);
+    return response;
+  } catch (error) {}
+};

@@ -272,133 +272,131 @@ export const StudentList = () => {
               </div>
             </section>
             <div className=' h-[540px] overflow-y-auto    '>
-              <section className=' h-auto  items-center     grid grid-cols-[0.1fr_0.2fr_0.2fr_0.2fr_0.3fr_0.2fr_0.1fr] gap-y-4 px-1 '>
-                <label className=' text-[#475053] font-[500] text-base '>
-                  S/N
-                </label>
-                <label className=' text-[#475053] font-[500] text-base '>
-                  Name
-                </label>
-                <label className=' text-[#475053] font-[500] text-base'>
-                  Mid Name
-                </label>
-                <label className=' text-[#475053] font-[500] text-base'>
-                  SurName
-                </label>
-                <label className=' text-[#475053] font-[500] text-base'>
-                  Course
-                </label>
-                <label className=' text-[#475053] font-[500] text-base'>
-                  Reg No
-                </label>
-                <label className=' text-[#475053] font-[500] text-base'>
-                  Actions
-                </label>
-                <div className=' h-[2px] bg-[#D6D4D4] col-span-7  '></div>
-                {studentsData.students?.map((student: any, i: any) => (
-                  <div
-                    onClick={() => {
-                      setViewDetails((prev) => ({
-                        ...prev,
-                        view: true,
-                        id: student._id,
-                      }));
-                      setToggleView(true);
-                    }}
-                    className='  cursor-pointer group col-span-7 hover:text-white text-[#414141] grid grid-cols-[0.1fr_0.2fr_0.2fr_0.2fr_0.3fr_0.2fr_0.1fr] px-2 py-[10px] rounded-md hover:bg-[#1CA2BB]'
-                    key={i}
-                  >
-                    {/* Conditionally rendering the Card component when the 'viewCard' state is true */}
-                    {viewCard && viewDetails.cardId === student._id && (
-                      <Card
-                        studentId={viewDetails.cardId} // Passing the student's ID from viewDetails state
-                        isOpen={viewCard}
-                        onClose={() => setViewCard(false)}
-                      />
-                    )}
+              <section className='h-auto  px-2  '>
+                {/* Fixed Header */}
+                <div className='grid grid-cols-[0.1fr_0.2fr_0.2fr_0.2fr_0.3fr_0.2fr_0.1fr] gap-y-3'>
+                  <label className='text-[#475053] text-start font-[500] text-base'>
+                    S/N
+                  </label>
+                  <label className='text-[#475053] text-start font-[500] text-base'>
+                    Name
+                  </label>
+                  <label className='text-[#475053] text-start font-[500] text-base'>
+                    Mid Name
+                  </label>
+                  <label className='text-[#475053] text-start font-[500] text-base'>
+                    SurName
+                  </label>
+                  <label className='text-[#475053] text-start font-[500] text-base'>
+                    Course
+                  </label>
+                  <label className='text-[#475053] text-start font-[500] text-base'>
+                    Reg No
+                  </label>
+                  <label className='text-[#475053] text-start font-[500] text-base'>
+                    Actions
+                  </label>
+                  <div className='h-[2px] bg-[#D6D4D4] text-start   col-span-7'></div>
+                </div>
 
-                    <div className='text-start text-[15px]'>
-                      <span>{(currentPage - 1) * limit + i + 1}</span>
-                    </div>
-                    <div className=' text-start font-[500] text-[15px]'>
-                      {student.firstName}
-                    </div>
+                {/* Divider line */}
 
-                    <div className='font-[500] text-[15px] text-start'>
-                      {student.secondName}
-                    </div>
-                    <div className='font-[500] text-start text-[15px]'>
-                      {student.lastName}
-                    </div>
-                    <div className='font-[500] text-[15px] text-start'>
-                      {student.className}
-                    </div>
-                    <div className='font-[500] text-start text-[15px] text-[#595959] group-hover:text-white'>
-                      {student.regNo}
-                    </div>
+                {/* Scrollable Content */}
+                <div className='overflow-y-auto max-h-[460px] grid grid-cols-[0.1fr_0.2fr_0.2fr_0.2fr_0.3fr_0.2fr_0.1fr] gap-y-4 mt-3'>
+                  {studentsData.students?.map((student: any, i: any) => (
+                    <div
+                      onClick={() => {
+                        setViewDetails((prev) => ({
+                          ...prev,
+                          view: true,
+                          id: student._id,
+                        }));
+                        setToggleView(true);
+                      }}
+                      className='cursor-pointer group col-span-7 hover:text-white text-[#414141] grid grid-cols-[0.1fr_0.2fr_0.2fr_0.2fr_0.3fr_0.2fr_0.1fr] px-2 py-[10px] rounded-md hover:bg-[#1CA2BB]'
+                      key={i}
+                    >
+                      {/* Conditionally rendering the Card component when the 'viewCard' state is true */}
+                      {viewCard && viewDetails.cardId === student._id && (
+                        <Card
+                          studentId={viewDetails.cardId} // Passing the student's ID from viewDetails state
+                          isOpen={viewCard}
+                          onClose={() => setViewCard(false)}
+                        />
+                      )}
 
-                    <div className=' flex ml-5'>
-                      <svg
-                        width='24'
-                        height='24'
-                        viewBox='0 0 35 36'
-                        fill='none'
-                        xmlns='http://www.w3.org/2000/svg'
-                        className='group-hover:bg-white rounded '
-                        onClick={(e) => {
-                          e.stopPropagation(); // Prevents the card's onClick from firing
-                          console.log("Icon 2 clicked");
+                      <div className=' text-[15px]'>
+                        <span>{(currentPage - 1) * limit + i + 1}</span>
+                      </div>
+                      <div className=' font-[500] text-[15px]'>
+                        {student.firstName}
+                      </div>
+                      <div className='font-[500] text-[15px] '>
+                        {student.secondName}
+                      </div>
+                      <div className='font-[500]  text-[15px]'>
+                        {student.lastName}
+                      </div>
+                      <div className='font-[500] text-[15px] '>
+                        {student.className}
+                      </div>
+                      <div className='font-[500]  text-[15px] text-[#595959] group-hover:text-white'>
+                        {student.regNo}
+                      </div>
 
-                          // Set the clicked student ID and show the card modal
-                          setViewDetails((prev) => ({
-                            ...prev,
-                            cardId: student._id, // Directly using the student's _id here
-                          }));
-                          setViewCard(true); // Open the card modal
-                        }}
-                      >
-                        <rect
-                          x='0.5'
-                          y='0.5'
-                          width='34'
-                          height='35'
-                          rx='5.5'
-                          stroke='#585858'
-                        />
-                        <path
-                          //   fill-rule='evenodd'
-                          //   clip-rule='evenodd'
-                          d='M9.93518 13.4743C11.6477 17.0793 14.7406 19.3335 18.2064 19.3349C18.2075 19.3349 18.2086 19.3349 18.2097 19.3349V18.0849C18.2091 18.0849 18.2086 18.0849 18.2081 18.0849C18.2075 18.0849 18.207 18.0849 18.2064 18.0849M18.2081 18.0849C21.087 18.0842 23.7969 16.2113 25.3518 12.9379L25.6201 12.3734L26.7491 12.9097L26.4809 13.4743C24.7684 17.0793 21.6756 19.3335 18.2097 19.3349M18.2081 18.0849C15.3292 18.0842 12.6192 16.2113 11.0643 12.9379L10.7961 12.3734L9.66699 12.9097L9.93518 13.4743'
-                          fill='black'
-                        />
-                        <path
-                          //   fill-rule='evenodd'
-                          //   clip-rule='evenodd'
-                          d='M23.6993 15.5461L26.3424 18.1893L25.4585 19.0731L22.8154 16.4299L23.6993 15.5461Z'
-                          fill='black'
-                        />
-                        <path
-                          //   fill-rule='evenodd'
-                          //   clip-rule='evenodd'
-                          d='M12.651 15.5461L10.0078 18.1893L10.8917 19.0731L13.5348 16.4299L12.651 15.5461Z'
-                          fill='black'
-                        />
-                        <path
-                          //   fill-rule='evenodd'
-                          //   clip-rule='evenodd'
-                          d='M20.5775 17.6621L21.6296 21.2872L20.4292 21.6357L19.377 18.0106L20.5775 17.6621Z'
-                          fill='black'
-                        />
-                        <path
-                          //   fill-rule='evenodd'
-                          //   clip-rule='evenodd'
-                          d='M15.7719 17.6624L14.7197 21.2874L15.9202 21.6359L16.9724 18.0108L15.7719 17.6624Z'
-                          fill='black'
-                        />
-                      </svg>
+                      <div className='flex ml-5'>
+                        <svg
+                          width='24'
+                          height='24'
+                          viewBox='0 0 35 36'
+                          fill='none'
+                          xmlns='http://www.w3.org/2000/svg'
+                          className='group-hover:bg-white rounded'
+                          onClick={(e) => {
+                            e.stopPropagation(); // Prevents the card's onClick from firing
+                            console.log("Icon 2 clicked");
+
+                            // Set the clicked student ID and show the card modal
+                            setViewDetails((prev) => ({
+                              ...prev,
+                              cardId: student._id, // Directly using the student's _id here
+                            }));
+                            setViewCard(true); // Open the card modal
+                          }}
+                        >
+                          <rect
+                            x='0.5'
+                            y='0.5'
+                            width='34'
+                            height='35'
+                            rx='5.5'
+                            stroke='#585858'
+                          />
+                          <path
+                            d='M9.93518 13.4743C11.6477 17.0793 14.7406 19.3335 18.2064 19.3349C18.2075 19.3349 18.2086 19.3349 18.2097 19.3349V18.0849C18.2091 18.0849 18.2086 18.0849 18.2081 18.0849C18.2075 18.0849 18.207 18.0849 18.2064 18.0849M18.2081 18.0849C21.087 18.0842 23.7969 16.2113 25.3518 12.9379L25.6201 12.3734L26.7491 12.9097L26.4809 13.4743C24.7684 17.0793 21.6756 19.3335 18.2097 19.3349M18.2081 18.0849C15.3292 18.0842 12.6192 16.2113 11.0643 12.9379L10.7961 12.3734L9.66699 12.9097L9.93518 13.4743'
+                            fill='black'
+                          />
+                          <path
+                            d='M23.6993 15.5461L26.3424 18.1893L25.4585 19.0731L22.8154 16.4299L23.6993 15.5461Z'
+                            fill='black'
+                          />
+                          <path
+                            d='M12.651 15.5461L10.0078 18.1893L10.8917 19.0731L13.5348 16.4299L12.651 15.5461Z'
+                            fill='black'
+                          />
+                          <path
+                            d='M20.5775 17.6621L21.6296 21.2872L20.4292 21.6357L19.377 18.0106L20.5775 17.6621Z'
+                            fill='black'
+                          />
+                          <path
+                            d='M15.7719 17.6624L14.7197 21.2874L15.9202 21.6359L16.9724 18.0108L15.7719 17.6624Z'
+                            fill='black'
+                          />
+                        </svg>
+                      </div>
                     </div>
-                  </div>
-                ))}
+                  ))}
+                </div>
               </section>
             </div>
             <div className='flex justify-center   '>

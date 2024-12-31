@@ -1,5 +1,5 @@
 import React from "react";
-import { Sponsors } from "@/components/sponsor/Sponsors";
+import Sponsors from "@/components/sponsor/Sponsors";
 
 const page = () => {
   return (

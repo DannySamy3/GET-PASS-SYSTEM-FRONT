@@ -124,13 +124,13 @@ export const Details: React.FC<props> = ({ id, setView, setDate }) => {
               <option value={""}>{student?.status}</option>
               <option
                 value={"REGISTERED"}
-                className=' text-[#FB5959] text-[15px] font-[600]'
+                className=' text-[#1BAD22] text-[15px] font-[600]'
               >
                 REGISTERED
               </option>
               <option
                 value={"NOT REGISTERED"}
-                className=' text-[#1BAD22] text-[15px] font-[600]'
+                className='  text-[#FB5959]  text-[15px] font-[600]'
               >
                 NOT REGISTERED
               </option>

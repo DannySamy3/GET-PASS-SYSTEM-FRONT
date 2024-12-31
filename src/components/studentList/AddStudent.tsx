@@ -113,18 +113,18 @@ export const AddStudent = () => {
         );
         setIsToastShown(true); // Set toast as shown after successful submission
 
-        // setUserInfo({
-        //   firstName: "",
-        //   lastName: "",
-        //   secondName: "",
-        //   email: "",
-        //   phoneNumber: "",
-        //   sponsorId: "",
-        //   nationality: "",
-        //   classId: "",
-        //   gender: "",
-        //   enrollmentYear: "",
-        // });
+        setUserInfo({
+          firstName: "",
+          lastName: "",
+          secondName: "",
+          email: "",
+          phoneNumber: "",
+          sponsorId: "",
+          nationality: "",
+          classId: "",
+          gender: "",
+          enrollmentYear: "",
+        });
       }
     } catch (error) {
       dispatch(
@@ -133,7 +133,20 @@ export const AddStudent = () => {
           type: "error",
         })
       );
-      setIsToastShown(false); // Don't show toast if there's an error
+      setIsToastShown(false);
+
+      setUserInfo({
+        firstName: "",
+        lastName: "",
+        secondName: "",
+        email: "",
+        phoneNumber: "",
+        sponsorId: "",
+        nationality: "",
+        classId: "",
+        gender: "",
+        enrollmentYear: "",
+      }); // Don't show toast if there's an error
     }
   };
 
@@ -172,6 +185,7 @@ export const AddStudent = () => {
           </label>
           <input
             name='secondName'
+            value={userInfo.secondName}
             onChange={handleChange}
             required
             type='text'
@@ -181,6 +195,7 @@ export const AddStudent = () => {
           <label className='text-sm text-[#414141] font-[500]'>SurName</label>
           <input
             name='lastName'
+            value={userInfo.lastName}
             onChange={handleChange}
             required
             type='text'
@@ -192,6 +207,7 @@ export const AddStudent = () => {
           </label>
           <select
             name='nationality'
+            value={userInfo.nationality}
             required
             onChange={handleChange}
             className='select select-sm border border-[#D9CBCB] h-[34px]'
@@ -206,6 +222,7 @@ export const AddStudent = () => {
           <label className='text-sm text-[#414141] font-[500]'>Gender</label>
           <select
             name='gender'
+            value={userInfo.gender}
             required
             onChange={handleChange}
             className='select select-sm border border-[#D9CBCB] h-[34px]'
@@ -220,6 +237,7 @@ export const AddStudent = () => {
           <input
             name='phoneNumber'
             onChange={handleChange}
+            value={userInfo.phoneNumber}
             type='text'
             required
             placeholder='Enter an active mobile number'
@@ -228,6 +246,7 @@ export const AddStudent = () => {
           <label className='text-sm text-[#414141] font-[500]'>Email</label>
           <input
             name='email'
+            value={userInfo.email}
             required
             onChange={handleChange}
             type='email'
@@ -237,6 +256,7 @@ export const AddStudent = () => {
           <label className='text-sm text-[#414141] font-[500]'>Class</label>
           <select
             name='classId'
+            value={userInfo.classId}
             required
             onChange={handleChange}
             className='select select-sm border border-[#D9CBCB] h-[34px]'
@@ -251,6 +271,7 @@ export const AddStudent = () => {
           <label className='text-sm text-[#414141] font-[500]'>Sponsor</label>
           <select
             onChange={handleChange}
+            value={userInfo.sponsorId}
             required
             name='sponsorId'
             className='select select-sm border border-[#D9CBCB] h-[34px]'
