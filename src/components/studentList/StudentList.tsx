@@ -7,6 +7,9 @@ import { getClassById } from "@/utils/classController";
 import { AddStudent } from "./AddStudent";
 import { Details } from "../studentDetails/Details";
 import Card from "../idCard/card";
+import { useDispatch } from "react-redux";
+import { showToast } from "@/utils/toastSlice";
+import ToastNotification from "@/components/toastNotification/ToastNotification";
 export const StudentList = () => {
   const [studentsData, setStudentData] = useState<any>({});
   const [currentPage, setCurrentPage] = useState<any>(1);
@@ -22,6 +25,8 @@ export const StudentList = () => {
   const [totalResults, setTotalResults] = useState(0);
   const [viewCard, setViewCard] = useState(false);
   // const [selectedPage, setSetSelectedPage] = useState("");
+
+  const dispatch = useDispatch();
 
   const searchPlan = (searchQuery: string, limit: number) => {
     const queryObj: any = {};
@@ -94,67 +99,80 @@ export const StudentList = () => {
   };
   const fetchstudents = async (query = {}) => {
     let pageArray;
-    if (query && Object.keys(query).length > 0) {
-      const result = await getAllStudents(query);
-      if (result) {
-        const { data } = result;
-        // console.log("this is query", query);
-        // console.log("result data", data);
 
-        setTotalResults(data.data.total);
-        pageArray = Array.from(
-          { length: data.data.totalPages },
-          (_, i) => i + 1
-        );
-        // console.log("search data", pageArray);
+    try {
+      if (query && Object.keys(query).length > 0) {
+        const result = await getAllStudents(query);
+        if (result) {
+          const { data } = result;
+          // console.log("this is query", query);
+          // console.log("result data", data);
 
-        // setStudentData(data.data);
-        const studentsWithClass = await Promise.all(
-          data.data.students.map(async (student: any) => {
-            const classData = await getClassById(student.classId);
-            const course = classData.data.name ?? (
-              <span className=' text-red-600 text-sm '>
-                Failed getting class
-              </span>
-            );
-            return { ...student, className: course };
-          })
-        );
-        setStudentData({ students: studentsWithClass });
-        setPageNumbers(pageArray);
+          setTotalResults(data.data.total);
+          pageArray = Array.from(
+            { length: data.data.totalPages },
+            (_, i) => i + 1
+          );
+          // console.log("search data", pageArray);
+
+          // setStudentData(data.data);
+          const studentsWithClass = await Promise.all(
+            data.data.students.map(async (student: any) => {
+              const classData = await getClassById(student.classId);
+              const course = classData.data.name ?? (
+                <span className=' text-red-600 text-sm '>
+                  Failed getting class
+                </span>
+              );
+              return { ...student, className: course };
+            })
+          );
+          setStudentData({ students: studentsWithClass });
+          setPageNumbers(pageArray);
+        }
+
+        return;
+      } else {
+        const result = await getAllStudents();
+        if (result) {
+          const { data } = result;
+          setTotalResults(data.data.total);
+
+          // console.log("without query", data);
+
+          pageArray = Array.from(
+            { length: data.data.totalPages },
+            (_, i) => i + 1
+          );
+          // setStudentData(data.data);
+
+          // setStudentData(data.data);
+          const studentsWithClass = await Promise.all(
+            data.data.students.map(async (student: any) => {
+              const classData = await getClassById(student.classId);
+              const course = classData.data.name ?? (
+                <span className=' text-red-600 text-sm '>
+                  Failed getting class
+                </span>
+              );
+              // console.log("this is classData", course);
+              return { ...student, className: course };
+            })
+          );
+          setStudentData({ students: studentsWithClass });
+          setPageNumbers(pageArray);
+        }
       }
-
-      return;
-    } else {
-      const result = await getAllStudents();
-      if (result) {
-        const { data } = result;
-        setTotalResults(data.data.total);
-
-        // console.log("without query", data);
-
-        pageArray = Array.from(
-          { length: data.data.totalPages },
-          (_, i) => i + 1
-        );
-        // setStudentData(data.data);
-
-        // setStudentData(data.data);
-        const studentsWithClass = await Promise.all(
-          data.data.students.map(async (student: any) => {
-            const classData = await getClassById(student.classId);
-            const course = classData.data.name ?? (
-              <span className=' text-red-600 text-sm '>
-                Failed getting class
-              </span>
-            );
-            // console.log("this is classData", course);
-            return { ...student, className: course };
-          })
-        );
-        setStudentData({ students: studentsWithClass });
-        setPageNumbers(pageArray);
-      }
+    } catch (error) {
+      const err = error as { response: { data: { message: string } } };
+      dispatch(
+        showToast({
+          message:
+            err.response?.data?.message ||
+            " Network issue, please check your connection.",
+          type: "error",
+        })
+      );
     }
   };
 
@@ -235,20 +253,24 @@ export const StudentList = () => {
                 </svg>
               </label>
               <div className=' flex justify-around w-[20%] items-center'>
-                <label className=' text-[#585858] font-[500] text-sm w-auto'>
+                <label className='text-[#585858] font-[500] text-sm w-auto'>
                   {`
-                  ${Math.min(
-                    totalResults,
-                    (currentPage - 1) * limit + studentsData.students?.length
-                  )} out of ${totalResults} 
-                `}
+    ${
+      totalResults > 0
+        ? Math.min(
+            totalResults,
+            (currentPage - 1) * limit + studentsData.students?.length
+          )
+        : 0
+    } out of ${totalResults}
+  `}
                 </label>
+
                 <select
                   onChange={(e: any) => {
                     setLimit(Number(e.target.value));
                     setCurrentPage(1);
                     if (input) {
-                      console.log(e.target.value);
                       fetchstudents({
                         limit: Number(e.target.value),
                         name: input,
@@ -465,6 +487,7 @@ export const StudentList = () => {
           </article>
         </section>
       )}
+      <ToastNotification />
     </div>
   );
 };

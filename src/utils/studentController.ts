@@ -46,12 +46,13 @@ export const getStudentById = async (id: string) => {
   try {
     const response = await axiosInstance.get(`/getPass/students/${id}`);
     return response;
-  } catch (error) {}
+  } catch (error) {
+    throw error;
+  }
 };
 
 export const editStudent = async (id: string, data: string) => {
   try {
-    console.log("req,body =", data);
     const response = await axiosInstance.patch(`/getPass/students/${id}`, {
       status: data,
     });

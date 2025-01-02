@@ -37,3 +37,36 @@ export const fetchCountries = async () => {
     return [];
   }
 };
+
+// utils/helpers.ts
+export const getPageNumbersToShow = (
+  totalPages: number,
+  currentPage: number,
+  maxPagesToShow = 4
+): number[] => {
+  let start = Math.max(currentPage - Math.floor(maxPagesToShow / 2), 0);
+  let end = start + maxPagesToShow;
+
+  if (end > totalPages) {
+    end = totalPages;
+    start = Math.max(end - maxPagesToShow, 0);
+  }
+
+  return Array.from({ length: end - start }, (_, i) => start + i);
+};
+
+export const getQueryObject = (searchQuery: string, limit: number) => {
+  const queryObj: Record<string, any> = {};
+
+  if (searchQuery) {
+    const isRegNo = /[-/]/.test(searchQuery);
+    if (isRegNo) {
+      queryObj.regNo = searchQuery;
+    } else {
+      queryObj.name = new RegExp(searchQuery, "i").source;
+    }
+  }
+
+  queryObj.limit = limit;
+  return queryObj;
+};

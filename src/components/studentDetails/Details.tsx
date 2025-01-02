@@ -2,6 +2,9 @@ import React, { useEffect, useState } from "react";
 import { getStudentById, editStudent } from "@/utils/studentController";
 import { getClassById } from "@/utils/classController";
 import { getSponsorById } from "@/utils/sponsorController";
+import { useDispatch } from "react-redux";
+import { showToast } from "@/utils/toastSlice";
+import ToastNotification from "@/components/toastNotification/ToastNotification";
 interface props {
   id: any;
   setView: any;
@@ -12,6 +15,8 @@ export const Details: React.FC<props> = ({ id, setView, setDate }) => {
   const [student, setStudent] = useState<any>();
   const [selectStatus, setSelectStatus] = useState("");
   const [edit, setEdit] = useState(false);
+
+  const dispatch = useDispatch();
 
   const getDetails = async () => {
     try {
@@ -27,7 +32,17 @@ export const Details: React.FC<props> = ({ id, setView, setDate }) => {
           sponsorName: sponsorData?.data.data.name,
         });
       }
-    } catch (error) {}
+    } catch (error) {
+      const err = error as { response: { data: { message: string } } };
+      dispatch(
+        showToast({
+          message:
+            err.response?.data?.message ||
+            "Network issue, please check your connection.",
+          type: "error",
+        })
+      );
+    }
   };
 
   const handleEditStatus = async (id: string) => {
@@ -73,7 +88,9 @@ export const Details: React.FC<props> = ({ id, setView, setDate }) => {
           <label className=' text-[15px] font-[500] text-[#414141]'>
             Full Name
           </label>
-          <span className=' text-[15px] font-[500]  '>{`${student?.firstName} ${student?.secondName} ${student?.lastName}`}</span>
+          <span className=' text-[15px] font-[500]  '>{`${
+            student?.firstName ?? ""
+          } ${student?.secondName ?? ""} ${student?.lastName ?? ""}`}</span>
           <label className=' text-[15px] font-[500] text-[#414141]'>
             Gender
           </label>
@@ -151,6 +168,7 @@ export const Details: React.FC<props> = ({ id, setView, setDate }) => {
           </select> */}
         </div>
       </section>
+      <ToastNotification />
     </div>
   );
 };

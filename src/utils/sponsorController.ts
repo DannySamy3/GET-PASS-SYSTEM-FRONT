@@ -10,7 +10,9 @@ export const getSponsors = async () => {
   try {
     const response = await axiosInstance.get(`/getPass/sponsors`);
     return response;
-  } catch (error) {}
+  } catch (error) {
+    throw error;
+  }
 };
 export const createSponsors = async (data: any) => {
   try {

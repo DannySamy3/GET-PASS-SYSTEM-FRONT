@@ -41,8 +41,14 @@ const Sponsors = () => {
       const response = await getSponsors();
       setSponsors(response?.data?.data || []);
     } catch (error) {
+      const err = error as { response: { data: { message: string } } };
       dispatch(
-        showToast({ message: "Failed to fetch sponsors", type: "error" })
+        showToast({
+          message:
+            err.response?.data?.message ||
+            "Network issue, please check your connection.",
+          type: "error",
+        })
       );
     }
   };
