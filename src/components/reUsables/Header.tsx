@@ -12,8 +12,6 @@ const Header: React.FC<prop> = ({ title, view }) => {
     (state: RootState) => state.date.currentDate
   );
 
-  console.log(formattedDate);
-
   return (
     <section className='flex lg:mt-4 font-montserrat flex-col sm:flex-row mb-7 items-center justify-between p-4 border-2 border-gray-300 rounded-lg'>
       <h2 className='text-gray-600 font-medium text-base sm:text-lg mb-2 sm:mb-0'>
