@@ -119,6 +119,7 @@ export const StudentList = () => {
           const studentsWithClass = await Promise.all(
             data.data.students.map(async (student: any) => {
               const classData = await getClassById(student.classId);
+
               const course = classData.data.name ?? (
                 <span className=' text-red-600 text-sm '>
                   Failed getting class

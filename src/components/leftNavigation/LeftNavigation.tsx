@@ -157,32 +157,15 @@ const LeftNavigation: React.FC<props> = ({
           <li className=' w-full lg:w-auto md:w-auto '>
             <Link
               onClick={handleLinkClick}
-              href={"/category"}
+              href={"/sponsors"}
               className={`w-full flex justify-center md:justify-stretch lg:justify-stretch items-center gap-4 py-3 px-4 text-lg rounded ${
                 isCollapsed ? "justify-center" : ""
               } ${
-                pathname === "/category"
+                pathname === "/sponsors"
                   ? "bg-blue-600 text-white"
                   : "text-gray-700 hover:bg-gray-200"
               }`}
             >
-              {/* <svg
-                width='25'
-                height='25'
-                viewBox='0 0 25 25'
-                fill=''
-                xmlns='http://www.w3.org/2000/svg'
-              >
-                <path
-                  d='M11.4583 4.5C11.4583 3.96957 11.6778 3.46086 12.0685 3.08579C12.4592 2.71071 12.9891 2.5 13.5417 2.5C14.0942 2.5 14.6241 2.71071 15.0148 3.08579C15.4055 3.46086 15.625 3.96957 15.625 4.5V5.5C15.625 5.76522 15.7347 6.01957 15.9301 6.20711C16.1254 6.39464 16.3904 6.5 16.6667 6.5H19.7917C20.0679 6.5 20.3329 6.60536 20.5282 6.79289C20.7236 6.98043 20.8333 7.23478 20.8333 7.5V10.5C20.8333 10.7652 20.7236 11.0196 20.5282 11.2071C20.3329 11.3946 20.0679 11.5 19.7917 11.5H18.75C18.1975 11.5 17.6676 11.7107 17.2769 12.0858C16.8862 12.4609 16.6667 12.9696 16.6667 13.5C16.6667 14.0304 16.8862 14.5391 17.2769 14.9142C17.6676 15.2893 18.1975 15.5 18.75 15.5H19.7917C20.0679 15.5 20.3329 15.6054 20.5282 15.7929C20.7236 15.9804 20.8333 16.2348 20.8333 16.5V19.5C20.8333 19.7652 20.7236 20.0196 20.5282 20.2071C20.3329 20.3946 20.0679 20.5 19.7917 20.5H16.6667C16.3904 20.5 16.1254 20.3946 15.9301 20.2071C15.7347 20.0196 15.625 19.7652 15.625 19.5V18.5C15.625 17.9696 15.4055 17.4609 15.0148 17.0858C14.6241 16.7107 14.0942 16.5 13.5417 16.5C12.9891 16.5 12.4592 16.7107 12.0685 17.0858C11.6778 17.4609 11.4583 17.9696 11.4583 18.5V19.5C11.4583 19.7652 11.3486 20.0196 11.1532 20.2071C10.9579 20.3946 10.6929 20.5 10.4167 20.5H7.29167C7.0154 20.5 6.75045 20.3946 6.5551 20.2071C6.35975 20.0196 6.25 19.7652 6.25 19.5V16.5C6.25 16.2348 6.14026 15.9804 5.94491 15.7929C5.74955 15.6054 5.4846 15.5 5.20834 15.5H4.16667C3.61413 15.5 3.08423 15.2893 2.69353 14.9142C2.30283 14.5391 2.08334 14.0304 2.08334 13.5C2.08334 12.9696 2.30283 12.4609 2.69353 12.0858C3.08423 11.7107 3.61413 11.5 4.16667 11.5H5.20834C5.4846 11.5 5.74955 11.3946 5.94491 11.2071C6.14026 11.0196 6.25 10.7652 6.25 10.5V7.5C6.25 7.23478 6.35975 6.98043 6.5551 6.79289C6.75045 6.60536 7.0154 6.5 7.29167 6.5H10.4167C10.6929 6.5 10.9579 6.39464 11.1532 6.20711C11.3486 6.01957 11.4583 5.76522 11.4583 5.5V4.5Z'
-                  stroke='#414141'
-                  strokeWidth='2'
-                  strokeLinecap='round'
-                  strokeLinejoin='round'
-                  // fill={pathname === "/category" ? "#FFFFFF" : "#585858"}
-                />
-              </svg> */}
-
               <svg
                 width='25'
                 height='25'
@@ -196,21 +179,21 @@ const LeftNavigation: React.FC<props> = ({
                   strokeWidth='2'
                   strokeLinecap='round'
                   strokeLinejoin='round'
-                  fill={pathname === "/category" ? "#FFFFFF" : ""}
+                  fill={pathname === "/sponsors" ? "#FFFFFF" : ""}
                 />
               </svg>
 
-              {!isCollapsed && "Category"}
+              {!isCollapsed && "Sponsors"}
             </Link>
           </li>
           <li className=' w-full lg:w-auto md:w-auto '>
             <Link
               onClick={handleLinkClick}
-              href={"/report"}
+              href={"/course"}
               className={`w-full flex justify-center md:justify-stretch lg:justify-stretch items-center gap-4 py-3 px-4 text-lg rounded ${
                 isCollapsed ? "justify-center" : ""
               } ${
-                pathname === "/report"
+                pathname === "/course"
                   ? "bg-blue-600 text-white"
                   : "text-gray-700 hover:bg-gray-200"
               }`}
@@ -232,7 +215,7 @@ const LeftNavigation: React.FC<props> = ({
                 />
               </svg>
 
-              {!isCollapsed && "Report"}
+              {!isCollapsed && "Course"}
             </Link>
           </li>
           <li className=' w-full lg:w-auto md:w-auto '>

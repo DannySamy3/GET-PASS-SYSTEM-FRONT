@@ -6,6 +6,7 @@ import { showToast } from "@/utils/toastSlice"; // Import the showToast action
 export const getAllStudent = async () => {
   try {
     const response = await axiosInstance.get("getPass/students");
+    console.log("this is my response ", response);
     return response;
   } catch (error) {
     throw error;

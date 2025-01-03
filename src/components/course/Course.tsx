@@ -5,24 +5,22 @@ import { useDispatch } from "react-redux";
 import { showToast } from "@/utils/toastSlice";
 import Header from "../reUsables/Header";
 import {
-  getSponsors,
-  createSponsors,
-  deleteSponsors,
-  getSponsorById,
-  editSponsors,
-} from "@/utils/sponsorController";
+  createClass,
+  deleteClass,
+  editClass,
+  fetchClasses,
+} from "@/utils/courseController";
+import { getClassById } from "@/utils/courseController";
+
 import ToastNotification from "@/components/toastNotification/ToastNotification";
 
-interface SponsorData {
-  [key: string]: string;
-}
-
-const Sponsors = () => {
-  const [sponsors, setSponsors] = useState<any[]>([]);
+const Course = () => {
+  const [classes, setClasses] = useState<any[]>([]);
   const [isEditing, setIsEditing] = useState(false);
-  const [sponsorData, setSponsorData] = useState<SponsorData>({
+  const [courseData, setCourseData] = useState<any>({
     name: "",
-    Amount: "",
+    classInitial: "",
+    duration: "",
   });
   const dispatch = useDispatch();
 
@@ -33,13 +31,14 @@ const Sponsors = () => {
   ];
 
   useEffect(() => {
-    fetchSponsors();
+    getClasses();
   }, []);
 
-  const fetchSponsors = async () => {
+  const getClasses = async () => {
     try {
-      const response = await getSponsors();
-      setSponsors(response?.data?.data || []);
+      const response = await fetchClasses();
+
+      setClasses(response?.data.classes || []);
     } catch (error) {
       const err = error as { response: { data: { message: string } } };
       dispatch(
@@ -55,19 +54,19 @@ const Sponsors = () => {
 
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = event.target;
-    setSponsorData((prev) => ({ ...prev, [name]: value }));
+    setCourseData((prev: any) => ({ ...prev, [name]: value }));
   };
   const handleCreateOrUpdateSponsor = async () => {
     try {
       if (isEditing) {
-        await editSponsors(sponsorData.id, sponsorData);
+        await editClass(courseData._id, courseData);
         dispatch(showToast({ message: "Edit Successful!", type: "success" }));
       } else {
-        await createSponsors(sponsorData);
+        await createClass(courseData);
         dispatch(showToast({ message: "Sponsor created!", type: "success" }));
       }
       resetForm();
-      fetchSponsors();
+      getClasses();
     } catch (error) {
       resetForm();
       const err = error as { response: { data: { message: string } } };
@@ -82,9 +81,10 @@ const Sponsors = () => {
 
   const handleEdit = async (id: string) => {
     try {
-      const response = await getSponsorById(id);
-      const { name, Amount } = response?.data?.data || {};
-      setSponsorData({ name, Amount, id });
+      const response = await getClassById(id);
+      console.log(response?.data.data);
+      const { name, classInitial, duration, _id } = response?.data?.data || {};
+      setCourseData({ name, classInitial, duration, _id });
       setIsEditing(true);
     } catch (error) {
       dispatch(
@@ -95,9 +95,9 @@ const Sponsors = () => {
 
   const handleDelete = async (id: string) => {
     try {
-      await deleteSponsors(id);
-      dispatch(showToast({ message: "Sponsor Deleted", type: "success" }));
-      fetchSponsors();
+      await deleteClass(id);
+      dispatch(showToast({ message: "Course  Deleted", type: "success" }));
+      getClasses();
     } catch (error) {
       const err = error as { response: { data: { message: string } } };
       dispatch(
@@ -110,13 +110,13 @@ const Sponsors = () => {
   };
 
   const resetForm = () => {
-    setSponsorData({ name: "", Amount: "" });
+    setCourseData({ name: "", classInitial: "", duration: "", _id: "" });
     setIsEditing(false);
   };
 
   const renderSponsorsList = () => {
-    return sponsors.map((sponsor, index) => (
-      <React.Fragment key={sponsor._id}>
+    return classes.map((course, index) => (
+      <React.Fragment key={course._id}>
         <div className='flex gap-2'>
           <label
             className={`w-4 h-4 rounded-full shadow-md ${
@@ -124,18 +124,19 @@ const Sponsors = () => {
             } mr-4`}
           ></label>
           <label className='text-[#515748] font-[500] text-[15px]'>
-            {sponsor.name}
+            {course.name}
           </label>
         </div>
-        <label className='text-[#515748] font-[400] ml-2 text-[15px]'>
-          {new Intl.NumberFormat("en-US").format(sponsor.Amount)}/=
+        <label className='text-[#515748]  font-[400] ml-5 text-[15px]'>
+          {/* {new Intl.NumberFormat("en-US").format(sponsor.Amount)}/= */}
+          {`${course.duration} `}
         </label>
-        <label className='text-[#515748] ml-2 font-[600] text-[15px]'>
-          20%
+        <label className='text-[#515748] ml-8     font-[600] text-[15px]'>
+          {course.classInitial}
         </label>
         <div className='flex gap-6'>
           <svg
-            onClick={() => handleEdit(sponsor._id)}
+            onClick={() => handleEdit(course._id)}
             className='cursor-pointer'
             width='24'
             height='24'
@@ -157,7 +158,7 @@ const Sponsors = () => {
             />
           </svg>
           <svg
-            onClick={() => handleDelete(sponsor._id)}
+            onClick={() => handleDelete(course._id)}
             className='cursor-pointer'
             width='24'
             height='24'
@@ -185,36 +186,50 @@ const Sponsors = () => {
 
   return (
     <div className='w-full max-w-full px-4 sm:px-6 font-montserrat'>
-      <Header title='Sponsors' view={() => {}} />
+      <Header title='Course' view={() => {}} />
 
-      <section className='mx-auto w-[98%] mt-16 py-10 px-8 h-[170px] border border-[#E3E2E2] rounded-[12px]'>
-        <div className='flex gap-[30%] items-center justify-center'>
-          <div className='flex gap-4 items-center w-[40%]'>
-            <label className='text-[#383A3A] font-[500] text-[17px]'>
-              Name
-            </label>
-            <input
-              name='name'
-              value={sponsorData.name}
-              onChange={handleInputChange}
-              type='text'
-              className='input input-sm w-[75%] bg-white border border-[#DBDADA] rounded-[8px]'
-            />
+      <section className='mx-auto w-[98%] mt-16 py-7 px-8 h-[170px] border border-[#E3E2E2] rounded-[12px]'>
+        <div className='flex gap-[30%]   '>
+          <div className=' flex flex-col  w-full gap-5'>
+            <div className='flex gap-4 items-center w-full'>
+              <label className='text-[#383A3A] font-[500] text-[17px]'>
+                Name
+              </label>
+              <input
+                name='name'
+                value={courseData.name || ""}
+                onChange={handleInputChange}
+                type='text'
+                className='input input-sm w-[75%] bg-white border border-[#DBDADA] rounded-[8px]'
+              />
+            </div>
+            <div className='flex gap-4 items-center w-full'>
+              <label className='text-[#383A3A] font-[500] text-[17px]'>
+                Initial
+              </label>
+              <input
+                name='classInitial'
+                value={courseData.classInitial || ""}
+                onChange={handleInputChange}
+                type='text'
+                className='input input-sm w-[75%] bg-white border border-[#DBDADA] rounded-[8px]'
+              />
+            </div>
           </div>
-          <div className='flex gap-4 items-center w-[40%]'>
+          <div className='flex gap-4 items-center w-full'>
             <label className='text-[#383A3A] font-[500] text-[17px]'>
-              Mini Amount
+              Duration
             </label>
             <input
-              name='Amount'
-              value={sponsorData.Amount}
+              name='duration'
+              value={courseData.duration || ""}
               onChange={handleInputChange}
               type='text'
               className='input input-sm w-[70%] bg-white border border-[#DBDADA] rounded-[8px]'
             />
           </div>
         </div>
-        <div className='mt-6 flex justify-end'>
+        <div className=' flex justify-end'>
           <button
             onClick={handleCreateOrUpdateSponsor}
             className={`btn btn-success w-[10%] text-white font-[600] ${
@@ -229,10 +244,10 @@ const Sponsors = () => {
       <section className='px-20 py-7 gap-y-6 my-10 mx-auto w-[98%] bg-[#FDFDFD] border border-[#D6D4D4] rounded-xl min-h-[400px] max-h-[530px]'>
         <div className='grid grid-cols-[1.2fr_1.2fr_1.2fr_0.2fr] gap-y-6'>
           <label className='text-[#383A3A] font-[500] text-base'>Name</label>
+          <label className='text-[#383A3A] font-[500] text-base'>Year(s)</label>
           <label className='text-[#383A3A] font-[500] text-base'>
-            Mini Amount
+            Class Initial
           </label>
-          <label className='text-[#383A3A] font-[500] text-base'>Usage</label>
           <label className='text-[#383A3A] font-[500] text-base'>Actions</label>
         </div>
 
@@ -246,4 +261,4 @@ const Sponsors = () => {
   );
 };
 
-export default Sponsors;
+export default Course;
