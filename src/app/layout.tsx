@@ -8,6 +8,7 @@ import { store } from "@/utils/store";
 import { ToastContainer } from "react-toastify";
 import { showToast } from "@/utils/toastSlice"; // Import the action
 import "react-toastify/dist/ReactToastify.css"; // Import the Toastify CSS
+import Login from "@/components/login/Login";
 
 export default function RootLayout({
   children,
@@ -35,8 +36,8 @@ export default function RootLayout({
       </head>
       <body className='bg-[#F9F9F9]'>
         <Provider store={store}>
-          <div className='flex h-screen'>
-            {/* Left Navigation */}
+          <Login />
+          {/* <div className='flex h-screen'>
             {!isCollapsed && (
               <button
                 onClick={toggleCollapse}
@@ -72,12 +73,10 @@ export default function RootLayout({
               />
             </div>
 
-            {/* Main Content */}
             <div className='flex-grow overflow-y-auto transition-all duration-300 p-4'>
               <div>{children}</div>
             </div>
 
-            {/* Mobile Navigation */}
             {isCollapsed && (
               <div
                 className={`  lg:hidden  fixed inset-0 bg-gray-200 z-50 transition-transform`}
@@ -90,7 +89,7 @@ export default function RootLayout({
                 />
               </div>
             )}
-          </div>
+          </div> */}
           <ToastContainer
             position='top-right'
             autoClose={3000}

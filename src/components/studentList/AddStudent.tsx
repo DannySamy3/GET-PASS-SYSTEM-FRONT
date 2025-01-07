@@ -127,13 +127,17 @@ export const AddStudent = () => {
         });
       }
     } catch (error) {
+      const err = error as { response: { data: { message: string } } };
       dispatch(
         showToast({
-          message: "Failed to add student. Please try again.",
+          message:
+            err.response?.data?.message ||
+            "Failed to add student. Please try again.",
+
           type: "error",
         })
       );
-      setIsToastShown(false);
+      // setIsToastShown(false);
 
       setUserInfo({
         firstName: "",
@@ -154,15 +158,15 @@ export const AddStudent = () => {
     handleFetchSponsor();
     handleFetchClasses();
     handleCountries();
-    setIsPageLoaded(true); // Set page as loaded on initial mount
+    // setIsPageLoaded(true); // Set page as loaded on initial mount
   }, []);
 
-  useEffect(() => {
-    // Reset the toast state when the page is loaded and toast is not shown
-    if (isPageLoaded && !isToastShown) {
-      dispatch(showToast({ message: "", type: "success" })); // Reset toast message and type
-    }
-  }, [isPageLoaded, isToastShown, dispatch]);
+  // useEffect(() => {
+  //   // Reset the toast state when the page is loaded and toast is not shown
+  //   if (isPageLoaded && !isToastShown) {
+  //     dispatch(showToast({ message: "", type: "success" })); // Reset toast message and type
+  //   }
+  // }, [isPageLoaded, isToastShown, dispatch]);
 
   return (
     <div className='relative'>

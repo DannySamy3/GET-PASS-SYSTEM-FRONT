@@ -16,7 +16,7 @@ export const StudentList = () => {
   const [pageNumbers, setPageNumbers] = useState<any>([]);
   const [input, setInput] = useState("");
   const [limit, setLimit] = useState(10);
-  const [toggleView, setToggleView] = useState(false);
+  const [changeView, setChangeView] = useState(false);
   const [viewDetails, setViewDetails] = useState({
     view: false,
     id: null,
@@ -203,21 +203,21 @@ export const StudentList = () => {
   return (
     <div className='w-full   max-w-full px-4 sm:px-6'>
       <Header
-        title={toggleView && !viewDetails.view ? "Registration" : "Management"}
-        view={{ setToggleView, toggleView }}
+        title={changeView && !viewDetails.view ? "Registration" : "Management"}
+        view={{ setChangeView, changeView }}
       />
 
-      {toggleView && !viewDetails.view && <AddStudent />}
+      {changeView && !viewDetails.view && <AddStudent />}
 
       {viewDetails.view && (
         <Details
           id={viewDetails.id}
           setView={setViewDetails}
-          setDate={setToggleView}
+          setDate={setChangeView}
         />
       )}
 
-      {!toggleView && !viewDetails.view && (
+      {!changeView && !viewDetails.view && (
         <section className=' bg-white mt-12  font-montserrat border overflow-y-hidden     border-[#D6D4D4] rounded-[12px] w-full '>
           <article
             ref={containerRef}
@@ -334,7 +334,7 @@ export const StudentList = () => {
                           view: true,
                           id: student._id,
                         }));
-                        setToggleView(true);
+                        setChangeView(true);
                       }}
                       className='cursor-pointer group col-span-7 hover:text-white text-[#414141] grid grid-cols-[0.1fr_0.2fr_0.2fr_0.2fr_0.3fr_0.2fr_0.1fr] px-2 py-[10px] rounded-md hover:bg-[#1CA2BB]'
                       key={i}

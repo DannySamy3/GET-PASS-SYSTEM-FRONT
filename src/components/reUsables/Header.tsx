@@ -18,7 +18,7 @@ const Header: React.FC<prop> = ({ title, view }) => {
         {title}
       </h2>
 
-      {!view?.toggleView && title !== "Management" && (
+      {!view?.changeView && title !== "Management" && (
         <p className='text-gray-500 font-semibold text-sm sm:text-base'>
           {formattedDate}
         </p>
@@ -36,10 +36,10 @@ const Header: React.FC<prop> = ({ title, view }) => {
           strokeWidth={1.5}
           stroke='currentColor'
           className={`w-7 h-7 ${
-            view?.toggleView ? "hidden" : ""
+            view?.changeView ? "hidden" : ""
           } cursor-pointer text-blue-500`}
           onClick={() => {
-            view?.setToggleView(true);
+            view?.setChangeView(true);
           }}
         >
           <path
@@ -53,7 +53,7 @@ const Header: React.FC<prop> = ({ title, view }) => {
       {title === "Registration" && (
         // <div className=' flex justify-end w-full    '>
         //   <button
-        //     onClick={() => view?.setToggleView(false)}
+        //     onClick={() => view?.setChangeView(false)}
         //     className='    rounded-full flex items-center justify-center h-7 w-7  py-1  bg-[#FB5959] text-white text-[15px] hover:text-white   '
         //   >
         //     x
@@ -65,7 +65,7 @@ const Header: React.FC<prop> = ({ title, view }) => {
           viewBox='0 0 24 24'
           fill=''
           className='w-6 h-6 cursor-pointer'
-          onClick={() => view?.setToggleView(false)}
+          onClick={() => view?.setChangeView(false)}
         >
           <path
             fillRule='evenodd'
