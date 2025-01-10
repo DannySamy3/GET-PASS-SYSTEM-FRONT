@@ -6,6 +6,7 @@ interface props {
   togglePasswordVisibility: any;
   isPasswordVisible: any;
   input: any;
+  setIsLogin: any;
 }
 
 export const SignUp: React.FC<props> = ({
@@ -14,6 +15,7 @@ export const SignUp: React.FC<props> = ({
   togglePasswordVisibility,
   isPasswordVisible,
   input,
+  setIsLogin,
 }) => {
   return (
     <section className=' w-[50%] mt-40 '>
@@ -118,7 +120,10 @@ export const SignUp: React.FC<props> = ({
             <div className='flex-grow h-[1px] bg-[#BDBDBD]'></div>
           </div>
           <div className=' w-full my-6'>
-            <button className=' bg-[#A5A5A5] font-[600] border w-full text-[14px] py-3 text-white rounded-lg'>
+            <button
+              onClick={() => setIsLogin(false)}
+              className=' bg-[#A5A5A5] font-[600] border w-full text-[14px] py-3 text-white rounded-lg'
+            >
               SIGN UP
             </button>
           </div>

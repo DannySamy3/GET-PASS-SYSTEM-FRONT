@@ -1,11 +1,13 @@
 import React from "react";
 import { useState } from "react";
 import { SignUp } from "./SignUp";
+import { Register } from "../register/Register";
 
 const Login = () => {
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
   const [input, setInput] = useState({ email: "", password: "" });
   const [emailError, setEmailError] = useState(false);
+  const [isLogin, setIsLogin] = useState(true);
 
   const togglePasswordVisibility = () => {
     setIsPasswordVisible(!isPasswordVisible);
@@ -41,13 +43,24 @@ const Login = () => {
         <section className=' w-[50%] font-[500] flex text-[32px] justify-center items-center'>
           GATE PASS SYSTEM
         </section>
-        <SignUp
-          handleInputs={handleInputs}
-          togglePasswordVisibility={togglePasswordVisibility}
-          input={input}
-          emailError={emailError}
-          isPasswordVisible={isPasswordVisible}
-        />
+
+        {isLogin && (
+          <SignUp
+            handleInputs={handleInputs}
+            togglePasswordVisibility={togglePasswordVisibility}
+            input={input}
+            emailError={emailError}
+            isPasswordVisible={isPasswordVisible}
+            setIsLogin={setIsLogin}
+          />
+        )}
+        {!isLogin && (
+          <Register
+            handleInputs={handleInputs}
+            input={input}
+            emailError={emailError}
+          />
+        )}
       </article>
     </div>
   );
