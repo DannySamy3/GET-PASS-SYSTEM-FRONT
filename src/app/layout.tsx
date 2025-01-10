@@ -9,6 +9,7 @@ import { ToastContainer } from "react-toastify";
 import { showToast } from "@/utils/toastSlice"; // Import the action
 import "react-toastify/dist/ReactToastify.css"; // Import the Toastify CSS
 import Login from "@/components/login/Login";
+import { Register } from "@/components/register/Register";
 
 export default function RootLayout({
   children,
@@ -37,6 +38,7 @@ export default function RootLayout({
       <body className='bg-[#F9F9F9]'>
         <Provider store={store}>
           <Login />
+          {/* <Register /> */}
           {/* <div className='flex h-screen'>
             {!isCollapsed && (
               <button
