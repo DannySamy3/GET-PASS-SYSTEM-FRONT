@@ -37,8 +37,8 @@ export default function RootLayout({
       </head>
       <body className='bg-[#F9F9F9]'>
         <Provider store={store}>
-          {/* <Login /> */}
-          <UserInfo />
+          <Login />
+          {/* <UserInfo /> */}
 
           {/* <div className='flex h-screen'>
             {!isCollapsed && (
