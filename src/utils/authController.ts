@@ -9,6 +9,17 @@ export const sendToken = async (email: string) => {
     throw error;
   }
 };
+export const reSendToken = async (email: string) => {
+  try {
+    const response = await axiosInstance.post("getPass/auth//resendToken", {
+      email,
+    });
+
+    return response;
+  } catch (error) {
+    throw error;
+  }
+};
 
 export const verifyCode = async (email: string, verificationCode: string) => {
   try {

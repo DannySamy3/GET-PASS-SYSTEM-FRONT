@@ -6,6 +6,7 @@ import { showToast } from "@/utils/toastSlice";
 import { useRouter } from "next/navigation";
 import { setToken, selectToken } from "@/utils/registrationSlice";
 import ToastNotification from "../toastNotification/ToastNotification";
+import { reSendToken } from "@/utils/authController";
 
 const VerifyToken = () => {
   const [loading, setLoading] = useState(false);
@@ -42,6 +43,25 @@ const VerifyToken = () => {
       setLoading(false);
     }
   };
+  const resendToken = async () => {
+    setLoading(true);
+    try {
+      const response = await reSendToken(email);
+
+      if (response.statusText) {
+        dispatch(
+          showToast({ message: response?.data.message, type: "success" })
+        );
+      }
+    } catch (error) {
+      const err = error as { response: { data: { message: string } } };
+      dispatch(
+        showToast({ message: err.response?.data?.message, type: "error" })
+      );
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <div className='font-montserrat w-[50%] h-screen overflow-y-hidden mt-64'>
@@ -65,8 +85,16 @@ const VerifyToken = () => {
           required
           onChange={handleChange}
         />
+        <div className=' flex justify-end '>
+          <p
+            onClick={resendToken}
+            className=' text-[#1795F4]  font-[500] cursor-pointer text-[13px]'
+          >
+            resend code
+          </p>
+        </div>
 
-        <div className='w-full my-7'>
+        <div className='w-full my-4'>
           <button
             onClick={verifyToken}
             disabled={loading || !email}
