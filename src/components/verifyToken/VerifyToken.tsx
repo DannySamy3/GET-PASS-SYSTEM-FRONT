@@ -26,7 +26,6 @@ const VerifyToken = () => {
     setLoading(true);
     try {
       const response = await verifyCode(email, tokenCode);
-      console.log(response);
 
       if (response.statusText) {
         dispatch(

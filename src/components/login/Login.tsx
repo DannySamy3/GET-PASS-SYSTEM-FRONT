@@ -47,11 +47,6 @@ const Login: React.FC<props> = ({ onLoginSuccess, hideLogin, loginHide }) => {
   };
 
   const router = useRouter();
-  // useEffect(() => {
-  //   if (hideLogin) {
-  //     router.push("/registration");
-  //   }
-  // }, [loginHide]);
 
   return (
     <div className=' bg-white  font-montserrat h-screen   '>

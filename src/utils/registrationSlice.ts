@@ -8,12 +8,24 @@ interface RegistrationState {
   rePassword: string;
   emailError: boolean;
   token: string;
+  firstName: string;
+  secondName: string;
+  lastName: string;
+  gender: string;
+  country: string;
+  phoneNumber: string;
 }
 
 const initialState: RegistrationState = {
   email: "",
   password: "",
   rePassword: "",
+  firstName: "",
+  secondName: "",
+  lastName: "",
+  gender: "",
+  country: "",
+  phoneNumber: "",
   emailError: false,
   token: "",
 };
@@ -24,6 +36,24 @@ const registrationSlice = createSlice({
   reducers: {
     setEmail(state, action: PayloadAction<string>) {
       state.email = action.payload;
+    },
+    setGender(state, action: PayloadAction<string>) {
+      state.gender = action.payload;
+    },
+    setFirstName(state, action: PayloadAction<string>) {
+      state.firstName = action.payload;
+    },
+    setLastName(state, action: PayloadAction<string>) {
+      state.lastName = action.payload;
+    },
+    setSecondName(state, action: PayloadAction<string>) {
+      state.secondName = action.payload;
+    },
+    setPhoneNumber(state, action: PayloadAction<string>) {
+      state.phoneNumber = action.payload;
+    },
+    setCountry(state, action: PayloadAction<string>) {
+      state.country = action.payload;
     },
     setToken(state, action: PayloadAction<string>) {
       state.token = action.payload;
@@ -53,6 +83,12 @@ export const {
   setEmailError,
   clearRegistration,
   setToken,
+  setCountry,
+  setFirstName,
+  setLastName,
+  setPhoneNumber,
+  setSecondName,
+  setGender,
 } = registrationSlice.actions;
 
 export const selectEmailError = (state: { registration: RegistrationState }) =>
@@ -62,5 +98,22 @@ export const selectEmail = (state: { registration: RegistrationState }) =>
   state.registration.email;
 export const selectToken = (state: { registration: RegistrationState }) =>
   state.registration.token;
+export const selectFirstName = (state: { registration: RegistrationState }) =>
+  state.registration.firstName;
+export const selectSecondName = (state: { registration: RegistrationState }) =>
+  state.registration.secondName;
+export const selectLastName = (state: { registration: RegistrationState }) =>
+  state.registration.lastName;
+
+export const selectGender = (state: { registration: RegistrationState }) =>
+  state.registration.gender;
+export const selectCountry = (state: { registration: RegistrationState }) =>
+  state.registration.country;
+export const selectPhoneNumber = (state: { registration: RegistrationState }) =>
+  state.registration.phoneNumber;
+export const selectPassword = (state: { registration: RegistrationState }) =>
+  state.registration.password;
+export const selectRePassword = (state: { registration: RegistrationState }) =>
+  state.registration.rePassword;
 
 export default registrationSlice.reducer;

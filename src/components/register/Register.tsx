@@ -55,7 +55,6 @@ const Register = () => {
     setLoading(true);
     try {
       const response = await sendToken(email);
-      console.log(response);
 
       if (response.statusText) {
         dispatch(
@@ -77,7 +76,7 @@ const Register = () => {
   };
 
   const router = useRouter();
-  console.log(email);
+
   return (
     <div className=' font-montserrat w-[50%] h-screen overflow-y-hidden  mt-64 '>
       <h2 className=' flex justify-center  text-black font-montserrat font-[500] mb-6 text-[32px]'>
