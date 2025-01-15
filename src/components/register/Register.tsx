@@ -1,15 +1,86 @@
-import React from "react";
-interface props {
-  handleInputs: any;
-  emailError: any;
-  input: any;
-}
+"use client";
+import React, { useEffect, useReducer } from "react";
 
-export const Register: React.FC<props> = ({
-  emailError,
-  handleInputs,
-  input,
-}) => {
+import { sendToken } from "@/utils/authController";
+import { useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  setEmail,
+  setEmailError,
+  selectEmailError,
+} from "@/utils/registrationSlice"; // Import actions and state from registration slice
+import { showToast } from "@/utils/toastSlice";
+
+import ToastNotification from "../toastNotification/ToastNotification";
+import { useRouter } from "next/navigation";
+
+const Register = () => {
+  const [loading, setLoading] = useState(false);
+
+  const dispatch = useDispatch();
+  const emailError = useSelector(selectEmailError);
+
+  function isInvalidEmailFormat(email: string) {
+    // Regular expression to match a valid email format
+    const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+
+    // Test the email against the regex
+    return !emailRegex.test(email); // Returns true if invalid, false if valid
+  }
+
+  const emailValidationError = useSelector(
+    (state: any) => state.registration.emailError
+  ); // Access email error state
+
+  // Handle email change and validate email format
+  const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const emailValue = e.target.value;
+
+    if (isInvalidEmailFormat(emailValue)) {
+      dispatch(setEmailError(true));
+      return;
+    }
+    dispatch(setEmail(emailValue));
+  };
+  const email = useSelector((state: any) => state.registration.email); // Access email state
+
+  const requestToken = async () => {
+    setLoading(true);
+    try {
+      const response = await sendToken(email);
+
+      if (response.statusText) {
+        dispatch(
+          showToast({ message: response?.data.message, type: "success" })
+        );
+      }
+    } catch (error) {
+      const err = error as { response: { data: { message: string } } };
+      dispatch(
+        showToast({
+          message: err.response?.data?.message,
+          type: "error",
+        })
+      );
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // const router = useRouter();
+
+  // useEffect(() => {
+  //   const handleBackNavigation = () => {
+  //     router.replace("./login"); // Redirect to the login page
+  //   };
+
+  //   // Listen for the back button press
+  //   window.addEventListener("popstate", handleBackNavigation);
+
+  //   return () => {
+  //     window.removeEventListener("popstate", handleBackNavigation);
+  //   };
+  // }, [router]);
   return (
     <div className=' font-montserrat w-[50%] mt-64 '>
       <h2 className=' flex justify-center text-black font-montserrat font-[500] mb-6 text-[32px]'>
@@ -28,7 +99,7 @@ export const Register: React.FC<props> = ({
             emailError ? " focus:input-error" : ""
           }`}
           required
-          onChange={(e: any) => handleInputs(e)}
+          onChange={(e: any) => handleEmailChange(e)}
         />
         {emailError && (
           <p className=' text-sm text-red-600 '>
@@ -42,11 +113,43 @@ export const Register: React.FC<props> = ({
           </p>
         </div> */}
         <div className=' w-full my-7'>
-          <button className=' bg-[#1683CF] text-[14px] font-[600] border w-full py-3 text-white rounded-lg'>
-            Send Code
+          <button
+            onClick={requestToken}
+            disabled={loading}
+            className='bg-[#1683CF] text-[14px] font-[600] border w-full py-3 text-white rounded-lg flex items-center justify-center'
+          >
+            {loading ? (
+              <div className='flex items-center justify-center'>
+                <svg
+                  className='animate-spin h-5 w-5 text-white'
+                  xmlns='http://www.w3.org/2000/svg'
+                  fill='none'
+                  viewBox='0 0 24 24'
+                >
+                  <circle
+                    className='opacity-25'
+                    cx='12'
+                    cy='12'
+                    r='10'
+                    stroke='currentColor'
+                    strokeWidth='4'
+                  ></circle>
+                  <path
+                    className='opacity-75'
+                    fill='currentColor'
+                    d='M12 2a10 10 0 0110 10h-4a6 6 0 00-6-6V2z'
+                  ></path>
+                </svg>
+              </div>
+            ) : (
+              "Send Code"
+            )}
           </button>
         </div>
       </section>
+      <ToastNotification />
     </div>
   );
 };
+
+export default Register;

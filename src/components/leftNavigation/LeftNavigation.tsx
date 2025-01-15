@@ -97,11 +97,11 @@ const LeftNavigation: React.FC<props> = ({
           <li className=' w-full lg:w-auto md:w-auto '>
             <Link
               onClick={handleLinkClick}
-              href={"/"}
+              href={"/dashboard"}
               className={`w-full flex justify-center md:justify-stretch lg:justify-stretch items-center gap-4 py-3 px-4 text-lg rounded ${
                 isCollapsed ? "justify-center" : ""
               } ${
-                pathname === "/"
+                pathname === "/dashboard"
                   ? "bg-blue-600 text-white"
                   : "text-gray-700 hover:bg-gray-200"
               }`}

@@ -1,22 +1,29 @@
 "use client"; // Mark as a client component since we are using hooks
 
 import "./globals.css";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import LeftNavigation from "@/components/leftNavigation/LeftNavigation";
-import { Provider } from "react-redux";
+import { Provider, useSelector, useDispatch } from "react-redux";
 import { store } from "@/utils/store";
 import { ToastContainer } from "react-toastify";
 import { showToast } from "@/utils/toastSlice"; // Import the action
 import "react-toastify/dist/ReactToastify.css"; // Import the Toastify CSS
 import Login from "@/components/login/Login";
-import { UserInfo } from "@/components/registerInfo/UserInfo";
+import {
+  selectIsLogin,
+  setIsLogin,
+  selectHideLogin,
+  setHideLogin,
+} from "@/utils/authSlice";
 
-export default function RootLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+function RootLayout({ children }: { children: React.ReactNode }) {
   const [isCollapsed, setIsCollapsed] = useState(false);
+  // const [hideLogin, setHideLogin] = useState(true);
+  const isLoggedIn = useSelector(selectIsLogin); // Correctly using useSelector now
+  const hideLogin = useSelector(selectHideLogin); // Correctly using useSelector now
+
+  const dispatch = useDispatch(); // Initialize dispatch if you want to use actions
+  // const router = useRouter();
 
   const toggleCollapse = () => {
     setIsCollapsed(!isCollapsed);
@@ -24,6 +31,14 @@ export default function RootLayout({
 
   const closeNav = () => {
     setIsCollapsed(false);
+  };
+
+  // Function to handle successful login
+  const handleLoginSuccess = (value: boolean) => {
+    dispatch(setIsLogin(value)); // Use dispatch to update the Redux store
+  };
+  const handleSetIsLogin = (value: boolean) => {
+    dispatch(setHideLogin(value)); // Use dispatch to update the Redux store
   };
 
   return (
@@ -36,37 +51,14 @@ export default function RootLayout({
         />
       </head>
       <body className='bg-[#F9F9F9]'>
-        <Provider store={store}>
-          <Login />
-          {/* <UserInfo /> */}
-
-          {/* <div className='flex h-screen'>
-            {!isCollapsed && (
-              <button
-                onClick={toggleCollapse}
-                className=' p-2 absolute lg:hidden right-[2px] top-[2px]'
-              >
-                <svg
-                  xmlns='http://www.w3.org/2000/svg'
-                  fill='none'
-                  viewBox='0 0 24 24'
-                  strokeWidth={1.5}
-                  stroke='currentColor'
-                  className='size-6 lg:hidden '
-                >
-                  <path
-                    strokeLinecap='round'
-                    strokeLinejoin='round'
-                    d='M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5'
-                  />
-                </svg>
-              </button>
-            )}
-
+        {isLoggedIn ? (
+          <div className='flex h-screen'>
+            {/* Left Navigation */}
             <div
               className={`transition-width duration-300 ${
                 isCollapsed ? "w-16" : "w-[300px]"
-              } bg-gray-200 flex-shrink-0 hidden lg:block`}
+              } bg-gray-200 flex-shrink-0 hidden lg:block
+              }`}
             >
               <LeftNavigation
                 setIsCollapsed={setIsCollapsed}
@@ -76,13 +68,15 @@ export default function RootLayout({
               />
             </div>
 
+            {/* Main Content */}
             <div className='flex-grow overflow-y-auto transition-all duration-300 p-4'>
               <div>{children}</div>
             </div>
 
+            {/* Collapsed View for Mobile */}
             {isCollapsed && (
               <div
-                className={`  lg:hidden  fixed inset-0 bg-gray-200 z-50 transition-transform`}
+                className={`lg:hidden  fixed inset-0 bg-gray-200 z-50 transition-transform`}
               >
                 <LeftNavigation
                   setIsCollapsed={setIsCollapsed}
@@ -92,14 +86,34 @@ export default function RootLayout({
                 />
               </div>
             )}
-          </div> */}
-          <ToastContainer
-            position='top-right'
-            autoClose={3000}
-            style={{ zIndex: 9999 }}
-          />
-        </Provider>
+          </div>
+        ) : (
+          <div className={` h-screen overflow-y-hidden`}>
+            <Login
+              onLoginSuccess={handleLoginSuccess}
+              hideLogin={handleSetIsLogin}
+            />
+
+            <div className='flex-grow overflow-y-auto transition-all duration-300 p-4'>
+              <div>{children}</div>
+            </div>
+          </div>
+        )}
+
+        <ToastContainer
+          position='top-right'
+          autoClose={3000}
+          style={{ zIndex: 9999 }}
+        />
       </body>
     </html>
+  );
+}
+
+export default function App({ children }: { children: React.ReactNode }) {
+  return (
+    <Provider store={store}>
+      <RootLayout>{children}</RootLayout>
+    </Provider>
   );
 }

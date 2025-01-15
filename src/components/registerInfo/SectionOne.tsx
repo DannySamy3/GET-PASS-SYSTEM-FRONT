@@ -15,7 +15,7 @@ export const SectionOne: React.FC<props> = ({
     <section className=' w-[98%] mx-auto   grid grid-cols-[0.18fr_0.4fr] items-center justify-center gap-y-6'>
       <label className=' text-[#292727] font-[500]'>First Name</label>
       <input
-        name='email'
+        name='firstName'
         //   value={input.email}
         //   onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleInputs(e)}
         type='text'
