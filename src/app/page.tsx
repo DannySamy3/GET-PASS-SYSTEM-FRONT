@@ -3,10 +3,16 @@ import React from "react";
 import Login from "@/components/login/Login";
 
 import { useSelector, useDispatch } from "react-redux";
-import { selectIsLogin, setIsLogin, setHideLogin } from "@/utils/authSlice";
+import {
+  selectIsLogin,
+  setIsLogin,
+  setHideLogin,
+  selectHideLogin,
+} from "@/utils/authSlice";
 
 const page = () => {
   // Correctly using useSelector now
+  const loginHide = useSelector(selectHideLogin);
   const dispatch = useDispatch(); // Initialize dispatch if you want to use actions
   // const router = useRouter();
   const handleSetIsLogin = (value: boolean) => {
@@ -18,7 +24,11 @@ const page = () => {
 
   return (
     <div>
-      <Login onLoginSuccess={handleLoginSuccess} hideLogin={handleSetIsLogin} />
+      <Login
+        onLoginSuccess={handleLoginSuccess}
+        hideLogin={handleSetIsLogin}
+        loginHide={loginHide}
+      />
     </div>
   );
 };

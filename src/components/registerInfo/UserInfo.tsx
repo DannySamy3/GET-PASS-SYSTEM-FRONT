@@ -1,3 +1,4 @@
+"use client";
 import React, { useEffect, useState } from "react";
 import { SectionOne } from "./SectionOne";
 import { SectionTwo } from "./SectionTwo";

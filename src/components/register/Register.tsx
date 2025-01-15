@@ -39,6 +39,12 @@ const Register = () => {
     if (isInvalidEmailFormat(emailValue)) {
       dispatch(setEmailError(true));
       return;
+    } else {
+      dispatch(setEmailError(false));
+    }
+
+    if (!emailValue) {
+      dispatch(setEmailError(false));
     }
     dispatch(setEmail(emailValue));
   };
@@ -48,11 +54,13 @@ const Register = () => {
     setLoading(true);
     try {
       const response = await sendToken(email);
+      console.log(response);
 
       if (response.statusText) {
         dispatch(
           showToast({ message: response?.data.message, type: "success" })
         );
+        router.push("/registerDetails");
       }
     } catch (error) {
       const err = error as { response: { data: { message: string } } };
@@ -81,9 +89,10 @@ const Register = () => {
   //     window.removeEventListener("popstate", handleBackNavigation);
   //   };
   // }, [router]);
+  const router = useRouter();
   return (
-    <div className=' font-montserrat w-[50%] mt-64 '>
-      <h2 className=' flex justify-center text-black font-montserrat font-[500] mb-6 text-[32px]'>
+    <div className=' font-montserrat w-[50%] h-screen overflow-y-hidden  mt-64 '>
+      <h2 className=' flex justify-center  text-black font-montserrat font-[500] mb-6 text-[32px]'>
         CREATE ACCOUNT
       </h2>
       <p className=' w-[50%] mx-auto  font-[500] text-[#292727] text-[14px] mb-8'>
@@ -115,8 +124,10 @@ const Register = () => {
         <div className=' w-full my-7'>
           <button
             onClick={requestToken}
-            disabled={loading}
-            className='bg-[#1683CF] text-[14px] font-[600] border w-full py-3 text-white rounded-lg flex items-center justify-center'
+            disabled={loading || emailError}
+            className={`bg-[#1683CF] ${
+              emailError ? "disabled bg-gray-300 cursor-not-allowed" : ""
+            } text-[14px] font-[600] border w-full py-3 text-white rounded-lg flex items-center justify-center`}
           >
             {loading ? (
               <div className='flex items-center justify-center'>

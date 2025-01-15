@@ -21,6 +21,7 @@ function RootLayout({ children }: { children: React.ReactNode }) {
   // const [hideLogin, setHideLogin] = useState(true);
   const isLoggedIn = useSelector(selectIsLogin); // Correctly using useSelector now
   const hideLogin = useSelector(selectHideLogin); // Correctly using useSelector now
+  const loginHide = useSelector(selectHideLogin);
 
   const dispatch = useDispatch(); // Initialize dispatch if you want to use actions
   // const router = useRouter();
@@ -88,15 +89,18 @@ function RootLayout({ children }: { children: React.ReactNode }) {
             )}
           </div>
         ) : (
-          <div className={` h-screen overflow-y-hidden`}>
-            <Login
-              onLoginSuccess={handleLoginSuccess}
-              hideLogin={handleSetIsLogin}
-            />
+          <div className='h-screen '>
+            {!loginHide && (
+              <Login
+                onLoginSuccess={handleLoginSuccess}
+                hideLogin={handleSetIsLogin}
+                loginHide={loginHide}
+              />
+            )}
 
-            <div className='flex-grow overflow-y-auto transition-all duration-300 p-4'>
-              <div>{children}</div>
-            </div>
+            {loginHide && (
+              <div className=' h-screen overflow-y-hidden'>{children}</div>
+            )}
           </div>
         )}
 

@@ -4,17 +4,19 @@ import { useState } from "react";
 import Register from "../register/Register";
 import { useRouter } from "next/navigation";
 import { UserInfo } from "../registerInfo/UserInfo";
+import { useEffect } from "react";
+import { log } from "console";
 
 interface props {
   onLoginSuccess: any;
   hideLogin: any;
+  loginHide: any;
 }
 
-const Login: React.FC<props> = ({ onLoginSuccess, hideLogin }) => {
+const Login: React.FC<props> = ({ onLoginSuccess, hideLogin, loginHide }) => {
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
   const [input, setInput] = useState({ email: "", password: "" });
   const [emailError, setEmailError] = useState(false);
-  const [isLogin, setIsLogin] = useState(true);
 
   const togglePasswordVisibility = () => {
     setIsPasswordVisible(!isPasswordVisible);
@@ -45,11 +47,16 @@ const Login: React.FC<props> = ({ onLoginSuccess, hideLogin }) => {
   };
 
   const router = useRouter();
+  // useEffect(() => {
+  //   if (hideLogin) {
+  //     router.push("/registration");
+  //   }
+  // }, [loginHide]);
 
   return (
-    <div className=' bg-white p- rounded-xl font-montserrat h-screen  overflow-y-hidden'>
-      <article className=' flex h-full'>
-        <section className=' w-[50%] font-[500] flex text-[32px] justify-center items-center'>
+    <div className=' bg-white  font-montserrat h-screen   '>
+      <article className=' flex   h-screen '>
+        <section className=' w-[50%]  font-[500] flex flex-col  text-[32px] justify-center items-center'>
           GATE PASS SYSTEM
         </section>
 
