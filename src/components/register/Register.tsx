@@ -35,11 +35,12 @@ const Register = () => {
   // Handle email change and validate email format
   const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const emailValue = e.target.value;
+    console.log(emailValue);
 
     if (isInvalidEmailFormat(emailValue)) {
       dispatch(setEmailError(true));
-      return;
-    } else {
+    }
+    if (!isInvalidEmailFormat(emailValue)) {
       dispatch(setEmailError(false));
     }
 
@@ -60,7 +61,7 @@ const Register = () => {
         dispatch(
           showToast({ message: response?.data.message, type: "success" })
         );
-        router.push("/registerDetails");
+        router.push("/verifyToken");
       }
     } catch (error) {
       const err = error as { response: { data: { message: string } } };
@@ -75,21 +76,8 @@ const Register = () => {
     }
   };
 
-  // const router = useRouter();
-
-  // useEffect(() => {
-  //   const handleBackNavigation = () => {
-  //     router.replace("./login"); // Redirect to the login page
-  //   };
-
-  //   // Listen for the back button press
-  //   window.addEventListener("popstate", handleBackNavigation);
-
-  //   return () => {
-  //     window.removeEventListener("popstate", handleBackNavigation);
-  //   };
-  // }, [router]);
   const router = useRouter();
+  console.log(email);
   return (
     <div className=' font-montserrat w-[50%] h-screen overflow-y-hidden  mt-64 '>
       <h2 className=' flex justify-center  text-black font-montserrat font-[500] mb-6 text-[32px]'>
@@ -124,9 +112,11 @@ const Register = () => {
         <div className=' w-full my-7'>
           <button
             onClick={requestToken}
-            disabled={loading || emailError}
+            disabled={loading || emailError || !email}
             className={`bg-[#1683CF] ${
-              emailError ? "disabled bg-gray-300 cursor-not-allowed" : ""
+              emailError || !email
+                ? "disabled bg-gray-300 cursor-not-allowed"
+                : ""
             } text-[14px] font-[600] border w-full py-3 text-white rounded-lg flex items-center justify-center`}
           >
             {loading ? (

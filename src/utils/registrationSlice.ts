@@ -7,6 +7,7 @@ interface RegistrationState {
   password: string;
   rePassword: string;
   emailError: boolean;
+  token: string;
 }
 
 const initialState: RegistrationState = {
@@ -14,6 +15,7 @@ const initialState: RegistrationState = {
   password: "",
   rePassword: "",
   emailError: false,
+  token: "",
 };
 
 const registrationSlice = createSlice({
@@ -22,6 +24,9 @@ const registrationSlice = createSlice({
   reducers: {
     setEmail(state, action: PayloadAction<string>) {
       state.email = action.payload;
+    },
+    setToken(state, action: PayloadAction<string>) {
+      state.token = action.payload;
     },
     setPassword(state, action: PayloadAction<string>) {
       state.password = action.payload;
@@ -47,9 +52,15 @@ export const {
   setRePassword,
   setEmailError,
   clearRegistration,
+  setToken,
 } = registrationSlice.actions;
 
 export const selectEmailError = (state: { registration: RegistrationState }) =>
   state.registration.emailError;
+
+export const selectEmail = (state: { registration: RegistrationState }) =>
+  state.registration.email;
+export const selectToken = (state: { registration: RegistrationState }) =>
+  state.registration.token;
 
 export default registrationSlice.reducer;

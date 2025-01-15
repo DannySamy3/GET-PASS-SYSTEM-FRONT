@@ -9,3 +9,15 @@ export const sendToken = async (email: string) => {
     throw error;
   }
 };
+
+export const verifyCode = async (email: string, verificationCode: string) => {
+  try {
+    const response = await axiosInstance.post("getPass/auth/verifyToken", {
+      email,
+      verificationCode,
+    });
+    return response;
+  } catch (error) {
+    throw error;
+  }
+};

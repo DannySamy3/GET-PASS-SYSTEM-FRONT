@@ -19,13 +19,13 @@ export const SectionOne: React.FC<props> = ({
         //   value={input.email}
         //   onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleInputs(e)}
         type='text'
-        placeholder='Enter user email'
+        placeholder='Enter First Name'
         className={`input input-bordered  text-sm w-full`}
         required
       />
       <label className=' text-[#292727] font-[500]'>Mid Name</label>
       <input
-        name='email'
+        name='secondName'
         //   value={input.email}
         //   onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleInputs(e)}
         type='text'
@@ -35,7 +35,7 @@ export const SectionOne: React.FC<props> = ({
       />
       <label className=' text-[#292727] font-[500]'>Last Name</label>
       <input
-        name='email'
+        name='lastName'
         //   value={input.email}
         //   onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleInputs(e)}
         type='text'
