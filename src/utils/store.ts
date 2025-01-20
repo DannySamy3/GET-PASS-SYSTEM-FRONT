@@ -5,13 +5,14 @@ import toastReducer from "./toastSlice";
 import registrationReducer from "./registrationSlice"; // Import toast slice
 import userSlice from "./userSlice";
 import authSlice from "./authSlice";
-
+import authenticator from "./authenticatorSlice";
 export const store = configureStore({
   reducer: {
     date: dateReducer,
     toast: toastReducer,
     user: userSlice,
     auth: authSlice,
+    authenticator,
     registration: registrationReducer, // Add toast reducer
   },
 });

@@ -52,7 +52,19 @@ function RootLayout({ children }: { children: React.ReactNode }) {
         />
       </head>
       <body className='bg-[#F9F9F9]'>
-        {isLoggedIn ? (
+        {!isLoggedIn ? (
+          <div className='h-screen '>
+            {!loginHide && (
+              <Login
+                onLoginSuccess={handleLoginSuccess}
+                hideLogin={handleSetIsLogin}
+                loginHide={loginHide}
+              />
+            )}
+
+            {loginHide && <div className=' h-screen'>{children}</div>}
+          </div>
+        ) : (
           <div className='flex h-screen'>
             {/* Left Navigation */}
             <div
@@ -86,20 +98,6 @@ function RootLayout({ children }: { children: React.ReactNode }) {
                   closeNav={closeNav}
                 />
               </div>
-            )}
-          </div>
-        ) : (
-          <div className='h-screen '>
-            {!loginHide && (
-              <Login
-                onLoginSuccess={handleLoginSuccess}
-                hideLogin={handleSetIsLogin}
-                loginHide={loginHide}
-              />
-            )}
-
-            {loginHide && (
-              <div className=' h-screen overflow-y-hidden'>{children}</div>
             )}
           </div>
         )}

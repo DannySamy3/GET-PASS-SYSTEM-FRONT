@@ -1,12 +1,17 @@
 "use client";
 import React from "react";
 import { useState } from "react";
-import Register from "../register/Register";
+import { handleLogin } from "@/utils/authController";
 import { useRouter } from "next/navigation";
-import { UserInfo } from "../registerInfo/UserInfo";
-import { useEffect } from "react";
-import { log } from "console";
-
+import ToastNotification from "../toastNotification/ToastNotification";
+import { showToast } from "@/utils/toastSlice";
+import { useDispatch, useSelector } from "react-redux";
+import { FaSpinner } from "react-icons/fa";
+import {
+  loginRequest,
+  loginSuccess,
+  loginFailure,
+} from "../../utils/authenticatorSlice";
 interface props {
   onLoginSuccess: any;
   hideLogin: any;
@@ -17,6 +22,7 @@ const Login: React.FC<props> = ({ onLoginSuccess, hideLogin, loginHide }) => {
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
   const [input, setInput] = useState({ email: "", password: "" });
   const [emailError, setEmailError] = useState(false);
+  const { loading, error } = useSelector((state: any) => state.authenticator);
 
   const togglePasswordVisibility = () => {
     setIsPasswordVisible(!isPasswordVisible);
@@ -47,6 +53,36 @@ const Login: React.FC<props> = ({ onLoginSuccess, hideLogin, loginHide }) => {
   };
 
   const router = useRouter();
+  const dispatch = useDispatch();
+
+  const implementLogin = async () => {
+    try {
+      const response = await handleLogin({
+        email: input.email,
+        password: input.password,
+      });
+
+      console.log(response);
+      const data = response.data;
+
+      if (response.status === 200) {
+        dispatch(loginSuccess({ token: data.token, user: data.user }));
+        router.replace("/dashboard");
+        localStorage.setItem("authToken", data.token);
+        localStorage.setItem("user", JSON.stringify(data.user));
+        dispatch(
+          showToast({ message: response.data.message, type: "success" })
+        );
+
+        onLoginSuccess(true);
+      }
+    } catch (error) {
+      const err = error as { response: { data: { message: string } } };
+      dispatch(
+        showToast({ message: err.response?.data?.message, type: "error" })
+      );
+    }
+  };
 
   return (
     <div className=' bg-white  font-montserrat h-screen   '>
@@ -137,12 +173,24 @@ const Login: React.FC<props> = ({ onLoginSuccess, hideLogin, loginHide }) => {
               <div className=' w-full my-7'>
                 <button
                   onClick={() => {
-                    onLoginSuccess(true);
-                    router.push("/dashboard");
+                    implementLogin();
+                    // onLoginSuccess(true);
+                    // router.push("/dashboard");
                   }}
-                  className=' bg-[#1683CF] text-[14px] font-[600] border w-full py-3 text-white rounded-lg'
+                  disabled={loading}
+                  className='  bg-[#1683CF] text-[14px] font-[600] border w-full py-3 text-white rounded-lg'
                 >
-                  LOGIN
+                  {loading ? (
+                    <FaSpinner
+                      className='spinner'
+                      style={{
+                        animation: "spin 1s linear infinite",
+                        fontSize: "20px",
+                      }}
+                    />
+                  ) : (
+                    "Login"
+                  )}
                 </button>
               </div>
               <div className='flex items-center'>
@@ -169,6 +217,7 @@ const Login: React.FC<props> = ({ onLoginSuccess, hideLogin, loginHide }) => {
           </section>
         </section>
       </article>
+      <ToastNotification />
     </div>
   );
 };

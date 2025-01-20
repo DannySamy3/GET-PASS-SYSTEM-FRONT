@@ -6,6 +6,7 @@ export const sendToken = async (email: string) => {
 
     return response;
   } catch (error) {
+    console.log(error);
     throw error;
   }
 };
@@ -39,6 +40,15 @@ export const completeRegister = async (data: any) => {
       "getPass/auth/registerUser",
       data
     );
+    return response;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const handleLogin = async (data: any) => {
+  try {
+    const response = await axiosInstance.post("getPass/auth/login", data);
     return response;
   } catch (error) {
     throw error;

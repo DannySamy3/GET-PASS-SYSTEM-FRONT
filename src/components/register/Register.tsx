@@ -78,7 +78,7 @@ const Register = () => {
   const router = useRouter();
 
   return (
-    <div className=' font-montserrat w-[50%] h-screen overflow-y-hidden  mt-64 '>
+    <div className=' font-montserrat w-[50%] h-fit overflow-y-hidden  mt-64 '>
       <h2 className=' flex justify-center  text-black font-montserrat font-[500] mb-6 text-[32px]'>
         CREATE ACCOUNT
       </h2>
