@@ -1,12 +1,14 @@
 "use client";
 import React from "react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { handleLogin } from "@/utils/authController";
 import { useRouter } from "next/navigation";
 import ToastNotification from "../toastNotification/ToastNotification";
 import { showToast } from "@/utils/toastSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { FaSpinner } from "react-icons/fa";
+import { selectLogin } from "../../utils/authenticatorSlice";
+
 import {
   loginRequest,
   loginSuccess,
@@ -27,6 +29,9 @@ const Login: React.FC<props> = ({ onLoginSuccess, hideLogin, loginHide }) => {
   const togglePasswordVisibility = () => {
     setIsPasswordVisible(!isPasswordVisible);
   };
+
+  const logginChecker = useSelector(selectLogin);
+  const login = useSelector(selectLogin);
 
   function isInvalidEmailFormat(email: string) {
     // Regular expression to match a valid email format
@@ -75,6 +80,7 @@ const Login: React.FC<props> = ({ onLoginSuccess, hideLogin, loginHide }) => {
         );
 
         onLoginSuccess(true);
+        dispatch(loginSuccess({ token: data.token, user: data.user }));
       }
     } catch (error) {
       const err = error as { response: { data: { message: string } } };
@@ -84,8 +90,9 @@ const Login: React.FC<props> = ({ onLoginSuccess, hideLogin, loginHide }) => {
     }
   };
 
+  console.log(login);
   return (
-    <div className=' bg-white  font-montserrat h-screen   '>
+    <div className=' bg-white  font-montserrat h-screen  overflow-y-hidden  '>
       <article className=' flex   h-screen '>
         <section className=' w-[50%]  font-[500] flex flex-col  text-[32px] justify-center items-center'>
           GATE PASS SYSTEM

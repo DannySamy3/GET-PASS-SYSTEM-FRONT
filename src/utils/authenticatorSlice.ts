@@ -1,4 +1,4 @@
-// src/slices/authenticator.js
+// Example: authenticatorSlice.js
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
@@ -10,7 +10,7 @@ const initialState = {
 };
 
 const authenticator = createSlice({
-  name: "auth",
+  name: "authenticator",
   initialState,
   reducers: {
     loginRequest: (state) => {
@@ -37,5 +37,6 @@ const authenticator = createSlice({
 
 export const { loginRequest, loginSuccess, loginFailure, logout } =
   authenticator.actions;
+export const selectLogin = (state: any) => state.authenticator.isAuthenticated;
 
 export default authenticator.reducer;

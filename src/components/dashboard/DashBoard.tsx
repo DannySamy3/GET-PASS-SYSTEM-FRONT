@@ -3,6 +3,7 @@
 import React, { useEffect, useState } from "react";
 import Header from "../reUsables/Header";
 import Cards from "../cards/Cards";
+import { useRouter } from "next/navigation";
 
 import { getCurrentDate } from "@/utils/helper";
 import {
@@ -26,6 +27,35 @@ const DashBoard = () => {
     denied: "",
     fullPaid: "",
   });
+
+  const router = useRouter();
+  const preventBackNavigation = () => {
+    // Push a new state to the history stack to prevent going back
+    window.history.pushState(null, "", window.location.href);
+
+    // Disable back navigation by listening to the popstate event
+    window.onpopstate = function () {
+      // Every time the user presses the back button, re-push the state
+      window.history.pushState(null, "", window.location.href);
+    };
+
+    // Also, prevent refresh and navigating away using beforeunload event
+    window.onbeforeunload = function () {
+      // Display a confirmation message if the user tries to refresh or close
+      return;
+    };
+  };
+
+  useEffect(() => {
+    // After the component mounts, call the function to prevent back navigation
+    preventBackNavigation();
+
+    // Cleanup when component unmounts
+    return () => {
+      window.onpopstate = null; // Remove the popstate listener
+      window.onbeforeunload = null; // Remove the beforeunload listener
+    };
+  }, []);
 
   useEffect(() => {
     const fetchInitialData = async () => {
