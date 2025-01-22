@@ -30,7 +30,6 @@ const Login: React.FC<props> = ({ onLoginSuccess, hideLogin, loginHide }) => {
     setIsPasswordVisible(!isPasswordVisible);
   };
 
-  const logginChecker = useSelector(selectLogin);
   const login = useSelector(selectLogin);
 
   function isInvalidEmailFormat(email: string) {
@@ -89,6 +88,12 @@ const Login: React.FC<props> = ({ onLoginSuccess, hideLogin, loginHide }) => {
       );
     }
   };
+
+  useEffect(() => {
+    if (login) {
+      router.push("/dashboard");
+    }
+  }, [login]);
 
   console.log(login);
   return (

@@ -68,22 +68,6 @@ export const SectionTwo = () => {
   const phoneNumber = useSelector(selectPhoneNumber);
   const country = useSelector(selectCountry);
   const gender = useSelector(selectGender);
-  const handleCountries = async () => {
-    try {
-      const data = await fetchCountries();
-      const sortedData = data.sort((a: Country, b: Country) =>
-        a.name.common.localeCompare(b.name.common)
-      );
-      setCountries(sortedData);
-    } catch (error) {
-      dispatch(
-        showToast({ message: "Failed to fetch countries", type: "error" })
-      );
-    }
-  };
-  useEffect(() => {
-    handleCountries();
-  }, []);
 
   return (
     <section className='w-[98%] mx-auto grid grid-cols-[0.18fr_0.4fr] items-center justify-center gap-y-6'>
@@ -118,9 +102,9 @@ export const SectionTwo = () => {
         className='select select-bordered text-[#515253] font-[500]'
       >
         <option value=''>Select Country</option>
-        {countries.map((country, i) => (
-          <option key={i} value={country.name.common}>
-            {country.name.common}
+        {fetchCountries.map((country, i) => (
+          <option key={i} value={country}>
+            {country}
           </option>
         ))}
       </select>

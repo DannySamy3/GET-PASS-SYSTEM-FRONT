@@ -13,6 +13,8 @@ import {
 import { getScanInfo } from "@/utils/scanController";
 import { DashboardGraph } from "../graphs/DashboardGraph";
 import Calender from "@/components/calender/Calender";
+import { selectLogin } from "../../utils/authenticatorSlice";
+import { useDispatch, useSelector } from "react-redux";
 
 import "react-toastify/dist/ReactToastify.css";
 import "react-calendar/dist/Calendar.css";
@@ -27,6 +29,8 @@ const DashBoard = () => {
     denied: "",
     fullPaid: "",
   });
+
+  const login = useSelector(selectLogin);
 
   const router = useRouter();
   const preventBackNavigation = () => {
@@ -56,7 +60,7 @@ const DashBoard = () => {
       window.onbeforeunload = null; // Remove the beforeunload listener
     };
   }, []);
-
+  console.log(".........", login);
   useEffect(() => {
     const fetchInitialData = async () => {
       const currentDate = getCurrentDate();

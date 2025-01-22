@@ -35,7 +35,7 @@ function RootLayout({ children }: { children: React.ReactNode }) {
     if (!LoggedIn) {
       router.push("/"); // Redirect to login page if not authenticated
     }
-  }, []);
+  }, [LoggedIn, router]);
 
   // Check if we are on the home page ("/")
   const isHomePage = pathname === "/"; // Using usePathname for current path
