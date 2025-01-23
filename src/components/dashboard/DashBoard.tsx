@@ -59,7 +59,7 @@ const DashBoard = () => {
       window.onbeforeunload = null; // Remove the beforeunload listener
     };
   }, []);
-  console.log(".........", login);
+
   useEffect(() => {
     const fetchInitialData = async () => {
       const currentDate = getCurrentDate();
