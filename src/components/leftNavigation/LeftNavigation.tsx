@@ -46,7 +46,7 @@ const LeftNavigation: React.FC<props> = ({
   const dispatch = useDispatch();
 
   const handleLoggedInuser = () => {
-    const jsonString = localStorage.getItem("user");
+    const jsonString = localStorage.getItem("user") as any;
     const user = JSON.parse(jsonString);
 
     setUserData(user);
