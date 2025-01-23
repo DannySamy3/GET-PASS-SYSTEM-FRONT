@@ -316,17 +316,22 @@ const LeftNavigation: React.FC<props> = ({
           className='text-gray-900 focus:outline-none'
           aria-label={isCollapsed ? "Expand Sidebar" : "Collapse Sidebar"}
         >
-          <FontAwesomeIcon
-            icon={isCollapsed ? faChevronRight : faChevronLeft}
-            className='transition-transform hidden lg:block md:block'
-          />
-          <FontAwesomeIcon
-            // onClick={handleToggleCollapse}
-            icon={isCollapsed ? faChevronRight : faChevronUp}
-            className={`transition-transform  block  lg:hidden md:hidden  ${
-              !isCollapsed ? "swipe-up" : ""
-            }`}
-          />
+          <div className=' hidden lg:block '>
+            <FontAwesomeIcon
+              icon={isCollapsed ? faChevronRight : faChevronLeft}
+              className='transition-transform  lg:block'
+            />
+          </div>
+
+          <div className=' block lg:hidden'>
+            <FontAwesomeIcon
+              // onClick={handleToggleCollapse}
+              icon={isCollapsed ? faChevronRight : faChevronUp}
+              className={`transition-transform   lg:hidden   ${
+                !isCollapsed ? "swipe-up" : ""
+              }`}
+            />
+          </div>
         </button>
       </div>
     </aside>

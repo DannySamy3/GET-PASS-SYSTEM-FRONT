@@ -15,11 +15,11 @@ import { store } from "@/utils/store"; // Redux store import
 // RootLayout Component
 function RootLayout({ children }: { children: React.ReactNode }) {
   const router = useRouter();
-  const pathname = usePathname(); // Get the current pathname
+
   const [isCollapsed, setIsCollapsed] = useState(false);
 
   // Access Redux state
-  const dispatch = useDispatch(); // Initialize dispatch for actions
+
   const LoggedIn = useSelector(selectLogin); // Check login status
 
   const toggleCollapse = () => {
@@ -54,7 +54,7 @@ function RootLayout({ children }: { children: React.ReactNode }) {
               key='left-navigation' // Ensure LeftNavigation has a stable key
               className={`transition-width duration-300 ${
                 isCollapsed ? "w-16" : "w-[300px]"
-              } bg-gray-200 flex-shrink-0 hidden lg:block md:block`}
+              } bg-gray-200 flex-shrink-0 hidden lg:block`}
             >
               <LeftNavigation
                 setIsCollapsed={setIsCollapsed}
@@ -65,10 +65,14 @@ function RootLayout({ children }: { children: React.ReactNode }) {
             </div>
           )}
 
+          {/* Main Content */}
+          <div className='flex-grow overflow-y-auto transition-all duration-300 '>
+            <div>{children}</div>
+          </div>
           {LoggedIn && !isCollapsed && (
             <button
               onClick={toggleCollapse}
-              className='  absolute lg:hidden md:hidden right-[1%] top-[5px]'
+              className='  absolute lg:hidden  right-[1%] top-[5px]'
             >
               <svg
                 xmlns='http://www.w3.org/2000/svg'
@@ -87,14 +91,9 @@ function RootLayout({ children }: { children: React.ReactNode }) {
             </button>
           )}
 
-          {/* Main Content */}
-          <div className='flex-grow overflow-y-auto transition-all duration-300 '>
-            <div>{children}</div>
-          </div>
-
           {/* Collapsed View for Mobile */}
           {LoggedIn && isCollapsed && (
-            <div className='lg:hidden md:hidden fixed inset-0 bg-gray-200 z-50 transition-transform'>
+            <div className='lg:hidden   fixed inset-0 bg-gray-200 z-50 transition-transform'>
               <LeftNavigation
                 setIsCollapsed={setIsCollapsed}
                 isCollapsed={!isCollapsed}
