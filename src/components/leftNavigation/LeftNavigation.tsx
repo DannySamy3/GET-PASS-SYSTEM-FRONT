@@ -1,6 +1,7 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Link from "next/link";
+import Modal from "../LogOutModal.tsx/Modal";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faChevronLeft,
@@ -16,6 +17,8 @@ import { logout } from "@/utils/authenticatorSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { usePathname } from "next/navigation";
 import { useRouter } from "next/navigation";
+import { log } from "console";
+import { json } from "stream/consumers";
 
 interface props {
   isCollapsed: any;
@@ -33,15 +36,25 @@ const LeftNavigation: React.FC<props> = ({
   // const [isCollapsed, setIsCollapsed] = useState(false);
   const pathname = usePathname();
 
+  const [showModal, setShowModal] = useState(false);
+  const [userData, setUserData] = useState<any>();
+
   // const toggleCollapse = () => {
   //   setIsCollapsed(!isCollapsed);
   // };
 
   const dispatch = useDispatch();
 
+  const handleLoggedInuser = () => {
+    const jsonString = localStorage.getItem("user");
+    const user = JSON.parse(jsonString);
+
+    setUserData(user);
+  };
+
   // User data (with user icon as avatar)
   const user = {
-    lastName: "Ntunduye",
+    lastName: userData?.lastName,
     avatarIcon: faUser, // FontAwesome user icon
   };
   const handleToggleCollapse = () => {
@@ -58,6 +71,10 @@ const LeftNavigation: React.FC<props> = ({
     }
   };
 
+  useEffect(() => {
+    handleLoggedInuser();
+  }, []);
+
   const router = useRouter();
   return (
     <aside
@@ -70,6 +87,8 @@ const LeftNavigation: React.FC<props> = ({
           isCollapsed ? "justify-center" : ""
         }`}
       >
+        {showModal && <Modal />}
+
         {/* User icon inside a circle */}
         {!isCollapsed && (
           <div className='flex mt-1  flex-col w-full items-center gap-5 lg:w-fit lg:flex lg:flex-row lg:items-center lg:gap-[12px] lg:mt-2 mb-3'>
@@ -280,8 +299,9 @@ const LeftNavigation: React.FC<props> = ({
           <li className=' w-full lg:w-auto md:w-auto '>
             <button
               onClick={() => {
-                dispatch(logout());
-                router.push("/");
+                // dispatch(logout());
+                // router.push("/");
+                setShowModal(true);
               }}
               className={`w-full text-[##595959] justify-center lg:justify-stretch md:justify-stretch  font-[500] leading-[31.69px]  flex items-center gap-4 py-3 px-4 text-lg rounded hover:bg-gray-200 ${
                 isCollapsed ? "text-center" : ""

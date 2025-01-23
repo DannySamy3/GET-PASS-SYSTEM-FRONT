@@ -102,12 +102,7 @@ const Register = () => {
             Please enter a valid email address format
           </p>
         )}
-        {/* <div className=' flex justify-between'>
-          <div></div>
-          <p className=' text-[#1795F4] font-[500] cursor-pointer text-[13px]'>
-            resend code
-          </p>
-        </div> */}
+
         <div className=' w-full my-7'>
           <button
             onClick={requestToken}
