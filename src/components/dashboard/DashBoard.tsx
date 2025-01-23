@@ -18,7 +18,6 @@ import { useDispatch, useSelector } from "react-redux";
 
 import "react-toastify/dist/ReactToastify.css";
 import "react-calendar/dist/Calendar.css";
-import { AddStudent } from "../studentList/AddStudent";
 
 const DashBoard = () => {
   const [currentCardIndex, setCurrentCardIndex] = useState(0);
@@ -207,7 +206,7 @@ const DashBoard = () => {
   ];
 
   return (
-    <div className='w-full max-w-full px-4 sm:px-6'>
+    <div className='w-full max-w-full px-4 mt-3 h-fit sm:px-6'>
       <Header title={"Dashboard"} view={() => {}} />
 
       <div className='mb-8 flex flex-col sm:w-full sm:flex-row justify-between items-center space-y-4 sm:space-y-0'>

@@ -12,7 +12,10 @@ import {
   faEnvelope,
   faUser, // User icon
 } from "@fortawesome/free-solid-svg-icons";
+import { logout } from "@/utils/authenticatorSlice";
+import { useDispatch, useSelector } from "react-redux";
 import { usePathname } from "next/navigation";
+import { useRouter } from "next/navigation";
 
 interface props {
   isCollapsed: any;
@@ -34,6 +37,8 @@ const LeftNavigation: React.FC<props> = ({
   //   setIsCollapsed(!isCollapsed);
   // };
 
+  const dispatch = useDispatch();
+
   // User data (with user icon as avatar)
   const user = {
     lastName: "Ntunduye",
@@ -52,6 +57,8 @@ const LeftNavigation: React.FC<props> = ({
       closeNav();
     }
   };
+
+  const router = useRouter();
   return (
     <aside
       className={`  lg:fixed lg:top-0 lg:left-0  font-montserrat ${
@@ -271,9 +278,11 @@ const LeftNavigation: React.FC<props> = ({
             </Link>
           </li>
           <li className=' w-full lg:w-auto md:w-auto '>
-            <Link
-              onClick={handleLinkClick}
-              href='/setting'
+            <button
+              onClick={() => {
+                dispatch(logout());
+                router.push("/");
+              }}
               className={`w-full text-[##595959] justify-center lg:justify-stretch md:justify-stretch  font-[500] leading-[31.69px]  flex items-center gap-4 py-3 px-4 text-lg rounded hover:bg-gray-200 ${
                 isCollapsed ? "text-center" : ""
               } no-underline`}
@@ -295,12 +304,12 @@ const LeftNavigation: React.FC<props> = ({
               </svg>
 
               {!isCollapsed && "Logout"}
-            </Link>
+            </button>
           </li>
         </ul>
       </nav>
 
-      <div className='absolute bottom-4 left-1/2 lg:left-auto lg:right-4 lg:transform-none lg:translate-x-0 transform -translate-x-1/2 lg:absolute  '>
+      <div className='absolute  bottom-4 left-1/2 lg:left-auto lg:right-4 lg:transform-none lg:translate-x-0 transform -translate-x-1/2 lg:absolute  '>
         <button
           // onClick={toggleCollapse}
           onClick={handleToggleCollapse}
@@ -309,12 +318,12 @@ const LeftNavigation: React.FC<props> = ({
         >
           <FontAwesomeIcon
             icon={isCollapsed ? faChevronRight : faChevronLeft}
-            className='transition-transform hidden lg:block'
+            className='transition-transform hidden lg:block md:block'
           />
           <FontAwesomeIcon
             // onClick={handleToggleCollapse}
             icon={isCollapsed ? faChevronRight : faChevronUp}
-            className={`transition-transform lg:hidden ${
+            className={`transition-transform  block  lg:hidden md:hidden  ${
               !isCollapsed ? "swipe-up" : ""
             }`}
           />

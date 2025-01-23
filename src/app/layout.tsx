@@ -37,9 +37,6 @@ function RootLayout({ children }: { children: React.ReactNode }) {
     }
   }, [LoggedIn, router]);
 
-  // Check if we are on the home page ("/")
-  const isHomePage = pathname === "/"; // Using usePathname for current path
-
   return (
     <html lang='en'>
       <head>
@@ -57,7 +54,7 @@ function RootLayout({ children }: { children: React.ReactNode }) {
               key='left-navigation' // Ensure LeftNavigation has a stable key
               className={`transition-width duration-300 ${
                 isCollapsed ? "w-16" : "w-[300px]"
-              } bg-gray-200 flex-shrink-0 hidden lg:block`}
+              } bg-gray-200 flex-shrink-0 hidden lg:block md:block`}
             >
               <LeftNavigation
                 setIsCollapsed={setIsCollapsed}
@@ -68,14 +65,36 @@ function RootLayout({ children }: { children: React.ReactNode }) {
             </div>
           )}
 
+          {LoggedIn && !isCollapsed && (
+            <button
+              onClick={toggleCollapse}
+              className='  absolute lg:hidden md:hidden right-[1%] top-[5px]'
+            >
+              <svg
+                xmlns='http://www.w3.org/2000/svg'
+                fill='none'
+                viewBox='0 0 24 24'
+                strokeWidth={1.5}
+                stroke='currentColor'
+                className='size-6 mt-2 lg:hidden  '
+              >
+                <path
+                  strokeLinecap='round'
+                  strokeLinejoin='round'
+                  d='M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5'
+                />
+              </svg>
+            </button>
+          )}
+
           {/* Main Content */}
           <div className='flex-grow overflow-y-auto transition-all duration-300 '>
             <div>{children}</div>
           </div>
 
           {/* Collapsed View for Mobile */}
-          {!isHomePage && isCollapsed && (
-            <div className='lg:hidden fixed inset-0 bg-gray-200 z-50 transition-transform'>
+          {LoggedIn && isCollapsed && (
+            <div className='lg:hidden md:hidden fixed inset-0 bg-gray-200 z-50 transition-transform'>
               <LeftNavigation
                 setIsCollapsed={setIsCollapsed}
                 isCollapsed={!isCollapsed}

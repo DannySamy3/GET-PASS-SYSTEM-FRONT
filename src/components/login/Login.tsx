@@ -93,7 +93,7 @@ const Login: React.FC<props> = ({ onLoginSuccess, hideLogin, loginHide }) => {
     if (login) {
       router.push("/dashboard");
     }
-  }, [login]);
+  }, []);
 
   console.log(login);
   return (
