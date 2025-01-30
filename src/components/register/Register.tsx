@@ -92,7 +92,7 @@ const Register = () => {
           // value={input.password}
           placeholder='Enter your email address'
           className={`input input-bordered w-full text-sm ${
-            emailError ? " focus:input-error" : ""
+            emailError ? " focus:input-error input-error" : ""
           }`}
           required
           onChange={(e: any) => handleEmailChange(e)}
