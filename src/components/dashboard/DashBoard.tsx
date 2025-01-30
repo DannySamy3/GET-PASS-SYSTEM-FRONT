@@ -5,6 +5,7 @@ import Header from "../reUsables/Header";
 import Cards from "../cards/Cards";
 import { useRouter } from "next/navigation";
 import { handleSync } from "../../utils/authenticatorSlice";
+import ToastNotification from "../toastNotification/ToastNotification";
 
 import { getCurrentDate } from "@/utils/helper";
 import {
@@ -264,6 +265,7 @@ const DashBoard = () => {
         <DashboardGraph />
         <Calender />
       </div>
+      {/* <ToastNotification /> */}
     </div>
   );
 };

@@ -72,9 +72,7 @@ export const SectionTwo = () => {
   return (
     <section className='w-[98%] mx-auto grid grid-cols-[0.18fr_0.4fr] items-center justify-center gap-y-6'>
       <label className='text-[#515253] font-[500]'>Email</label>
-      <label className=' text-[#515253] font-[500]'>
-        danielntunduye@gmail.com
-      </label>
+      <label className=' text-[#515253] font-[500]'>{email}</label>
 
       <label className='text-[#515253] font-[500]'>Gender</label>
       <select

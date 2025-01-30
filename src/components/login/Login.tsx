@@ -33,7 +33,8 @@ const Login = () => {
 
     if (name === "email" && value !== "") {
       setEmailError(isInvalidEmailFormat(value));
-    } else {
+    }
+    if (name === "email" && value == "") {
       setEmailError(false);
     }
 
@@ -91,7 +92,7 @@ const Login = () => {
               type='text'
               placeholder='Enter user email'
               className={`input input-bordered w-full text-sm ${
-                emailError ? "focus:input-error" : ""
+                emailError ? "focus:input-error input-error" : ""
               }`}
               required
             />
@@ -159,8 +160,10 @@ const Login = () => {
               <div className='w-full my-7'>
                 <button
                   onClick={implementLogin}
-                  disabled={loading}
-                  className='bg-[#1683CF] text-[14px] font-[600] border w-full py-3 text-white rounded-lg'
+                  disabled={loading || emailError}
+                  className={`bg-[#1683CF] text-[14px] ${
+                    emailError ? "bg-[#BDBDBD] cursor-not-allowed" : ""
+                  } font-[600] border w-full py-3 text-white rounded-lg`}
                 >
                   {loading ? (
                     <FaSpinner
