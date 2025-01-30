@@ -8,7 +8,7 @@ import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css"; // Import the Toastify CSS
 import { useRouter, usePathname } from "next/navigation"; // Use usePathname
 
-import { selectLogin } from "@/utils/authenticatorSlice";
+import { selectLogin, selectSync } from "@/utils/authenticatorSlice";
 import { Provider } from "react-redux";
 import { store } from "@/utils/store"; // Redux store import
 
@@ -21,6 +21,7 @@ function RootLayout({ children }: { children: React.ReactNode }) {
   // Access Redux state
 
   const LoggedIn = useSelector(selectLogin); // Check login status
+  const isSynced = useSelector(selectSync);
 
   const toggleCollapse = () => {
     setIsCollapsed(!isCollapsed);
@@ -49,7 +50,7 @@ function RootLayout({ children }: { children: React.ReactNode }) {
       <body className='bg-[#F9F9F9]'>
         <div className='flex h-screen'>
           {/* Left Navigation is hidden on "/" */}
-          {LoggedIn && (
+          {LoggedIn && isSynced && (
             <div
               key='left-navigation' // Ensure LeftNavigation has a stable key
               className={`transition-width duration-300 ${
@@ -64,12 +65,12 @@ function RootLayout({ children }: { children: React.ReactNode }) {
               />
             </div>
           )}
-
-          {/* Main Content */}
           <div className='flex-grow overflow-y-auto transition-all duration-300 '>
             <div>{children}</div>
           </div>
-          {LoggedIn && !isCollapsed && (
+
+          {/* Main Content */}
+          {LoggedIn && isSynced && !isCollapsed && (
             <button
               onClick={toggleCollapse}
               className='  absolute lg:hidden  right-[1%] top-[5px]'
@@ -104,11 +105,11 @@ function RootLayout({ children }: { children: React.ReactNode }) {
           )}
         </div>
 
-        <ToastContainer
+        {/* <ToastContainer
           position='top-right'
           autoClose={3000}
           style={{ zIndex: 9999 }}
-        />
+        /> */}
       </body>
     </html>
   );

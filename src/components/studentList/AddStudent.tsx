@@ -5,7 +5,6 @@ import { fetchCountries } from "@/utils/helper";
 import { addStudent } from "@/utils/studentController";
 import { useDispatch } from "react-redux";
 import { showToast } from "@/utils/toastSlice";
-import ToastNotification from "@/components/toastNotification/ToastNotification";
 
 import "react-toastify/dist/ReactToastify.css";
 
@@ -43,7 +42,7 @@ export const AddStudent = () => {
   });
 
   const [sponsors, setSponsors] = useState<any[]>([]);
-  const [countries, setCountries] = useState<Country[]>([]);
+
   const [classes, setClasses] = useState<any[]>([]);
   const [isPageLoaded, setIsPageLoaded] = useState<boolean>(false);
   const [isToastShown, setIsToastShown] = useState<boolean>(false); // Track toast visibility
@@ -70,21 +69,6 @@ export const AddStudent = () => {
     } catch (error) {
       dispatch(
         showToast({ message: "Failed to fetch classes", type: "error" })
-      );
-    }
-  };
-
-  // Fetch countries from API
-  const handleCountries = async () => {
-    try {
-      const data = await fetchCountries();
-      const sortedData = data.sort((a: Country, b: Country) =>
-        a.name.common.localeCompare(b.name.common)
-      );
-      setCountries(sortedData);
-    } catch (error) {
-      dispatch(
-        showToast({ message: "Failed to fetch countries", type: "error" })
       );
     }
   };
@@ -157,7 +141,7 @@ export const AddStudent = () => {
   useEffect(() => {
     handleFetchSponsor();
     handleFetchClasses();
-    handleCountries();
+    // handleCountries();
     // setIsPageLoaded(true); // Set page as loaded on initial mount
   }, []);
 
@@ -217,9 +201,9 @@ export const AddStudent = () => {
             className='select select-sm border border-[#D9CBCB] h-[34px]'
           >
             <option value=''>Select Country</option>
-            {countries.map((country, i) => (
-              <option key={i} value={country.name.common}>
-                {country.name.common}
+            {fetchCountries.map((country, i) => (
+              <option key={i} value={country}>
+                {country}
               </option>
             ))}
           </select>
@@ -298,8 +282,6 @@ export const AddStudent = () => {
           </button>
         </div>
       </section>
-
-      <ToastNotification />
     </div>
   );
 };

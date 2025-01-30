@@ -1,6 +1,10 @@
 import React from "react";
 
-const Modal = () => {
+const Modal: React.FC<any> = ({ handleModal }) => {
+  const handleLogout = () => {
+    localStorage.clear();
+    handleModal(false);
+  };
   return (
     <div className='fixed inset-0 z-50 flex items-center justify-center font-montserrat'>
       {/* Backdrop */}
@@ -45,13 +49,11 @@ const Modal = () => {
           </svg>
         </div>
         <div className='self-stretch h-[136px] flex-col justify-center items-center gap-2 flex'>
-          <div className='text-gray-800 text-xl font-semibold  leading-loose'>
+          <div className='text-gray-800 text- xl font-semibold  leading-loose'>
             Logout
           </div>
-          <div className='self-stretch text-gray-700 text-base font-normal  leading-normal'>
-            Jr様の予約が入っているためダブルブッキングになります。
-            <br />
-            本当にDaniel Ntunduye様の部屋を504に変更しますか？
+          <div className='self-stretch text-gray-700 text-base font-normal text-center  leading-normal'>
+            You're about to Sign Out !
           </div>
         </div>
         <div className='self-stretch h-28 flex-col justify-start items-start gap-2 flex'>
@@ -59,8 +61,11 @@ const Modal = () => {
             <div className='self-stretch h-[52px] flex-col justify-start items-center gap-4 flex'>
               <div className='self-stretch cursor-pointer px-4 py-3.5 bg-red-500 rounded-lg justify-center items-center gap-2 inline-flex'>
                 <div className='justify-start items-center gap-2 flex'>
-                  <div className='text-white text-base font-semibold  leading-normal'>
-                    実行する
+                  <div
+                    onClick={() => handleLogout()}
+                    className='text-white text-base font-semibold  leading-normal'
+                  >
+                    Proceed
                   </div>
                 </div>
               </div>
@@ -71,8 +76,11 @@ const Modal = () => {
             className='self-stretch cursor-pointer h-[52px] flex-col justify-start items-center gap-4 flex'
           >
             <div className='self-stretch px-4 py-3.5 bg-gray-100 rounded-lg border border-gray-100 justify-center items-center gap-2 inline-flex'>
-              <div className='text-gray-800 text-base font-normal  leading-normal'>
-                キャンセル
+              <div
+                onClick={() => handleModal(false)}
+                className='text-gray-800 text-base font-normal  leading-normal'
+              >
+                Cancel
               </div>
             </div>
           </div>

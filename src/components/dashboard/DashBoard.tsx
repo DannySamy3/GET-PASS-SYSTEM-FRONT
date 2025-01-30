@@ -4,6 +4,7 @@ import React, { useEffect, useState } from "react";
 import Header from "../reUsables/Header";
 import Cards from "../cards/Cards";
 import { useRouter } from "next/navigation";
+import { handleSync } from "../../utils/authenticatorSlice";
 
 import { getCurrentDate } from "@/utils/helper";
 import {
@@ -13,7 +14,7 @@ import {
 import { getScanInfo } from "@/utils/scanController";
 import { DashboardGraph } from "../graphs/DashboardGraph";
 import Calender from "@/components/calender/Calender";
-import { selectLogin } from "../../utils/authenticatorSlice";
+
 import { useDispatch, useSelector } from "react-redux";
 
 import "react-toastify/dist/ReactToastify.css";
@@ -29,7 +30,7 @@ const DashBoard = () => {
     fullPaid: "",
   });
 
-  const login = useSelector(selectLogin);
+  const dispatch = useDispatch();
 
   const router = useRouter();
   const preventBackNavigation = () => {
@@ -61,6 +62,7 @@ const DashBoard = () => {
   }, []);
 
   useEffect(() => {
+    dispatch(handleSync());
     const fetchInitialData = async () => {
       const currentDate = getCurrentDate();
 
@@ -226,8 +228,11 @@ const DashBoard = () => {
           />
         </div>
 
-        <button className='btn bg-blue-500 text-white hidden sm:block w-full sm:w-[120px] py-2 mt-4 sm:mt-0'>
-          Search
+        <button
+          onClick={() => {}}
+          className='btn bg-blue-500 text-white hidden sm:block w-full sm:w-[120px] py-2 mt-4 sm:mt-0'
+        >
+          Refresh
         </button>
       </div>
 

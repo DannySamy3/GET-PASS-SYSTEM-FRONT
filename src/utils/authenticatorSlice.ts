@@ -4,7 +4,8 @@ import { createSlice } from "@reduxjs/toolkit";
 const initialState = {
   user: null,
   token: null,
-  isAuthenticated: !!localStorage.getItem("token"),
+  isAuthenticated: !!localStorage.getItem("authToken"),
+  sync: !!localStorage.getItem("authToken"),
   loading: false,
   error: null,
 };
@@ -13,20 +14,15 @@ const authenticator = createSlice({
   name: "authenticator",
   initialState,
   reducers: {
-    loginRequest: (state) => {
-      state.loading = true;
-    },
     loginSuccess: (state, action) => {
-      state.user = action.payload.user;
-      state.token = action.payload.token;
       state.isAuthenticated = true;
-      state.loading = false;
-      state.error = null;
-      localStorage.setItem("token", action.payload.token);
+
+      localStorage.setItem("authToken", action.payload.token);
+      localStorage.setItem("user", JSON.stringify(action.payload.user));
     },
-    loginFailure: (state, action) => {
-      state.error = action.payload;
-      state.loading = false;
+
+    handleSync: (state) => {
+      state.sync = true;
     },
     logout: (state) => {
       state.user = null;
@@ -36,8 +32,8 @@ const authenticator = createSlice({
   },
 });
 
-export const { loginRequest, loginSuccess, loginFailure, logout } =
-  authenticator.actions;
+export const { loginSuccess, logout, handleSync } = authenticator.actions;
 export const selectLogin = (state: any) => state.authenticator.isAuthenticated;
+export const selectSync = (state: any) => state.authenticator.sync;
 
 export default authenticator.reducer;

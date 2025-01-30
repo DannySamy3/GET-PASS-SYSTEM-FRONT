@@ -33,17 +33,10 @@ const LeftNavigation: React.FC<props> = ({
   toggleCollapse,
   closeNav,
 }) => {
-  // const [isCollapsed, setIsCollapsed] = useState(false);
   const pathname = usePathname();
 
   const [showModal, setShowModal] = useState(false);
   const [userData, setUserData] = useState<any>();
-
-  // const toggleCollapse = () => {
-  //   setIsCollapsed(!isCollapsed);
-  // };
-
-  const dispatch = useDispatch();
 
   const handleLoggedInuser = () => {
     const jsonString = localStorage.getItem("user") as any;
@@ -59,9 +52,6 @@ const LeftNavigation: React.FC<props> = ({
   };
   const handleToggleCollapse = () => {
     toggleCollapse();
-    // if (!isCollapsed) {
-    //   window.scrollTo({ top: 0, behavior: "smooth" });
-    // }
   };
 
   const handleLinkClick = () => {
@@ -87,7 +77,7 @@ const LeftNavigation: React.FC<props> = ({
           isCollapsed ? "justify-center" : ""
         }`}
       >
-        {showModal && <Modal />}
+        {showModal && <Modal handleModal={setShowModal} />}
 
         {/* User icon inside a circle */}
         {!isCollapsed && (
@@ -244,7 +234,7 @@ const LeftNavigation: React.FC<props> = ({
               {!isCollapsed && "Course"}
             </Link>
           </li>
-          <li className=' w-full lg:w-auto md:w-auto '>
+          {/* <li className=' w-full lg:w-auto md:w-auto '>
             <Link
               onClick={handleLinkClick}
               href={"/setting"}
@@ -295,7 +285,7 @@ const LeftNavigation: React.FC<props> = ({
 
               {!isCollapsed && "Setting"}
             </Link>
-          </li>
+          </li> */}
           <li className=' w-full lg:w-auto md:w-auto '>
             <button
               onClick={() => {
