@@ -230,7 +230,7 @@ const DashBoard = () => {
         </div>
 
         <button
-          onClick={() => {}}
+          onClick={() => window.location.reload()}
           className='btn bg-blue-500 text-white hidden sm:block w-full sm:w-[120px] py-2 mt-4 sm:mt-0'
         >
           Refresh
