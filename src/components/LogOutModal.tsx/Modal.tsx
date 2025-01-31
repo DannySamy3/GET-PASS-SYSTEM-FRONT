@@ -83,11 +83,11 @@ const Modal: React.FC<any> = ({ handleModal }) => {
             // onClick={() => handleView(false)}
             className='self-stretch cursor-pointer h-[52px] flex-col justify-start items-center gap-4 flex'
           >
-            <div className='self-stretch px-4 py-3.5 bg-gray-100 rounded-lg border border-gray-100 justify-center items-center gap-2 inline-flex'>
-              <div
-                onClick={() => handleModal(false)}
-                className='text-gray-800 text-base font-normal  leading-normal'
-              >
+            <div
+              onClick={() => handleModal(false)}
+              className='self-stretch px-4 py-3.5 bg-gray-100 rounded-lg border border-gray-100 justify-center items-center gap-2 inline-flex'
+            >
+              <div className='text-gray-800 text-base font-normal  leading-normal'>
                 Cancel
               </div>
             </div>
