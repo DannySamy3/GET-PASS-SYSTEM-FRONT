@@ -28,6 +28,7 @@ const authenticator = createSlice({
       state.user = null;
       state.token = null;
       localStorage.clear();
+      state.isAuthenticated = false;
     },
   },
 });

@@ -1,9 +1,17 @@
 import React from "react";
+import { useRouter } from "next/navigation";
+
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch } from "@/utils/store";
+import { logout } from "../../utils/authenticatorSlice";
 
 const Modal: React.FC<any> = ({ handleModal }) => {
+  const dispatch = useDispatch<AppDispatch>();
+  const router = useRouter();
+
   const handleLogout = () => {
-    localStorage.clear();
     handleModal(false);
+    dispatch(logout());
   };
   return (
     <div className='fixed inset-0 z-50 flex items-center justify-center font-montserrat'>
@@ -59,12 +67,12 @@ const Modal: React.FC<any> = ({ handleModal }) => {
         <div className='self-stretch h-28 flex-col justify-start items-start gap-2 flex'>
           <div className='self-stretch h-[52px] flex-col justify-start items-start gap-2 flex'>
             <div className='self-stretch h-[52px] flex-col justify-start items-center gap-4 flex'>
-              <div className='self-stretch cursor-pointer px-4 py-3.5 bg-red-500 rounded-lg justify-center items-center gap-2 inline-flex'>
+              <div
+                onClick={handleLogout}
+                className='self-stretch cursor-pointer px-4 py-3.5 bg-red-500 rounded-lg justify-center items-center gap-2 inline-flex'
+              >
                 <div className='justify-start items-center gap-2 flex'>
-                  <div
-                    onClick={() => handleLogout()}
-                    className='text-white text-base font-semibold  leading-normal'
-                  >
+                  <div className='text-white text-base font-semibold  leading-normal'>
                     Proceed
                   </div>
                 </div>

@@ -49,9 +49,8 @@ const Login = () => {
       });
 
       if (response.status === 200) {
-        setTimeout(() => {
-          router.replace("/dashboard");
-        }, 5000);
+        router.replace("/dashboard");
+
         dispatch(
           loginSuccess({ token: response.data.token, user: response.data.user })
         );
@@ -67,9 +66,28 @@ const Login = () => {
     }
   };
 
+  const preventBackNavigation = () => {
+    // Push a new state to the history stack to prevent going back
+    window.history.pushState(null, "", window.location.href);
+
+    // Disable back navigation by listening to the popstate event
+    window.onpopstate = function () {
+      // Every time the user presses the back button, re-push the state
+      window.history.pushState(null, "", window.location.href);
+    };
+
+    // Also, prevent refresh and navigating away using beforeunload event
+    window.onbeforeunload = function () {
+      // Display a confirmation message if the user tries to refresh or close
+      return;
+    };
+  };
+
   useEffect(() => {
     if (login) {
       router.push("/dashboard");
+    } else {
+      preventBackNavigation();
     }
   }, [login, router]);
 
