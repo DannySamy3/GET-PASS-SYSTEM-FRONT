@@ -72,7 +72,7 @@ const Calendar = () => {
   const days = generateCalendarDays(currentDate);
 
   return (
-    <div className='w-[100%] lg:w-[30%] md:w-[45%]  lg:mt-0 md:mt-0  h-[330px] md:h-[380px] lg:h-[380px] bg-white dark:bg-neutral-900 rounded-xl shadow overflow-hidden font-montserrat'>
+    <div className='w-[100%] lg:w-[30%] md:w-[45%]  lg:mt-0 md:mt-0  h-[330px] md:h-[380px] lg:min-h-[30%] lg:mb-3 bg-white dark:bg-neutral-900 rounded-xl shadow-lg overflow-hidden font-montserrat'>
       {/* Month Navigation */}
       <div className='flex justify-between items-center p-4 bg-white dark:bg-neutral-800 border-b border-gray-200 dark:border-neutral-700'>
         <button
