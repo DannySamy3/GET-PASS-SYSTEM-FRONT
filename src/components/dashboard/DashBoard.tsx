@@ -209,7 +209,7 @@ const DashBoard = () => {
   ];
 
   return (
-    <div className='w-full max-w-full px-4 mt-3 h-fit sm:px-6'>
+    <div className='w-full max-w-full px-4 mt-3 h-full  sm:px-6'>
       <Header title={"Dashboard"} view={() => {}} />
 
       <div className='mb-8 flex flex-col sm:w-full sm:flex-row justify-between items-center space-y-4 sm:space-y-0'>
@@ -261,7 +261,7 @@ const DashBoard = () => {
         </div>
       </div>
 
-      <div className=' mt-5 flex flex-col gap-4  md:flex md:flex-row   md:gap-4 lg:gap-8 lg:flex lg:mt-24 lg:flex-row md:mt-24  '>
+      <div className=' mt-5 flex flex-col gap-4  md:flex md:flex-row    md:gap-4 lg:gap-8 lg:flex lg:mt-24 lg:flex-row md:mt-24  '>
         <DashboardGraph />
         <Calender />
       </div>
