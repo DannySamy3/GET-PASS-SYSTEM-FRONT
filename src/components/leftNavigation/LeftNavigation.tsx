@@ -7,18 +7,11 @@ import {
   faChevronLeft,
   faChevronUp,
   faChevronRight, // Use Chevron Right instead of Arrow Right
-  faHome,
-  faInfoCircle,
-  faCogs,
-  faEnvelope,
   faUser, // User icon
 } from "@fortawesome/free-solid-svg-icons";
-import { logout } from "@/utils/authenticatorSlice";
-import { useDispatch, useSelector } from "react-redux";
+
 import { usePathname } from "next/navigation";
 import { useRouter } from "next/navigation";
-import { log } from "console";
-import { json } from "stream/consumers";
 
 interface props {
   isCollapsed: any;
@@ -39,10 +32,12 @@ const LeftNavigation: React.FC<props> = ({
   const [userData, setUserData] = useState<any>();
 
   const handleLoggedInuser = () => {
-    const jsonString = localStorage.getItem("user") as any;
-    const user = JSON.parse(jsonString);
+    if (typeof window !== "undefined") {
+      const jsonString = localStorage.getItem("user") as any;
+      const user = JSON.parse(jsonString);
 
-    setUserData(user);
+      setUserData(user);
+    }
   };
 
   // User data (with user icon as avatar)
