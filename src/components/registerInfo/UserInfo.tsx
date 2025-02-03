@@ -20,7 +20,7 @@ export const UserInfo = () => {
   return (
     <div className='bg-white h-screen overflow-y-hidden'>
       <article className='flex flex-col mt-9'>
-        <section className='font-[500] mt-20 ml-44 mb-[95px] flex items-center text-3xl justify-center'>
+        <section className='font-[500] text-black mt-20 ml-44 mb-[95px] flex items-center text-3xl justify-center'>
           CREATE ACCOUNT
         </section>
 
