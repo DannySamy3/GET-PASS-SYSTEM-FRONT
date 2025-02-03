@@ -32,6 +32,11 @@
   animation: swipe-up 0.5s ease-out;
 }
 
+.input {
+  background-color: white !important;
+  color: black !important;
+}
+
 body {
   color: var(--foreground);
   background: var(--background);
