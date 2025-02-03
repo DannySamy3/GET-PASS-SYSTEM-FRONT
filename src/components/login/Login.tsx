@@ -94,7 +94,7 @@ const Login = () => {
   return (
     <div className='bg-white font-montserrat h-screen overflow-y-hidden'>
       <article className='flex h-screen'>
-        <section className='w-[50%] font-[500] flex flex-col text-[32px] justify-center items-center'>
+        <section className='w-[50%] text-[#000000] font-[500] flex flex-col text-[32px] justify-center items-center'>
           GATE PASS SYSTEM
         </section>
 
@@ -198,7 +198,7 @@ const Login = () => {
               </div>
               <div className='flex items-center'>
                 <div className='flex-grow h-[1px] bg-[#BDBDBD]'></div>
-                <label className='font-[500] text-[15px] mx-2'>
+                <label className='font-[500] text-[15px] mx-2 text-black'>
                   CREATE ACCOUNT
                 </label>
                 <div className='flex-grow h-[1px] bg-[#BDBDBD]'></div>
