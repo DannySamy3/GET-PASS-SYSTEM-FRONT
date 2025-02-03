@@ -102,7 +102,7 @@ const Login = () => {
           <div className='flex justify-center text-black font-montserrat font-[500] mb-20 text-[32px]'>
             LOGIN
           </div>
-          <section className='w-[50%] mx-auto flex flex-col gap-3'>
+          <section className='w-[50%] mx-auto flex flex-col gap-1'>
             <input
               name='email'
               value={input.email}
@@ -175,7 +175,7 @@ const Login = () => {
               </p>
             </div>
             <section>
-              <div className='w-full my-7'>
+              <div className='w-full my-5'>
                 <button
                   onClick={implementLogin}
                   disabled={loading || emailError}
@@ -203,7 +203,7 @@ const Login = () => {
                 </label>
                 <div className='flex-grow h-[1px] bg-[#BDBDBD]'></div>
               </div>
-              <div className='w-full my-6'>
+              <div className='w-full my-5'>
                 <button
                   onClick={() => router.push("/registration")}
                   className='bg-[#A5A5A5] font-[600] border w-full text-[14px] py-3 text-white rounded-lg'
