@@ -3,10 +3,10 @@
 import "./globals.css";
 import { useState, useEffect } from "react";
 import LeftNavigation from "@/components/leftNavigation/LeftNavigation";
-import { useDispatch, useSelector } from "react-redux";
-import { ToastContainer } from "react-toastify";
+import { useSelector } from "react-redux";
+
 import "react-toastify/dist/ReactToastify.css"; // Import the Toastify CSS
-import { useRouter, usePathname } from "next/navigation"; // Use usePathname
+import { useRouter } from "next/navigation"; // Use usePathname
 
 import { selectLogin, selectSync } from "@/utils/authenticatorSlice";
 import { Provider } from "react-redux";

@@ -3,7 +3,7 @@ import axiosInstance from "./axioInstance";
 export const sendToken = async (email: string) => {
   try {
     const response = await axiosInstance.post("getPass/auth", { email });
-
+    console.log("sending..");
     return response;
   } catch (error) {
     console.log(error);
@@ -49,6 +49,7 @@ export const completeRegister = async (data: any) => {
 export const handleLogin = async (data: any) => {
   try {
     const response = await axiosInstance.post("getPass/auth/login", data);
+    console.log("sending..");
     return response;
   } catch (error) {
     throw error;
