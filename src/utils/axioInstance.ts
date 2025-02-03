@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const axiosInstance = axios.create({
-  baseURL: "http://34.35.37.25:8000/",
+  baseURL: "https://getpass.duckdns.org/",
   timeout: 10000,
 });
 
