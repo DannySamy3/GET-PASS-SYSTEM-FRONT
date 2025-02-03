@@ -98,7 +98,7 @@ const Login = () => {
           GATE PASS SYSTEM
         </section>
 
-        <section className='w-[50%] mt-40'>
+        <section className='w-[50%] flex flex-col items-center justify-center'>
           <div className='flex justify-center text-black font-montserrat font-[500] mb-20 text-[32px]'>
             LOGIN
           </div>
