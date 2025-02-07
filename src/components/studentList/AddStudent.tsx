@@ -154,7 +154,7 @@ export const AddStudent = () => {
 
   return (
     <div className='relative'>
-      <section className='my-4 bg-gradient-to-tr from-gray-100 to-gray-50 border font-montserrat py-4 rounded-[12px] w-full'>
+      <section className='my-4 bg-gradient-to-tr from-gray-100 to-gray-50 h-screen overflow-y-scroll border font-montserrat py-4 rounded-[12px] w-full'>
         <section className='flex px-12 flex-col my-3 gap-y-[10px]'>
           <label className='text-sm text-[#414141] font-[500]'>
             First Name
