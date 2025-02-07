@@ -218,7 +218,7 @@ export const StudentList = () => {
       )}
 
       {!changeView && !viewDetails.view && (
-        <section className=' bg-white mt-12 h-[85%] font-montserrat border overflow-y-hidden     border-[#D6D4D4] rounded-[12px] w-full '>
+        <section className=' bg-white mt-12  font-montserrat border overflow-y-hidden     border-[#D6D4D4] rounded-[12px] w-full '>
           <article
             ref={containerRef}
             className=' pt-12 pb-6  px-14 flex flex-col gap-8 '
@@ -294,7 +294,7 @@ export const StudentList = () => {
                 </select>
               </div>
             </section>
-            <div className=' h-[540px] overflow-y-auto    '>
+            <div className=' max-h-[500px]     '>
               <section className='h-auto  px-2  '>
                 {/* Fixed Header */}
                 <div className='grid grid-cols-[0.1fr_0.2fr_0.2fr_0.2fr_0.3fr_0.2fr_0.1fr] gap-y-3'>
