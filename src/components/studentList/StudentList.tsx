@@ -201,7 +201,7 @@ export const StudentList = () => {
   }, []);
 
   return (
-    <div className='w-full   max-w-full px-4 sm:px-6'>
+    <div className='w-full h-full   max-w-full px-4 sm:px-6'>
       <Header
         title={changeView && !viewDetails.view ? "Registration" : "Management"}
         view={{ setChangeView, changeView }}
