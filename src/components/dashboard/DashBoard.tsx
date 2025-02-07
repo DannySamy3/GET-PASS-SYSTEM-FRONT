@@ -261,7 +261,7 @@ const DashBoard = () => {
         </div>
       </div>
 
-      <div className=' mt-5 flex flex-col gap-4  md:flex md:flex-row h-auto    md:gap-4 lg:gap-8 lg:flex  lg:flex-row md:mt-24  '>
+      <div className='  flex flex-col gap-4  md:flex md:flex-row lg:h-[400px]    md:gap-4 lg:gap-8 lg:flex  lg:flex-row md:mt-24  '>
         <DashboardGraph />
         <Calender />
       </div>
