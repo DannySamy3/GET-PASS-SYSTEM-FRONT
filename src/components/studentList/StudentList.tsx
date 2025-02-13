@@ -224,7 +224,7 @@ export const StudentList = () => {
             className=' pt-12 pb-6  px-14 flex flex-col gap-8 '
           >
             <section className='  flex justify-between items-center  '>
-              <label className='input text-sm border border-[#D6D4D4] input-[5px] w-[85%] input-bordered flex items-center gap-2'>
+              <label className='input text-sm border border-[#D6D4D4] input-[5px] w-full input-bordered flex items-center gap-2'>
                 <input
                   onChange={(e) => setInput(e.target.value)}
                   onKeyDown={(e) => {
@@ -325,7 +325,7 @@ export const StudentList = () => {
                 {/* Divider line */}
 
                 {/* Scrollable Content */}
-                <div className='overflow-y-auto max-h-[460px] grid grid-cols-[0.1fr_0.2fr_0.2fr_0.2fr_0.3fr_0.2fr_0.1fr] gap-y-4 mt-3'>
+                <div className='overflow-y-auto  grid grid-cols-[0.1fr_0.2fr_0.2fr_0.2fr_0.3fr_0.2fr_0.1fr] gap-y-4 mt-3'>
                   {studentsData.students?.map((student: any, i: any) => (
                     <div
                       onClick={() => {
