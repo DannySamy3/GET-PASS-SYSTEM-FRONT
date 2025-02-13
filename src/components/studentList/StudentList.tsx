@@ -294,7 +294,7 @@ export const StudentList = () => {
                 </select>
               </div>
             </section>
-            <div className=' max-h-[500px]     '>
+            <div className='     '>
               <section className='h-auto  px-2  '>
                 {/* Fixed Header */}
                 <div className='grid grid-cols-[0.1fr_0.2fr_0.2fr_0.2fr_0.3fr_0.2fr_0.1fr] gap-y-3'>

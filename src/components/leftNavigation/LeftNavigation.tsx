@@ -14,7 +14,7 @@ import { usePathname } from "next/navigation";
 import { useRouter } from "next/navigation";
 
 interface props {
-  isCollapsed: any;
+  isCollapsed: boolean;
   setIsCollapsed: any;
   toggleCollapse: any;
   closeNav: any;
@@ -33,10 +33,18 @@ const LeftNavigation: React.FC<props> = ({
 
   const handleLoggedInuser = () => {
     if (typeof window !== "undefined") {
-      const jsonString = localStorage.getItem("user") as any;
-      const user = JSON.parse(jsonString);
-
-      setUserData(user);
+      const jsonString = localStorage.getItem("user");
+      if (jsonString) {
+        // Check if jsonString is not null
+        try {
+          const user = JSON.parse(jsonString);
+          setUserData(user);
+        } catch (error) {
+          console.error("Error parsing user data from localStorage:", error);
+        }
+      } else {
+        console.warn("No user data found in localStorage");
+      }
     }
   };
 
