@@ -223,7 +223,7 @@ export const StudentList = () => {
             ref={containerRef}
             className=' pt-12 pb-6  px-14 flex flex-col gap-8 '
           >
-            <section className='  flex justify-between items-center  '>
+            <section className='  flex justify-between items-center   '>
               <label className='input text-sm border border-[#D6D4D4] input-[5px] min-w-[78%] input-bordered flex items-center gap-2'>
                 <input
                   onChange={(e) => setInput(e.target.value)}
@@ -253,7 +253,7 @@ export const StudentList = () => {
                   />
                 </svg>
               </label>
-              <div className=' flex justify-around w-[22%] items-center'>
+              <div className=' flex justify-around w-[24%] items-center'>
                 <label className='text-[#585858] font-[500] text-sm w-auto'>
                   {`
     ${
