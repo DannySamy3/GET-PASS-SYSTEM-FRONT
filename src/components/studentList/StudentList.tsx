@@ -218,7 +218,7 @@ export const StudentList = () => {
       )}
 
       {!changeView && !viewDetails.view && (
-        <section className=' bg-white mt-12 min-h-[500px] max-h-[600px] overflow-y-scroll font-montserrat border overflow-y-hidden     border-[#D6D4D4] rounded-[12px] w-full '>
+        <section className=' bg-white mt-12  max-h-[600px] overflow-y-scroll font-montserrat border overflow-y-hidden     border-[#D6D4D4] rounded-[12px] w-full '>
           <article
             ref={containerRef}
             className=' pt-12 pb-6  px-14 flex flex-col gap-8 '
