@@ -142,7 +142,7 @@ export const DashboardGraph = () => {
   }, []);
 
   return (
-    <div className='w-full lg:block    md:mb-0 md:w-[55%] px-2 lg:max-w-full  lg:w-[69%] lg:h-auto lg:mb-3  bg-white h-auto md:h-[380px]  shadow-lg rounded-lg '>
+    <div className='w-full lg:block    md:mb-0 md:w-[55%] px-2 lg:max-w-full  lg:w-[69%] lg:h-[40vh] lg:mb-3  bg-white h-auto md:h-[380px]  shadow-lg rounded-lg '>
       <div className='w-full  h-full'>
         <Bar data={data} options={options} />
       </div>
