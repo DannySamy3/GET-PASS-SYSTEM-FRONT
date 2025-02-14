@@ -325,7 +325,7 @@ export const StudentList = () => {
                 {/* Divider line */}
 
                 {/* Scrollable Content */}
-                <div className=' overflow-y-auto h-[52vh]   grid grid-cols-[0.1fr_0.2fr_0.2fr_0.2fr_0.3fr_0.2fr_0.1fr] gap-y-4 mt-3'>
+                <div className=' overflow-y-auto h-[48vh]   grid grid-cols-[0.1fr_0.2fr_0.2fr_0.2fr_0.3fr_0.2fr_0.1fr] gap-y-4 mt-3'>
                   {studentsData.students?.map((student: any, i: any) => (
                     <div
                       onClick={() => {
