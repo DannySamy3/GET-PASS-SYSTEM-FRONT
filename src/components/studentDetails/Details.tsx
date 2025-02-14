@@ -148,7 +148,7 @@ export const Details: React.FC<props> = ({ id, setView, setDate }) => {
               onChange={(e: any) => setSelectStatus(e.target.value)}
               className=' select select-sm w-fit border font-[500] border-[#737171] text-[#8B8B8B] text-[15px]'
             >
-              <option value={""}>Change Status</option>
+              <option value={""}>EDIT STATUS</option>
               <option
                 value={"REGISTERED"}
                 className=' text-[#1BAD22] text-[15px] font-[600]'
