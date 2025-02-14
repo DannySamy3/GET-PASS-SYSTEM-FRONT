@@ -241,7 +241,7 @@ const Course = () => {
         </div>
       </section>
 
-      <section className='px-20 py-7 gap-y-6 my-10 mx-auto w-[98%] bg-[#FDFDFD] border border-[#D6D4D4] rounded-xl h-[440px] overflow-y-auto'>
+      <section className='px-20 py-7 gap-y-6 my-10 mx-auto w-[98%] bg-[#FDFDFD] border border-[#D6D4D4] rounded-xl h-[400px] overflow-y-auto'>
         <div className='grid grid-cols-[1.2fr_1.2fr_1.2fr_0.2fr] gap-y-6'>
           <label className='text-[#383A3A] font-[500] text-base'>Name</label>
           <label className='text-[#383A3A] font-[500] text-base'>Year(s)</label>
