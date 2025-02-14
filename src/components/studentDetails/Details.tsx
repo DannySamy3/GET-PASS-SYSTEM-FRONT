@@ -90,49 +90,49 @@ export const Details: React.FC<props> = ({ id, setView, setDate }) => {
           <label className=' text-[15px] font-[500] text-[#414141]'>
             Full Name
           </label>
-          <span className=' text-[15px] font-[500] text-[#414141]   '>{`${
+          <span className=' text-[15px] font-[500] text-[#8B8B8B]   '>{`${
             student?.firstName ?? ""
           } ${student?.secondName ?? ""} ${student?.lastName ?? ""}`}</span>
           <label className=' text-[15px] font-[500] text-[#414141]'>
             Gender
           </label>
-          <span className=' text-[15px] font-[500] text-[#414141] '>
+          <span className=' text-[15px] font-[500] text-[#8B8B8B] '>
             {student?.gender}
           </span>
           <label className=' text-[15px] font-[500] text-[#414141]'>
             Email
           </label>
-          <span className=' text-[15px] font-[500] text-[#414141] '>
+          <span className=' text-[15px] font-[500] text-[#8B8B8B] '>
             {student?.email}
           </span>
           <label className=' text-[15px] font-[500] text-[#414141]'>
             Phone Number
           </label>
-          <span className=' text-[15px] font-[500] text-[#414141]  '>
+          <span className=' text-[15px] font-[500] text-[#8B8B8B]  '>
             {student?.phoneNumber}
           </span>
           <label className=' text-[15px] font-[500] text-[#414141]'>
             Nationality
           </label>
-          <span className=' text-[15px] font-[500] text-[#414141]  '>
+          <span className=' text-[15px] font-[500] text-[#8B8B8B]  '>
             {student?.nationality}
           </span>
           <label className=' text-[15px] font-[500] text-[#414141]'>
             Class
           </label>
-          <span className=' text-[15px] font-[500] text-[#414141] '>
+          <span className=' text-[15px] font-[500] text-[#8B8B8B] '>
             {student?.className}
           </span>
           <label className=' text-[15px] font-[500] text-[#414141]'>
             Registration Number
           </label>
-          <span className=' text-[15px] font-[500] text-[#414141]  '>
+          <span className=' text-[15px] font-[500] text-[#8B8B8B]  '>
             {student?.regNo}
           </span>
           <label className=' text-[15px] font-[500] text-[#414141]'>
             Sponsor
           </label>
-          <span className=' text-[15px] font-[500] text-[#414141]'>
+          <span className=' text-[15px] font-[500] text-[#8B8B8B]'>
             {student?.sponsorName}
           </span>
           {/* <label className=' text-[15px] font-[500] text-[#414141]'>
@@ -146,7 +146,7 @@ export const Details: React.FC<props> = ({ id, setView, setDate }) => {
           {edit ? (
             <select
               onChange={(e: any) => setSelectStatus(e.target.value)}
-              className=' select select-sm w-fit border font-[500] border-[#737171] text-[#414141] text-[15px]'
+              className=' select select-sm w-fit border font-[500] border-[#737171] text-[#8B8B8B] text-[15px]'
             >
               <option value={""}>{student?.status}</option>
               <option
