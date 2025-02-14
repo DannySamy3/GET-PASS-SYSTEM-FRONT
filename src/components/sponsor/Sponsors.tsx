@@ -237,7 +237,7 @@ const Sponsors = () => {
           <label className='text-[#383A3A] font-[500] text-base'>Actions</label>
         </div>
 
-        <div className='overflow-y-auto grid grid-cols-[1.2fr_1.2fr_1.2fr_0.2fr] gap-y-6 mt-5 h-[400px]'>
+        <div className='overflow-y-auto grid grid-cols-[1.2fr_1.2fr_1.2fr_0.2fr] gap-y-6 mt-5 h-[40vh]'>
           {renderSponsorsList()}
         </div>
       </section>
