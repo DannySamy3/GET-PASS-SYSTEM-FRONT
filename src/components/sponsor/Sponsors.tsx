@@ -187,7 +187,7 @@ const Sponsors = () => {
     <div className='w-full max-w-full px-4 sm:px-6 font-montserrat'>
       <Header title='Sponsors' view={() => {}} />
 
-      <section className='mx-auto w-[98%] mt-16 py-10 px-8 max-h-[170px] overflow-y-scroll border border-[#E3E2E2] rounded-[12px]'>
+      <section className='mx-auto w-[98%] mt-16 py-10 px-8 h-[170px] overflow-y-scroll border border-[#E3E2E2] rounded-[12px]'>
         <div className='flex gap-[30%] items-center justify-center'>
           <div className='flex gap-4 items-center w-[40%]'>
             <label className='text-[#383A3A] font-[500] text-[17px]'>
@@ -226,7 +226,7 @@ const Sponsors = () => {
         </div>
       </section>
 
-      <section className='px-20 py-7 gap-y-6 my-10 mx-auto w-[98%] bg-[#FDFDFD] border border-[#D6D4D4] rounded-xl min-h-[400px] max-h-[530px]'>
+      <section className='px-20 py-7 gap-y-6 my-10 mx-auto w-[98%] bg-[#FDFDFD] border border-[#D6D4D4] rounded-xl h-[450px]'>
         <div className='grid grid-cols-[1.2fr_1.2fr_1.2fr_0.2fr] gap-y-6'>
           <label className='text-[#383A3A] font-[500] text-base'>Name</label>
           <label className='text-[#383A3A] font-[500] text-base'>
