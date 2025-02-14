@@ -60,7 +60,9 @@ export const Details: React.FC<props> = ({ id, setView, setDate }) => {
     <div className=' bg-white my-12 py-10     px-[56px] font-montserrat border overflow-y-hidden     border-[#D6D4D4] rounded-[12px] w-full '>
       <section>
         <div className=' flex justify-between items-center mt-1 mb-9'>
-          <span className=' font-[600] text-lg'>STUDENT DETAILS</span>
+          <span className=' font-[600] text-[#475053] text-lg'>
+            STUDENT DETAILS
+          </span>
           <div className=' w-[15%] flex justify-between items-center'>
             <button
               onClick={() => {
