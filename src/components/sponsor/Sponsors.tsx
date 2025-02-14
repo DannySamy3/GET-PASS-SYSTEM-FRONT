@@ -203,7 +203,7 @@ const Sponsors = () => {
           </div>
           <div className='flex gap-4 items-center w-[40%]'>
             <label className='text-[#383A3A] font-[500] text-[17px]'>
-              Mini Amount
+              Amount
             </label>
             <input
               name='Amount'
@@ -232,9 +232,7 @@ const Sponsors = () => {
       >
         <div className='grid grid-cols-[1.2fr_1.2fr_1.2fr_0.2fr] gap-y-6'>
           <label className='text-[#383A3A] font-[500] text-base'>Name</label>
-          <label className='text-[#383A3A] font-[500] text-base'>
-            Mini Amount
-          </label>
+          <label className='text-[#383A3A] font-[500] text-base'>Amount</label>
           <label className='text-[#383A3A] font-[500] text-base'>Usage</label>
           <label className='text-[#383A3A] font-[500] text-base'>Actions</label>
         </div>
