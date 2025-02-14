@@ -185,7 +185,7 @@ const Course = () => {
   };
 
   return (
-    <div className='w-full max-w-full px-4 sm:px-6 font-montserrat'>
+    <div className='w-full max-w-full px-4 h-screen sm:px-6 font-montserrat'>
       <Header title='Course' view={() => {}} />
 
       <section className='mx-auto w-[98%] mt-16 py-7 px-8 h-[170px] border border-[#E3E2E2] rounded-[12px]'>
@@ -251,7 +251,7 @@ const Course = () => {
           <label className='text-[#383A3A] font-[500] text-base'>Actions</label>
         </div>
 
-        <div className='overflow-y-auto grid grid-cols-[1.2fr_1.2fr_1.2fr_0.2fr] gap-y-6 mt-5 max-h-[400px]'>
+        <div className='overflow-y-auto grid grid-cols-[1.2fr_1.2fr_1.2fr_0.2fr] gap-y-6 mt-5 h-[40vh]'>
           {renderSponsorsList()}
         </div>
       </section>
