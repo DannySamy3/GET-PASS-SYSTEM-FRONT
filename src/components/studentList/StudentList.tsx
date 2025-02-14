@@ -218,7 +218,7 @@ export const StudentList = () => {
       )}
 
       {!changeView && !viewDetails.view && (
-        <section className=' bg-white mt-12  h-[80vh] overflow-y-scroll font-montserrat border overflow-y-hidden     border-[#D6D4D4] rounded-[12px] w-full '>
+        <section className=' bg-white mt-12  h-[80vh] overflow-y-hidden font-montserrat border     border-[#D6D4D4] rounded-[12px] w-full '>
           <article
             ref={containerRef}
             className=' pt-12 pb-6  px-14 flex flex-col gap-8 '
@@ -295,7 +295,7 @@ export const StudentList = () => {
               </div>
             </section>
             <div className='     '>
-              <section className='h-auto  px-2  '>
+              <section className='  px-2  '>
                 {/* Fixed Header */}
                 <div className='grid grid-cols-[0.1fr_0.2fr_0.2fr_0.2fr_0.3fr_0.2fr_0.1fr] gap-y-3'>
                   <label className='text-[#475053] text-start font-[500] text-base'>
@@ -325,7 +325,7 @@ export const StudentList = () => {
                 {/* Divider line */}
 
                 {/* Scrollable Content */}
-                <div className='overflow-y-auto  grid grid-cols-[0.1fr_0.2fr_0.2fr_0.2fr_0.3fr_0.2fr_0.1fr] gap-y-4 mt-3'>
+                <div className=' overflow-y-auto h-[50vh]   grid grid-cols-[0.1fr_0.2fr_0.2fr_0.2fr_0.3fr_0.2fr_0.1fr] gap-y-4 mt-3'>
                   {studentsData.students?.map((student: any, i: any) => (
                     <div
                       onClick={() => {
