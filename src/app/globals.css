@@ -7,6 +7,7 @@
 @import "slick-carousel/slick/slick-theme.css";
 
 @import "@fontsource/inter/index.css";
+@import "@fontsource/montserrat";
 
 :root {
   --background: #f9f9f9; /* Light mode background */
