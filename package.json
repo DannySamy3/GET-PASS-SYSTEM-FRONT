@@ -15,6 +15,7 @@
     "@heroicons/react": "^2.2.0",
     "@reduxjs/toolkit": "^2.5.0",
     "axios": "^1.7.9",
+    "body-parser": "^1.20.3",
     "chart.js": "^4.4.7",
     "daisyui": "^4.12.23",
     "lucide-react": "^0.468.0",
