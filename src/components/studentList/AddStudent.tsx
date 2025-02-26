@@ -70,7 +70,8 @@ export const AddStudent = () => {
   const handleFetchClasses = async () => {
     try {
       const response: any = await getClasses();
-      if (response && response.data) setClasses(response.data.classes);
+      console.log(".................", response);
+      if (response) setClasses(response.classes);
     } catch (error) {
       dispatch(
         showToast({ message: "Failed to fetch classes", type: "error" })
