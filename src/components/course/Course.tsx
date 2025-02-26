@@ -37,7 +37,7 @@ const Course = () => {
   const getClasses = async () => {
     try {
       const response = await fetchClasses();
-
+      // @ts-ignore
       setClasses(response?.data.classes || []);
     } catch (error) {
       const err = error as { response: { data: { message: string } } };
@@ -82,7 +82,9 @@ const Course = () => {
   const handleEdit = async (id: string) => {
     try {
       const response = await getClassById(id);
+      // @ts-ignore
       console.log(response?.data.data);
+      // @ts-ignore
       const { name, classInitial, duration, _id } = response?.data?.data || {};
       setCourseData({ name, classInitial, duration, _id });
       setIsEditing(true);

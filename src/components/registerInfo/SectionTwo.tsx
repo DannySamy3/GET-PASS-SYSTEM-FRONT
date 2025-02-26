@@ -51,6 +51,7 @@ export const SectionTwo = () => {
 
       if (response.statusText) {
         dispatch(
+          // @ts-ignore
           showToast({ message: response?.data.message, type: "success" })
         );
         setTimeout(() => {

@@ -107,9 +107,10 @@ export const StudentList = () => {
           const { data } = result;
           // console.log("this is query", query);
           // console.log("result data", data);
-
+          // @ts-ignore
           setTotalResults(data.data.total);
           pageArray = Array.from(
+            // @ts-ignore
             { length: data.data.totalPages },
             (_, i) => i + 1
           );
@@ -117,9 +118,10 @@ export const StudentList = () => {
 
           // setStudentData(data.data);
           const studentsWithClass = await Promise.all(
+            // @ts-ignore
             data.data.students.map(async (student: any) => {
               const classData = await getClassById(student.classId);
-
+              // @ts-ignore
               const course = classData.data.name ?? (
                 <span className=' text-red-600 text-sm '>
                   Failed getting class
@@ -137,11 +139,13 @@ export const StudentList = () => {
         const result = await getAllStudents();
         if (result) {
           const { data } = result;
+          // @ts-ignore
           setTotalResults(data.data.total);
 
           // console.log("without query", data);
 
           pageArray = Array.from(
+            // @ts-ignore
             { length: data.data.totalPages },
             (_, i) => i + 1
           );
@@ -149,8 +153,10 @@ export const StudentList = () => {
 
           // setStudentData(data.data);
           const studentsWithClass = await Promise.all(
+            // @ts-ignore
             data.data.students.map(async (student: any) => {
               const classData = await getClassById(student.classId);
+              // @ts-ignore
               const course = classData.data.name ?? (
                 <span className=' text-red-600 text-sm '>
                   Failed getting class

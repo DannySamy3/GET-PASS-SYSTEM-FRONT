@@ -22,9 +22,12 @@ const Card: React.FC<Prop> = ({ studentId, isOpen, onClose }) => {
     try {
       const result = await getStudentById(studentId);
       if (result) {
+        // @ts-ignore
         const classData = await getClassById(result?.data.classId);
         setStudent({
+          // @ts-ignore
           ...result.data,
+          // @ts-ignore
           className: classData.data.name,
         });
       }

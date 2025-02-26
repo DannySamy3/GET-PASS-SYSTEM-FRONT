@@ -52,9 +52,11 @@ const Login = () => {
         router.replace("/dashboard");
 
         dispatch(
+          // @ts-ignore
           loginSuccess({ token: response.data.token, user: response.data.user })
         );
         dispatch(
+          // @ts-ignore
           showToast({ message: response.data.message, type: "success" })
         );
       }

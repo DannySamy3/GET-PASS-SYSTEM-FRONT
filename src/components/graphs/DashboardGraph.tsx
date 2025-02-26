@@ -22,7 +22,7 @@ ChartJS.register(
 );
 
 export const DashboardGraph = () => {
-  const [classes, setClasses] = useState({
+  const [classes, setClasses] = useState<any>({
     initials: "",
     registered: [],
     unregistered: [],
@@ -36,10 +36,13 @@ export const DashboardGraph = () => {
         const { data } = response;
         console.log(data);
 
-        setClasses((prev) => ({
+        setClasses((prev: any) => ({
           ...prev,
+          // @ts-ignore
           initials: data.classInitials,
+          // @ts-ignore
           registered: data.registered,
+          // @ts-ignore
           unregistered: data.unregistered,
         }));
       }

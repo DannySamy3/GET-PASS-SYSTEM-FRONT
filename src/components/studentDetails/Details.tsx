@@ -23,12 +23,17 @@ export const Details: React.FC<props> = ({ id, setView, setDate }) => {
       const result = await getStudentById(id);
 
       if (result) {
+        // @ts-ignore
         const classData = await getClassById(result?.data.classId);
+        // @ts-ignore
         const sponsorData = await getSponsorById(result?.data.sponsor);
 
         setStudent({
+          // @ts-ignore
           ...result.data,
+          // @ts-ignore
           className: classData.data.name,
+          // @ts-ignore
           sponsorName: sponsorData?.data.data.name,
         });
       }

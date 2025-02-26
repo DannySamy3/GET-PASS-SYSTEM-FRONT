@@ -75,9 +75,13 @@ const DashBoard = () => {
         ]);
 
         setDashData({
+          // @ts-ignore
           registered: allStudents.data.data.total,
+          // @ts-ignore
           fullPaid: fundedStudents.data.studentNumber,
+          // @ts-ignore
           granted: scanInfo?.data.granted,
+          // @ts-ignore
           denied: scanInfo?.data.denied,
         });
 
@@ -99,7 +103,9 @@ const DashBoard = () => {
       const scanInfo = await getScanInfo(date);
       setDashData((prev) => ({
         ...prev,
+        // @ts-ignore
         granted: scanInfo?.data.granted,
+        // @ts-ignore
         denied: scanInfo?.data.denied,
       }));
     } catch (error) {

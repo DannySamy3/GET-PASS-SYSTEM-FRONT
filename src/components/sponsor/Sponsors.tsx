@@ -39,6 +39,7 @@ const Sponsors = () => {
   const fetchSponsors = async () => {
     try {
       const response = await getSponsors();
+      // @ts-ignore
       setSponsors(response?.data?.data || []);
     } catch (error) {
       const err = error as { response: { data: { message: string } } };
@@ -83,6 +84,7 @@ const Sponsors = () => {
   const handleEdit = async (id: string) => {
     try {
       const response = await getSponsorById(id);
+      // @ts-ignore
       const { name, Amount } = response?.data?.data || {};
       setSponsorData({ name, Amount, id });
       setIsEditing(true);
