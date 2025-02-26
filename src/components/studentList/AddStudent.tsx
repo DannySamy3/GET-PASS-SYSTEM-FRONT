@@ -70,7 +70,6 @@ export const AddStudent = () => {
   const handleFetchClasses = async () => {
     try {
       const response: any = await getClasses();
-      console.log(".................", response);
       if (response) setClasses(response.classes);
     } catch (error) {
       dispatch(
@@ -104,9 +103,9 @@ export const AddStudent = () => {
     Object.keys(userInfo).forEach((key) => {
       formData.append(key, userInfo[key as keyof User] as any);
     });
-    // if (userInfo.image) {
-    //   formData.append("image", userInfo.image);
-    // }
+    if (userInfo.image) {
+      formData.append("image", userInfo.image);
+    }
 
     try {
       const response = (await addStudent(formData)) as AddStudentResponse;
@@ -163,187 +162,175 @@ export const AddStudent = () => {
   }, []);
 
   return (
-    <div className='relative'>
-      <section className='my-4 bg-gradient-to-tr bg-gray-50 h-[86vh] border font-montserrat py-4 rounded-[12px] w-full shadow-lg'>
-        <h2 className='text-3xl font-bold text-center mb-6 text-gray-500'>
-          Add New Student
+    <div className='relative fl justify-center items-center h-[80%] '>
+      <section className='bg-white shadow-lg rounded-lg p-8 w-full max-'>
+        <h2 className='text-3xl font-bold text-center mb-6 text-gray-700'>
+          Register Student
         </h2>
-        <section className='flex px-12 flex-col my-3 gap-y-[10px]'>
-          <div className='grid grid-cols-1 md:grid-cols-2 gap-6'>
-            <div className='flex flex-col'>
-              <label className='text-sm text-[#414141] font-[500]'>
-                First Name
-              </label>
-              <input
-                onChange={handleChange}
-                value={userInfo.firstName}
-                required
-                name='firstName'
-                type='text'
-                placeholder="Enter student's first name"
-                className='border input input-md text-[#414141] border-[#D9CBCB] rounded-[8px] h-[34px] bg-white'
+        <div className='flex flex-col items-center mb-6'>
+          <input
+            name='image'
+            type='file'
+            accept='image/*'
+            onChange={handleChange}
+            className='hidden'
+            id='image-upload'
+          />
+          <label
+            htmlFor='image-upload'
+            className='cursor-pointer border border-gray-300 rounded-full h-32 w-32 flex items-center justify-center bg-white text-gray-700'
+          >
+            {userInfo.image ? (
+              <img
+                src={URL.createObjectURL(userInfo.image)}
+                alt='Student Photo'
+                className='h-full w-full rounded-full object-cover'
               />
-            </div>
-            <div className='flex flex-col'>
-              <label className='text-sm text-[#414141] font-[500]'>
-                Second Name
-              </label>
-              <input
-                name='secondName'
-                value={userInfo.secondName}
-                onChange={handleChange}
-                required
-                type='text'
-                placeholder="Enter student's middle name"
-                className='border input input-md text-[#414141] border-[#D9CBCB] rounded-[8px] h-[34px] bg-white'
-              />
-            </div>
-            <div className='flex flex-col'>
-              <label className='text-sm text-[#414141] font-[500]'>
-                SurName
-              </label>
-              <input
-                name='lastName'
-                value={userInfo.lastName}
-                onChange={handleChange}
-                required
-                type='text'
-                placeholder="Enter student's last name"
-                className='border input input-md text-[#414141] border-[#D9CBCB] rounded-[8px] h-[34px] bg-white'
-              />
-            </div>
-            <div className='flex flex-col'>
-              <label className='text-sm text-[#414141] font-[500]'>
-                Nationality
-              </label>
-              <select
-                name='nationality'
-                value={userInfo.nationality}
-                required
-                onChange={handleChange}
-                className='select select-sm border border-[#D9CBCB] h-[34px] bg-white'
-              >
-                <option value=''>Select Country</option>
-                {fetchCountries.map((country, i) => (
-                  <option key={i} value={country}>
-                    {country}
-                  </option>
-                ))}
-              </select>
-            </div>
-            <div className='flex flex-col'>
-              <label className='text-sm text-[#414141] font-[500]'>
-                Gender
-              </label>
-              <select
-                name='gender'
-                value={userInfo.gender}
-                required
-                onChange={handleChange}
-                className='select select-sm border border-[#D9CBCB] h-[34px] bg-white'
-              >
-                <option value={""}>Select Gender</option>
-                <option value='Female'>Female</option>
-                <option value='Male'>Male</option>
-              </select>
-            </div>
-            <div className='flex flex-col'>
-              <label className='text-sm text-[#414141] font-[500]'>
-                Phone Number
-              </label>
-              <input
-                name='phoneNumber'
-                onChange={handleChange}
-                value={userInfo.phoneNumber}
-                type='text'
-                required
-                placeholder='Enter an active mobile number'
-                className='border input text-[#414141] input-md border-[#D9CBCB] rounded-[8px] h-[34px] bg-white'
-              />
-            </div>
-            <div className='flex flex-col'>
-              <label className='text-sm text-[#414141] font-[500]'>Email</label>
-              <input
-                name='email'
-                value={userInfo.email}
-                required
-                onChange={handleChange}
-                type='email'
-                placeholder='Enter an active email'
-                className='border input text-[#414141] input-md border-[#D9CBCB] rounded-[8px] h-[34px] bg-white'
-              />
-            </div>
-            <div className='flex flex-col'>
-              <label className='text-sm text-[#414141] font-[500]'>Class</label>
-              <select
-                name='classId'
-                value={userInfo.classId}
-                required
-                onChange={handleChange}
-                className='select select-sm border border-[#D9CBCB] h-[34px] bg-white'
-              >
-                <option value=''>Select Class</option>
-                {classes.map((classId, i) => (
-                  <option key={i} value={classId._id}>
-                    {classId.name}
-                  </option>
-                ))}
-              </select>
-            </div>
-            <div className='flex flex-col'>
-              <label className='text-sm text-[#414141] font-[500]'>
-                Sponsor
-              </label>
-              <select
-                onChange={handleChange}
-                value={userInfo.sponsorId}
-                required
-                name='sponsorId'
-                className='select select-sm border border-[#D9CBCB] h-[34px] bg-white'
-              >
-                <option value=''>Select Sponsor</option>
-                {sponsors.map((sponsorId, i) => (
-                  <option key={i} value={sponsorId._id}>
-                    {sponsorId.name}
-                  </option>
-                ))}
-              </select>
-            </div>
-            <div className='flex flex-col col-span-1 md:col-span-2'>
-              <label className='text-sm text-[#414141] font-[500]'>Photo</label>
-              <div className='flex items-center'>
-                <input
-                  name='image'
-                  type='file'
-                  accept='image/*'
-                  onChange={handleChange}
-                  className='hidden'
-                  id='image-upload'
-                />
-                <label
-                  htmlFor='image-upload'
-                  className='cursor-pointer border border-[#D9CBCB] rounded-[8px] h-[34px] flex items-center justify-center px-4 py-2 bg-white text-[#414141]'
-                >
-                  Upload Photo
-                </label>
-                {userInfo.image && (
-                  <div className='ml-4'>
-                    <img
-                      src={URL.createObjectURL(userInfo.image)}
-                      alt='Student Photo'
-                      className='h-[34px] w-[34px] rounded-full object-cover'
-                    />
-                  </div>
-                )}
-              </div>
-            </div>
+            ) : (
+              "Upload Photo"
+            )}
+          </label>
+        </div>
+        <section className='grid grid-cols-1 md:grid-cols-2 gap-6'>
+          <div className='flex flex-col'>
+            <label className='text-sm text-gray-600 font-medium'>
+              First Name
+            </label>
+            <input
+              onChange={handleChange}
+              value={userInfo.firstName}
+              required
+              name='firstName'
+              type='text'
+              placeholder="Enter student's first name"
+              className='border input input-md text-gray-700 border-gray-300 rounded-md h-10 bg-white'
+            />
+          </div>
+          <div className='flex flex-col'>
+            <label className='text-sm text-gray-600 font-medium'>
+              Second Name
+            </label>
+            <input
+              name='secondName'
+              value={userInfo.secondName}
+              onChange={handleChange}
+              required
+              type='text'
+              placeholder="Enter student's middle name"
+              className='border input input-md text-gray-700 border-gray-300 rounded-md h-10 bg-white'
+            />
+          </div>
+          <div className='flex flex-col'>
+            <label className='text-sm text-gray-600 font-medium'>SurName</label>
+            <input
+              name='lastName'
+              value={userInfo.lastName}
+              onChange={handleChange}
+              required
+              type='text'
+              placeholder="Enter student's last name"
+              className='border input input-md text-gray-700 border-gray-300 rounded-md h-10 bg-white'
+            />
+          </div>
+          <div className='flex flex-col'>
+            <label className='text-sm text-gray-600 font-medium'>
+              Nationality
+            </label>
+            <select
+              name='nationality'
+              value={userInfo.nationality}
+              required
+              onChange={handleChange}
+              className='select select-sm border border-gray-300 h-10 bg-white rounded-md'
+            >
+              <option value=''>Select Country</option>
+              {fetchCountries.map((country, i) => (
+                <option key={i} value={country}>
+                  {country}
+                </option>
+              ))}
+            </select>
+          </div>
+          <div className='flex flex-col'>
+            <label className='text-sm text-gray-600 font-medium'>Gender</label>
+            <select
+              name='gender'
+              value={userInfo.gender}
+              required
+              onChange={handleChange}
+              className='select select-sm border border-gray-300 h-10 bg-white rounded-md'
+            >
+              <option value={""}>Select Gender</option>
+              <option value='Female'>Female</option>
+              <option value='Male'>Male</option>
+            </select>
+          </div>
+          <div className='flex flex-col'>
+            <label className='text-sm text-gray-600 font-medium'>
+              Phone Number
+            </label>
+            <input
+              name='phoneNumber'
+              onChange={handleChange}
+              value={userInfo.phoneNumber}
+              type='text'
+              required
+              placeholder='Enter an active mobile number'
+              className='border input text-gray-700 input-md border-gray-300 rounded-md h-10 bg-white'
+            />
+          </div>
+          <div className='flex flex-col'>
+            <label className='text-sm text-gray-600 font-medium'>Email</label>
+            <input
+              name='email'
+              value={userInfo.email}
+              required
+              onChange={handleChange}
+              type='email'
+              placeholder='Enter an active email'
+              className='border input text-gray-700 input-md border-gray-300 rounded-md h-10 bg-white'
+            />
+          </div>
+          <div className='flex flex-col'>
+            <label className='text-sm text-gray-600 font-medium'>Class</label>
+            <select
+              name='classId'
+              value={userInfo.classId}
+              required
+              onChange={handleChange}
+              className='select select-sm border border-gray-300 h-10 bg-white rounded-md'
+            >
+              <option value=''>Select Class</option>
+              {classes.map((classId, i) => (
+                <option key={i} value={classId._id}>
+                  {classId.name}
+                </option>
+              ))}
+            </select>
+          </div>
+          <div className='flex flex-col'>
+            <label className='text-sm text-gray-600 font-medium'>Sponsor</label>
+            <select
+              onChange={handleChange}
+              value={userInfo.sponsorId}
+              required
+              name='sponsorId'
+              className='select select-sm border border-gray-300 h-10 bg-white rounded-md'
+            >
+              <option value=''>Select Sponsor</option>
+              {sponsors.map((sponsorId, i) => (
+                <option key={i} value={sponsorId._id}>
+                  {sponsorId.name}
+                </option>
+              ))}
+            </select>
           </div>
         </section>
 
-        <div className='flex my-5 justify-center w-full'>
+        <div className='flex my-8 justify-center w-full'>
           <button
             onClick={addNewStudent}
-            className='btn rounded-[8px] border bg-[#3A7563] text-white w-[25%] hover:text-white btn-success'
+            className='btn rounded-md border bg-green-600 text-white w-1/4 hover:text-white btn-success'
           >
             Register
           </button>
