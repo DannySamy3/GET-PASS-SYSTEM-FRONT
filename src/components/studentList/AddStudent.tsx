@@ -165,7 +165,7 @@ export const AddStudent = () => {
     <div className='relative fl justify-center items-center h-[80%] '>
       <section className='bg-white shadow-lg rounded-lg p-8 w-full max-'>
         <h2 className='text-3xl font-bold text-center mb-6 text-gray-700'>
-          Register Student
+          Student Information
         </h2>
         <div className='flex flex-col items-center mb-6'>
           <input
