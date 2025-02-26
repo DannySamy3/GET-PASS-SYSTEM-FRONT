@@ -59,7 +59,7 @@ export const AddStudent = () => {
   const handleFetchSponsor = async () => {
     try {
       const response = await getSponsors();
-      if (response) setSponsors(response?.data.data);
+      if (response) setSponsors((response.data as { data: any }).data);
     } catch (error) {
       dispatch(
         showToast({ message: "Failed to fetch sponsors", type: "error" })
@@ -69,8 +69,8 @@ export const AddStudent = () => {
 
   const handleFetchClasses = async () => {
     try {
-      const response = await getClasses();
-      if (response) setClasses(response?.classes);
+      const response: any = await getClasses();
+      if (response && response.data) setClasses(response.data.classes);
     } catch (error) {
       dispatch(
         showToast({ message: "Failed to fetch classes", type: "error" })
