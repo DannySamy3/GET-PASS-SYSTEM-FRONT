@@ -47,64 +47,6 @@ const Card: React.FC<Prop> = ({ studentId, isOpen, onClose }) => {
       const printWindow = window.open("", "_blank");
       printWindow?.document.write("<html><head><title>Print</title>");
 
-      //   printWindow?.document.write(`
-      //   <style>
-      //     @media print {
-      //       body {
-      //         font-family: Arial, sans-serif;
-      //         margin:0;
-      //         padding: 0;
-      //         display:inline ;
-      //         width:"0";
-
-      //         justify-content: center;
-      //         align-items: center;
-      //         // height: 100vh;
-      //         background: white;
-      //       }
-
-      //       .card {
-      //         width: 24px; /* CR80 card width */
-      //         height: 24px; /* CR80 card height */
-      //         margin: 0 auto;
-      //         padding: 5mm; /* Allow some safe zone around the edges */
-      //         background-color: white;
-      //         border: 1px solid #ddd;
-      //         border-radius: 4px;
-      //         box-sizing: border-box;
-      //       }
-
-      //       .card svg {
-      //         width: 25mm; /* Adjust for QR code size */
-      //         height: 25mm;
-      //         display:inline;
-
-      //       }
-
-      //       .card .details {
-      //         font-size: 4mm; /* Adjust font size for readability */
-      //         text-align: center;
-      //       }
-
-      //       .card .header {
-      //         text-align: center;
-      //         font-size: 5mm; /* Emphasize the header */
-      //         margin-bottom: 4mm;
-      //       }
-
-      //       .card .qr-code {
-      //         margin-top: 15mm; /* Adjust spacing for alignment */
-      //         display: flex;
-      //         justify-content: center;
-      //       }
-
-      //       .card button {
-      //         display: none; /* Hide buttons during printing */
-      //       }
-      //     }
-      //   </style>
-      // `);
-
       printWindow?.document.write("</head><body>");
 
       // Clone the card content
@@ -155,22 +97,19 @@ const Card: React.FC<Prop> = ({ studentId, isOpen, onClose }) => {
             Student ID Card
           </div>
 
-          {/* Avatar Section */}
+          {/* Image Section */}
           <div className='flex justify-center'>
-            <svg
-              xmlns='http://www.w3.org/2000/svg'
-              fill='none'
-              viewBox='0 0 24 24'
-              strokeWidth={1.5}
-              stroke='black'
-              className='w-20 h-20' // For screen size
-            >
-              <path
-                strokeLinecap='round'
-                strokeLinejoin='round'
-                d='M17.982 18.725A7.488 7.488 0 0 0 12 15.75a7.488 7.488 0 0 0-5.982 2.975m11.963 0a9 9 0 1 0-11.963 0m11.963 0A8.966 8.966 0 0 1 12 21a8.966 8.966 0 0 1-5.982-2.275M15 9.75a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z'
+            {student?.image ? (
+              <img
+                src={student.image}
+                alt='Student'
+                className='h-32 w-32 rounded-full object-cover'
               />
-            </svg>
+            ) : (
+              <div className='h-32 w-32 rounded-full bg-gray-200 flex items-center justify-center'>
+                No Image
+              </div>
+            )}
           </div>
 
           {student ? (
