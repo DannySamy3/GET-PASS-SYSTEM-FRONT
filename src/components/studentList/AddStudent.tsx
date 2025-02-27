@@ -180,7 +180,7 @@ export const AddStudent = () => {
               name='firstName'
               type='text'
               placeholder="Enter student's first name"
-              className='border input input-md text-gray-700 border-gray-300 rounded-md h-10 bg-white'
+              className='border  input input-md text-gray-700 border-gray-300 rounded-md h-10 bg-white'
             />
           </div>
           <div className='flex flex-col'>
@@ -218,7 +218,7 @@ export const AddStudent = () => {
               value={userInfo.nationality}
               required
               onChange={handleChange}
-              className='select select-sm border border-gray-300 h-10 bg-white rounded-md'
+              className='select select-sm text-gray-700 border border-gray-300 h-10 bg-white rounded-md'
             >
               <option value=''>Select Country</option>
               {fetchCountries.map((country, i) => (
@@ -235,7 +235,7 @@ export const AddStudent = () => {
               value={userInfo.gender}
               required
               onChange={handleChange}
-              className='select select-sm border border-gray-300 h-10 bg-white rounded-md'
+              className='select select-sm border text-gray-700 border-gray-300 h-10 bg-white rounded-md'
             >
               <option value={""}>Select Gender</option>
               <option value='Female'>Female</option>
@@ -275,7 +275,7 @@ export const AddStudent = () => {
               value={userInfo.classId}
               required
               onChange={handleChange}
-              className='select select-sm border border-gray-300 h-10 bg-white rounded-md'
+              className='select select-sm border text-gray-700 border-gray-300 h-10 bg-white rounded-md'
             >
               <option value=''>Select Class</option>
               {classes.map((classId, i) => (
@@ -292,7 +292,7 @@ export const AddStudent = () => {
               value={userInfo.sponsorId}
               required
               name='sponsorId'
-              className='select select-sm border border-gray-300 h-10 bg-white rounded-md'
+              className='select select-sm border text-gray-700 border-gray-300 h-10 bg-white rounded-md'
             >
               <option value=''>Select Sponsor</option>
               {sponsors.map((sponsorId, i) => (
