@@ -103,9 +103,9 @@ export const AddStudent = () => {
     Object.keys(userInfo).forEach((key) => {
       formData.append(key, userInfo[key as keyof User] as any);
     });
-    if (userInfo.image) {
-      formData.append("image", userInfo.image);
-    }
+    // if (userInfo.image) {
+    //   formData.append("image", userInfo.image);
+    // }
 
     try {
       const response = (await addStudent(formData)) as AddStudentResponse;
