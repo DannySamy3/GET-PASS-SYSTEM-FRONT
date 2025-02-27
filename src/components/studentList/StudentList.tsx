@@ -342,7 +342,7 @@ export const StudentList = () => {
                         }));
                         setChangeView(true);
                       }}
-                      className='cursor-pointer group col-span-7 hover:text-white text-[#414141] grid grid-cols-[0.1fr_0.2fr_0.2fr_0.2fr_0.3fr_0.2fr_0.1fr] px-2 py-[10px] rounded-md hover:bg-[#1CA2BB]'
+                      className='cursor-pointer group col-span-7 hover:text-white text-[#414141] h-fit grid grid-cols-[0.1fr_0.2fr_0.2fr_0.2fr_0.3fr_0.2fr_0.1fr] px-2 py-[10px] rounded-md hover:bg-[#1CA2BB]'
                       key={i}
                     >
                       {/* Conditionally rendering the Card component when the 'viewCard' state is true */}
