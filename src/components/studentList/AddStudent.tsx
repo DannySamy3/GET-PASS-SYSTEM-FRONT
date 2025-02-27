@@ -162,35 +162,11 @@ export const AddStudent = () => {
   }, []);
 
   return (
-    <div className='relative fl justify-center items-center h-[80%] '>
-      <section className='bg-white shadow-lg rounded-lg p-8 w-full max-'>
+    <div className='relative flex justify-center items-center h-[85vh]'>
+      <section className='bg-white shadow-lg rounded-lg p-8 w-full '>
         <h2 className='text-3xl font-bold text-center mb-6 text-gray-700'>
           Student Information
         </h2>
-        <div className='flex flex-col items-center mb-6'>
-          <input
-            name='image'
-            type='file'
-            accept='image/*'
-            onChange={handleChange}
-            className='hidden'
-            id='image-upload'
-          />
-          <label
-            htmlFor='image-upload'
-            className='cursor-pointer border border-gray-300 rounded-full h-32 w-32 flex items-center justify-center bg-white text-gray-700'
-          >
-            {userInfo.image ? (
-              <img
-                src={URL.createObjectURL(userInfo.image)}
-                alt='Student Photo'
-                className='h-full w-full rounded-full object-cover'
-              />
-            ) : (
-              "Upload Photo"
-            )}
-          </label>
-        </div>
         <section className='grid grid-cols-1 md:grid-cols-2 gap-6'>
           <div className='flex flex-col'>
             <label className='text-sm text-gray-600 font-medium'>
@@ -324,6 +300,34 @@ export const AddStudent = () => {
                 </option>
               ))}
             </select>
+          </div>
+          <div className='flex flex-col col-span-1 md:col-span-2'>
+            <label className='text-sm text-gray-600 font-medium'>Photo</label>
+            <div className='flex items-center'>
+              <input
+                name='image'
+                type='file'
+                accept='image/*'
+                onChange={handleChange}
+                className='hidden'
+                id='image-upload'
+              />
+              <label
+                htmlFor='image-upload'
+                className='cursor-pointer border border-gray-300 rounded-md h-10 flex items-center justify-center px-4 py-2 bg-white text-gray-700'
+              >
+                Upload Photo
+              </label>
+              {userInfo.image && (
+                <div className='ml-4'>
+                  <img
+                    src={URL.createObjectURL(userInfo.image)}
+                    alt='Student Photo'
+                    className='h-10 w-10 rounded-full object-cover'
+                  />
+                </div>
+              )}
+            </div>
           </div>
         </section>
 
