@@ -5,6 +5,7 @@ import { getSponsorById } from "@/utils/sponsorController";
 import { useDispatch } from "react-redux";
 import { showToast } from "@/utils/toastSlice";
 import ToastNotification from "@/components/toastNotification/ToastNotification";
+
 interface props {
   id: any;
   setView: any;
@@ -62,127 +63,138 @@ export const Details: React.FC<props> = ({ id, setView, setDate }) => {
   }, [student?.status]);
 
   return (
-    <div className=' bg-white my-12 py-10     px-[56px] font-montserrat border overflow-y-hidden     border-[#D6D4D4] rounded-[12px] w-full '>
-      <section>
-        <div className=' flex justify-between items-center mt-1 mb-9'>
-          <span className=' font-[600] text-[#475053] text-lg'>
-            STUDENT DETAILS
-          </span>
-          <div className=' w-[15%] flex justify-between items-center'>
+    <div className=' h-[80vh] '>
+      <div className='bg-white shadow-lg rounded-lg p-8 w-full font-montserrat '>
+        <div className='flex justify-between items-center mb-6'>
+          <h2 className='text-3xl font-bold text-gray-700'>Student Details</h2>
+          <div className='flex space-x-4'>
             <button
               onClick={() => {
                 setView((prev: any) => ({ ...prev, view: false }));
                 setDate(false);
               }}
-              className=' w-[45%] btn btn-error text-white'
+              className='btn btn-error text-white'
             >
-              CANCEL
+              Cancel
             </button>
             <button
               onClick={() => {
                 setEdit((prev) => !prev);
                 if (edit) handleEditStatus(id);
               }}
-              className={`btn ${
-                edit ? "btn-success" : "btn-info"
-              } btn-info text-white w-[45%]`}
+              className={`btn ${edit ? "btn-success" : "btn-info"} text-white`}
             >
               {edit ? "Save" : "Edit"}
             </button>
           </div>
         </div>
-        <div className=' overflow-y-hidden grid grid-cols-[1fr_1fr] gap-y-9'>
-          <label className=' text-[15px] font-[500] text-[#414141]'>
-            Full Name
-          </label>
-          <span className=' text-[15px] font-[500] text-[#8B8B8B]   '>{`${
-            student?.firstName ?? ""
-          } ${student?.secondName ?? ""} ${student?.lastName ?? ""}`}</span>
-          <label className=' text-[15px] font-[500] text-[#414141]'>
-            Gender
-          </label>
-          <span className=' text-[15px] font-[500] text-[#8B8B8B] '>
-            {student?.gender}
-          </span>
-          <label className=' text-[15px] font-[500] text-[#414141]'>
-            Email
-          </label>
-          <span className=' text-[15px] font-[500] text-[#8B8B8B] '>
-            {student?.email}
-          </span>
-          <label className=' text-[15px] font-[500] text-[#414141]'>
-            Phone Number
-          </label>
-          <span className=' text-[15px] font-[500] text-[#8B8B8B]  '>
-            {student?.phoneNumber}
-          </span>
-          <label className=' text-[15px] font-[500] text-[#414141]'>
-            Nationality
-          </label>
-          <span className=' text-[15px] font-[500] text-[#8B8B8B]  '>
-            {student?.nationality}
-          </span>
-          <label className=' text-[15px] font-[500] text-[#414141]'>
-            Class
-          </label>
-          <span className=' text-[15px] font-[500] text-[#8B8B8B] '>
-            {student?.className}
-          </span>
-          <label className=' text-[15px] font-[500] text-[#414141]'>
-            Registration Number
-          </label>
-          <span className=' text-[15px] font-[500] text-[#8B8B8B]  '>
-            {student?.regNo}
-          </span>
-          <label className=' text-[15px] font-[500] text-[#414141]'>
-            Sponsor
-          </label>
-          <span className=' text-[15px] font-[500] text-[#8B8B8B]'>
-            {student?.sponsorName}
-          </span>
-          {/* <label className=' text-[15px] font-[500] text-[#414141]'>
-            Amount Paid
-          </label>
-          <span className=' text-[15px]  '>{"value"}</span> */}
-          <label className=' text-[15px] font-[600] text-[#414141]'>
-            Registration Status
-          </label>
-
-          {edit ? (
-            <select
-              onChange={(e: any) => setSelectStatus(e.target.value)}
-              className=' select select-sm w-fit border font-[500] border-[#737171] text-[#8B8B8B] text-[15px]'
-            >
-              <option value={""}>EDIT STATUS</option>
-              <option
-                value={"REGISTERED"}
-                className=' text-[#1BAD22] text-[15px] font-[600]'
-              >
-                REGISTERED
-              </option>
-              <option
-                value={"NOT REGISTERED"}
-                className='  text-[#FB5959]  text-[15px] font-[600]'
-              >
-                NOT REGISTERED
-              </option>
-            </select>
+        <div className='flex justify-center mb-6'>
+          {student?.image ? (
+            <img
+              src={student.image}
+              alt='Student'
+              className='h-32 w-32 rounded-full object-cover'
+            />
           ) : (
-            <span
-              className={` ${
-                student?.status === "NOT REGISTERED"
-                  ? "text-[#FB5959]"
-                  : "text-[#1BAD22]"
-              } text-[15px] font-[600]`}
-            >
-              {student?.status}
-            </span>
+            <div className='h-32 w-32 rounded-full bg-gray-200 flex items-center justify-center'>
+              No Image
+            </div>
           )}
-          {/* <select className=' rounded-lg border border-[#DBDADA] outline-none w-[50%]'>
-            <option>20000</option>
-          </select> */}
         </div>
-      </section>
+        <div className='grid grid-cols-1 md:grid-cols-2 gap-6'>
+          <div className='flex flex-col'>
+            <label className='text-[16px] text-gray-600 font-medium'>
+              Full Name
+            </label>
+            <span className='text-[15px] font-semibold  text-gray-700'>{`${
+              student?.firstName ?? ""
+            } ${student?.secondName ?? ""} ${student?.lastName ?? ""}`}</span>
+          </div>
+          <div className='flex flex-col'>
+            <label className='text-[16px] text-gray-600 font-medium'>
+              Gender
+            </label>
+            <span className='text-[15px] font-semibold text-gray-700'>
+              {student?.gender}
+            </span>
+          </div>
+          <div className='flex flex-col'>
+            <label className='text-[16px] text-gray-600 font-medium'>
+              Email
+            </label>
+            <span className='text-[15px] font-semibold text-gray-700'>
+              {student?.email}
+            </span>
+          </div>
+          <div className='flex flex-col'>
+            <label className='text-[16px] text-gray-600 font-medium'>
+              Phone Number
+            </label>
+            <span className='text-[15px] font-semibold text-gray-700'>
+              {student?.phoneNumber}
+            </span>
+          </div>
+          <div className='flex flex-col'>
+            <label className='text-[16px] text-gray-600 font-medium'>
+              Nationality
+            </label>
+            <span className='text-[15px] font-semibold text-gray-700'>
+              {student?.nationality}
+            </span>
+          </div>
+          <div className='flex flex-col'>
+            <label className='text-[16px] text-gray-600 font-medium'>
+              Class
+            </label>
+            <span className='text-[15px] font-semibold text-gray-700'>
+              {student?.className}
+            </span>
+          </div>
+          <div className='flex flex-col'>
+            <label className='text-[16px] text-gray-600 font-medium'>
+              Registration Number
+            </label>
+            <span className='text-[15px] font-semibold text-gray-700'>
+              {student?.regNo}
+            </span>
+          </div>
+          <div className='flex flex-col'>
+            <label className='text-sm text-gray-600 font-medium'>Sponsor</label>
+            <span className='text-[16px] font-semibold text-gray-700'>
+              {student?.sponsorName}
+            </span>
+          </div>
+          <div className='flex flex-col'>
+            <label className='text-sm text-gray-600 font-medium'>
+              Registration Status
+            </label>
+            {edit ? (
+              <select
+                onChange={(e: any) => setSelectStatus(e.target.value)}
+                className='select select-sm border border-gray-300  rounded-md text-gray-700'
+              >
+                <option value={""}>Edit Status</option>
+                <option value={"REGISTERED"} className='text-green-600'>
+                  REGISTERED
+                </option>
+                <option value={"NOT REGISTERED"} className='text-red-600'>
+                  NOT REGISTERED
+                </option>
+              </select>
+            ) : (
+              <span
+                className={`text-[15px] font-semibold  ${
+                  student?.status === "NOT REGISTERED"
+                    ? "text-red-600"
+                    : "text-green-600"
+                }`}
+              >
+                {student?.status}
+              </span>
+            )}
+          </div>
+        </div>
+      </div>
       <ToastNotification />
     </div>
   );

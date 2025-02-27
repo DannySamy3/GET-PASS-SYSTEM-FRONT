@@ -113,6 +113,7 @@ export const AddStudent = () => {
         dispatch(
           showToast({ message: "Student added successfully!", type: "success" })
         );
+
         setIsToastShown(true);
 
         setUserInfo({
