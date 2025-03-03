@@ -114,8 +114,8 @@ const Card: React.FC<Prop> = ({ studentId, isOpen, onClose }) => {
       container.style.display = "flex";
       container.style.flexDirection = "column";
       container.style.alignItems = "center";
-      container.style.width = "5in";
-      container.style.height = "7in";
+      container.style.width = "4.5in"; // Reduce the width a little bit
+      container.style.height = "6.5in"; // Reduce the height a little bit
       container.style.padding = "3px"; // Adjust padding to fit content on one page
       container.style.background = "#e0f7fa"; // Bluish background
       container.style.boxShadow = "0 4px 8px rgba(0, 0, 0, 0.1)";
