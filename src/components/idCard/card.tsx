@@ -35,18 +35,20 @@ const Card: React.FC<Prop> = ({ studentId, isOpen, onClose }) => {
       console.error("Error fetching student details:", error);
     }
   };
-  console.log(studentId);
 
   useEffect(() => {
     getDetails();
   }, []);
 
   if (!isOpen) return null; // Return null if modal is not open
+
   const handlePrint = () => {
     if (cardRef.current) {
       const printWindow = window.open("", "_blank");
       printWindow?.document.write("<html><head><title>Print</title>");
-
+      printWindow?.document.write(
+        "<style>@page { size: A4; margin: 0; } body { margin: 0; display: flex; align-items: center; justify-content: center; height: 100vh; font-family: Arial, sans-serif; }</style>"
+      );
       printWindow?.document.write("</head><body>");
 
       // Clone the card content
@@ -61,18 +63,66 @@ const Card: React.FC<Prop> = ({ studentId, isOpen, onClose }) => {
       });
 
       const buttons = printContent.querySelectorAll("button");
-      const svg = printContent.querySelector("svg");
+      const img = printContent.querySelector("img");
       const details = printContent.querySelector("article");
-      details?.style.setProperty("font", "20px");
+      const header = printContent.querySelector(".header") as HTMLElement;
+      const qrCode = printContent.querySelector(".qr-code") as HTMLElement;
 
-      svg?.style.setProperty("height", "150px");
-      svg?.style.setProperty("margin-top", "250px");
-      svg?.style.setProperty("width", "150px");
-      svg?.style.setProperty("display", "block");
-      svg?.style.setProperty("margin", "auto");
+      (details as HTMLElement)?.style.setProperty("font-size", "24px");
+      (details as HTMLElement)?.style.setProperty("margin-bottom", "8px"); // Add gap between name, class, and reg no
+      header?.style.setProperty("font-size", "28px");
+      header?.style.setProperty("font-weight", "bold");
+      header?.style.setProperty("text-align", "center"); // Center the header
+      header?.style.setProperty("margin-top", "20px"); // Add margin-top to the header
+      header?.style.setProperty("margin-bottom", "20px"); // Add margin-top to the header
+
+      // Increase the size of the QR code for the PDF
+      const qrCodeClone = qrCode?.cloneNode(true) as HTMLElement;
+      qrCodeClone.style.width = "200px";
+      qrCodeClone.style.height = "200px";
+      qrCodeClone.style.margin = "auto";
+      qrCodeClone.style.marginLeft = "35%"; // Move the QR code more to the right
+      qrCodeClone.style.marginTop = "13%"; // Move the QR code more to the right
+      qrCode?.replaceWith(qrCodeClone);
+
+      (img as HTMLElement)?.style.setProperty("height", "140px");
+      (img as HTMLElement)?.style.setProperty("width", "140px");
+      (img as HTMLElement)?.style.setProperty("display", "block");
+      (img as HTMLElement)?.style.setProperty("margin", "auto"); // Center the image
+      (img as HTMLElement)?.style.setProperty("border-radius", "50%"); // Make the image circular
+      (img as HTMLElement)?.style.setProperty("margin-top", "16%"); // Add vertical margin to the image
+      (img as HTMLElement)?.style.setProperty("margin-bottom", "15%"); // Add vertical margin to the image
+
+      // Add gap between name, class, and reg no in the PDF
+      const nameElement = details?.querySelector("div:nth-child(1)");
+      const classElement = details?.querySelector("div:nth-child(2)");
+      const regNoElement = details?.querySelector("div:nth-child(3)");
+
+      (nameElement as HTMLElement)?.style.setProperty("margin-bottom", "10px");
+      (classElement as HTMLElement)?.style.setProperty("margin-bottom", "10px");
+      (regNoElement as HTMLElement)?.style.setProperty("margin-bottom", "10px");
+
+      // Align name, class, and reg no to the left in the PDF
+      (nameElement as HTMLElement)?.style.setProperty("text-align", "left");
+      (classElement as HTMLElement)?.style.setProperty("text-align", "left");
+      (regNoElement as HTMLElement)?.style.setProperty("text-align", "left");
 
       buttons.forEach((button) => button.remove()); // Remove buttons
-      printWindow?.document.write(printContent.innerHTML);
+
+      // Arrange the content properly
+      const container = document.createElement("div");
+      container.style.display = "flex";
+      container.style.flexDirection = "column";
+      container.style.alignItems = "center";
+      container.style.width = "5in";
+      container.style.height = "7in";
+      container.style.padding = "3px"; // Adjust padding to fit content on one page
+      container.style.background = "#e0f7fa"; // Bluish background
+      container.style.boxShadow = "0 4px 8px rgba(0, 0, 0, 0.1)";
+      container.style.borderRadius = "8px";
+      container.appendChild(printContent);
+
+      printWindow?.document.write(container.outerHTML);
       printWindow?.document.write("</body></html>");
       printWindow?.document.close();
       printWindow?.print(); // Trigger the print dialog
@@ -103,10 +153,10 @@ const Card: React.FC<Prop> = ({ studentId, isOpen, onClose }) => {
               <img
                 src={student.image}
                 alt='Student'
-                className='h-32 w-32 rounded-full object-cover'
+                className='h-16 w-16 rounded-full object-cover'
               />
             ) : (
-              <div className='h-32 w-32 rounded-full bg-gray-200 flex items-center justify-center'>
+              <div className='h-16 w-16 rounded-full bg-gray-200 flex items-center justify-center'>
                 No Image
               </div>
             )}
@@ -130,7 +180,7 @@ const Card: React.FC<Prop> = ({ studentId, isOpen, onClose }) => {
 
           {/* QR Code Section */}
           <div className='flex justify-center mt-4 qr-code'>
-            <QRCode value={JSON.stringify(qrData)} size={128} />
+            <QRCode value={JSON.stringify(qrData)} size={95} />
           </div>
 
           <div className='mt-4 text-center'>

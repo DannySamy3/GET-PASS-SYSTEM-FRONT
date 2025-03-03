@@ -101,7 +101,7 @@ export const Details: React.FC<props> = ({ id, setView, setDate }) => {
             </div>
           )}
         </div>
-        <div className='grid grid-cols-1 md:grid-cols-2 gap-6'>
+        <div className='grid grid-cols-1 md:grid-cols-2 gap-6  '>
           <div className='flex flex-col'>
             <label className='text-[16px] text-gray-600 font-medium'>
               Full Name
