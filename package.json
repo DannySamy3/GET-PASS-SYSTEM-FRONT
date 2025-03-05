@@ -29,6 +29,7 @@
     "react-qr-code": "^2.0.15",
     "react-redux": "^9.2.0",
     "react-slick": "^0.30.2",
+    "react-to-print": "^3.0.5",
     "react-toastify": "^10.0.6",
     "slick-carousel": "^1.8.1",
     "typeface-montserrat": "^1.1.13"

@@ -11,6 +11,7 @@ interface Prop {
 
 const Card: React.FC<Prop> = ({ studentId, isOpen, onClose }) => {
   const [student, setStudent] = useState<any>(null);
+  const [isFront, setIsFront] = useState(true);
   const cardRef = useRef<HTMLDivElement>(null); // Ref to the card modal for printing
 
   // Data to encode into the QR code (can be student regNo or any other data)
@@ -83,6 +84,7 @@ const Card: React.FC<Prop> = ({ studentId, isOpen, onClose }) => {
       qrCodeClone.style.margin = "auto";
       qrCodeClone.style.marginLeft = "35%"; // Move the QR code more to the right
       qrCodeClone.style.marginTop = "13%"; // Move the QR code more to the right
+      qrCodeClone.style.marginBottom = "40%"; // Move the QR code more to the right
       qrCode?.replaceWith(qrCodeClone);
 
       (img as HTMLElement)?.style.setProperty("height", "140px");
@@ -114,8 +116,8 @@ const Card: React.FC<Prop> = ({ studentId, isOpen, onClose }) => {
       container.style.display = "flex";
       container.style.flexDirection = "column";
       container.style.alignItems = "center";
-      container.style.width = "3.5in"; // Reduce the width even more
-      container.style.height = "5.5in"; // Reduce the height even more
+      container.style.width = "4.5in"; // Increase the width
+      container.style.height = "6.5in"; // Increase the height
       container.style.padding = "3px"; // Adjust padding to fit content on one page
       container.style.background = "#e0f7fa"; // Bluish background
       container.style.boxShadow = "0 4px 8px rgba(0, 0, 0, 0.1)";
@@ -140,48 +142,77 @@ const Card: React.FC<Prop> = ({ studentId, isOpen, onClose }) => {
           onClick={(e) => e.stopPropagation()} // Prevent closing when clicking inside the modal
           ref={cardRef} // Assign the ref to the card modal
         >
-          <div
-            id=''
-            className='text-center font-bold text-lg text-gray-800 header'
-          >
-            Student ID Card
-          </div>
+          {isFront ? (
+            <>
+              <div
+                id=''
+                className='text-center font-bold text-lg text-gray-800 header'
+              >
+                Student ID Card
+              </div>
 
-          {/* Image Section */}
-          <div className='flex justify-center'>
-            {student?.image ? (
-              <img
-                src={student.image}
-                alt='Student'
-                className='h-16 w-16 rounded-full object-cover'
-              />
-            ) : (
-              <div className='h-16 w-16 rounded-full bg-gray-200 flex items-center justify-center'>
-                No Image
+              {/* Image Section */}
+              <div className='flex justify-center'>
+                {student?.image ? (
+                  <img
+                    src={student.image}
+                    alt='Student'
+                    className='h-16 w-16 rounded-full object-cover'
+                  />
+                ) : (
+                  <div className='h-16 w-16 rounded-full bg-gray-200 flex items-center justify-center'>
+                    No Image
+                  </div>
+                )}
               </div>
-            )}
-          </div>
 
-          {student ? (
-            <article className='space-y-2 mt-4 details'>
-              <div className='text-sm text-gray-600'>
-                <strong>Name:</strong> {student?.firstName} {student?.lastName}
+              {student ? (
+                <article className='space-y-2 mt-4 details'>
+                  <div className='text-base text-gray-600'>
+                    <strong>Name:</strong> {student?.firstName}{" "}
+                    {student?.lastName}
+                  </div>
+                  <div className='text-base text-gray-600'>
+                    <strong>Class:</strong> {student?.className}
+                  </div>
+                  <div className='text-base text-gray-600'>
+                    <strong>Reg No:</strong> {student?.regNo}
+                  </div>
+                </article>
+              ) : (
+                <div>Loading...</div>
+              )}
+
+              {/* QR Code Section */}
+              <div className='flex justify-center mt-4 qr-code'>
+                <QRCode value={JSON.stringify(qrData)} size={100} />
               </div>
-              <div className='text-sm text-gray-600'>
-                <strong>Class:</strong> {student?.className}
-              </div>
-              <div className='text-sm text-gray-600'>
-                <strong>Reg No:</strong> {student?.regNo}
-              </div>
-            </article>
+            </>
           ) : (
-            <div>Loading...</div>
-          )}
+            <div className='text-center font-bold text-lg text-gray-800 header'>
+              Back Side of the Card
+              <div className='mt-4 text-base text-gray-600 space-y-2'>
+                <p>
+                  <strong>University:</strong> XYZ University
+                </p>
 
-          {/* QR Code Section */}
-          <div className='flex justify-center mt-4 qr-code'>
-            <QRCode value={JSON.stringify(qrData)} size={95} />
-          </div>
+                <p>
+                  <strong>Issued Date:</strong>{" "}
+                  {new Date().toLocaleDateString()}
+                </p>
+                <p>
+                  <strong>Valid Until:</strong>{" "}
+                  {new Date(
+                    new Date().setFullYear(new Date().getFullYear() + 1)
+                  ).toLocaleDateString()}
+                </p>
+                <p>
+                  <strong>If found, please return to:</strong> XYZ University,
+                  123 University St, City, Country
+                </p>
+              </div>
+            </div>
+          )}
 
           <div className='mt-4 text-center'>
             <button
@@ -196,6 +227,12 @@ const Card: React.FC<Prop> = ({ studentId, isOpen, onClose }) => {
             >
               Print
             </button>
+            {/* <button
+              className='px-4 py-2 bg-green-500 text-white rounded-md ml-2'
+              onClick={() => setIsFront(!isFront)} // Toggle between front and back side
+            >
+              {isFront ? "Show Back" : "Show Front"}
+            </button> */}
           </div>
         </div>
       </div>
