@@ -5,6 +5,7 @@ import { getSponsorById } from "@/utils/sponsorController";
 import { useDispatch } from "react-redux";
 import { showToast } from "@/utils/toastSlice";
 import ToastNotification from "@/components/toastNotification/ToastNotification";
+import { FaPencilAlt } from "react-icons/fa";
 
 interface props {
   id: any;
@@ -88,13 +89,19 @@ export const Details: React.FC<props> = ({ id, setView, setDate }) => {
             </button>
           </div>
         </div>
-        <div className='flex justify-center mb-6'>
+        <div className='fle justify-center my-6 relative'>
           {student?.image ? (
-            <img
-              src={student.image}
-              alt='Student'
-              className='h-32 w-32 rounded-full object-cover'
-            />
+            <div className=' flex items-center gap-[%]'>
+              <img
+                src={student.image}
+                alt='Student'
+                className='h-32 w-32 rounded-full object-cover'
+              />
+              <FaPencilAlt
+                className='  text-gray-600 absolute bottom-[15px] left-[100px] cursor-pointer'
+                style={{ transform: "translate(50%, 50%)" }}
+              />
+            </div>
           ) : (
             <div className='h-32 w-32 rounded-full bg-gray-200 flex items-center justify-center'>
               No Image
