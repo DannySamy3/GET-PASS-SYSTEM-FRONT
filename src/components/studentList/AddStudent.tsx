@@ -337,19 +337,19 @@ export const AddStudent = () => {
           <button
             onClick={addNewStudent}
             className={`btn rounded-md border ${
-              isPageLoaded ? "bg-green-600" : "bg-green-600"
+              isPageLoaded ? "bg-green-600 cursor-not-allowed" : "bg-green-600"
             } text-white w-1/4 hover:text-white btn-success`}
             disabled={isPageLoaded}
           >
             {isPageLoaded ? (
               <svg
-                className='animate-spin h-5 w-5 text-blue-700 mx-auto'
+                className='animate-spin h-5 w-5 text-green-800 mx-auto'
                 xmlns='http://www.w3.org/2000/svg'
                 fill='none'
                 viewBox='0 0 24 24'
               >
                 <circle
-                  className='opacity-25 text-blue-800'
+                  className='opacity-20'
                   cx='12'
                   cy='12'
                   r='10'
@@ -359,7 +359,7 @@ export const AddStudent = () => {
                 <path
                   className='opacity-75'
                   fill='currentColor'
-                  d='M4 12a8 8 0 018-8v8H4z'
+                  d='M12 2a10 10 0 00-10 10h4a6 6 0 016-6V2z'
                 ></path>
               </svg>
             ) : (
