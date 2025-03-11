@@ -120,7 +120,7 @@ const DashBoard = () => {
   const cards = [
     {
       identifier: "GRANTED",
-      status: dashData.granted >= "0" ? "UP TO DATE." : "NETWORK ERROR...",
+      status: dashData.granted >= "0" ? "UP TO DATE." : "Loading...",
       value: dashData.granted >= "0" ? dashData.granted : "Failed to fetch",
       svg: (
         <svg
@@ -143,7 +143,7 @@ const DashBoard = () => {
     },
     {
       identifier: "DENIED",
-      status: dashData.denied >= "0" ? "UPDATES SYNCED" : "NETWORK ERROR...",
+      status: dashData.denied >= "0" ? "UPDATES SYNCED" : "Loading...",
       value: dashData.denied >= "0" ? dashData.denied : "Failed to fetch",
       svg: (
         <svg
@@ -162,7 +162,7 @@ const DashBoard = () => {
     },
     {
       identifier: "REGISTERED",
-      status: dashData.registered ? "FOUND" : "NETWORK ERROR...",
+      status: dashData.registered ? "FOUND" : "Loading...",
       value: dashData.registered ? +dashData.registered : "Failed to fetch",
       svg: (
         <svg
@@ -185,7 +185,7 @@ const DashBoard = () => {
     },
     {
       identifier: "FULLY PAID",
-      status: dashData.fullPaid ? "FOUND" : "NETWORK ERROR...",
+      status: dashData.fullPaid ? "FOUND" : "Loading...",
       value: dashData.fullPaid ? +dashData.fullPaid : "Failed to fetch",
       svg: (
         <svg
