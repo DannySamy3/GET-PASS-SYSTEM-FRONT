@@ -120,7 +120,16 @@ const DashBoard = () => {
   const cards = [
     {
       identifier: "GRANTED",
-      status: dashData.granted >= "0" ? "UP TO DATE." : "Loading...",
+      status:
+        dashData.granted >= "0" ? (
+          "UP TO DATE."
+        ) : (
+          <span className='loading-dots'>
+            Loading<span className='dot'>.</span>
+            <span className='dot'>.</span>
+            <span className='dot'>.</span>
+          </span>
+        ),
       value: dashData.granted >= "0" ? dashData.granted : "Failed to fetch",
       svg: (
         <svg
@@ -143,7 +152,16 @@ const DashBoard = () => {
     },
     {
       identifier: "DENIED",
-      status: dashData.denied >= "0" ? "UPDATES SYNCED" : "Loading...",
+      status:
+        dashData.denied >= "0" ? (
+          "UPDATES SYNCED"
+        ) : (
+          <span className='loading-dots'>
+            Loading<span className='dot'>.</span>
+            <span className='dot'>.</span>
+            <span className='dot'>.</span>
+          </span>
+        ),
       value: dashData.denied >= "0" ? dashData.denied : "Failed to fetch",
       svg: (
         <svg
@@ -162,7 +180,15 @@ const DashBoard = () => {
     },
     {
       identifier: "REGISTERED",
-      status: dashData.registered ? "FOUND" : "Loading...",
+      status: dashData.registered ? (
+        "FOUND"
+      ) : (
+        <span className='loading-dots'>
+          Loading<span className='dot'>.</span>
+          <span className='dot'>.</span>
+          <span className='dot'>.</span>
+        </span>
+      ),
       value: dashData.registered ? +dashData.registered : "Failed to fetch",
       svg: (
         <svg
@@ -185,7 +211,15 @@ const DashBoard = () => {
     },
     {
       identifier: "FULLY PAID",
-      status: dashData.fullPaid ? "FOUND" : "Loading...",
+      status: dashData.fullPaid ? (
+        "FOUND"
+      ) : (
+        <span className='loading-dots'>
+          Loading<span className='dot'>.</span>
+          <span className='dot'>.</span>
+          <span className='dot'>.</span>
+        </span>
+      ),
       value: dashData.fullPaid ? +dashData.fullPaid : "Failed to fetch",
       svg: (
         <svg
@@ -248,6 +282,7 @@ const DashBoard = () => {
           <div className='w-full cursor-pointer' key={index}>
             <Cards
               identifier={card.identifier}
+              //@ts-ignore
               status={card.status}
               value={card.value}
               svg={card.svg}
@@ -260,6 +295,7 @@ const DashBoard = () => {
         <div className='w-full cursor-pointer' onClick={handleCardClick}>
           <Cards
             identifier={cards[currentCardIndex].identifier}
+            //@ts-ignore
             status={cards[currentCardIndex].status}
             value={cards[currentCardIndex].value}
             svg={cards[currentCardIndex].svg}
