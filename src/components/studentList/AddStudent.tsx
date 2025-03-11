@@ -106,7 +106,7 @@ export const AddStudent = () => {
     // if (userInfo.image) {
     //   formData.append("image", userInfo.image);
     // }
-
+    setIsPageLoaded(true);
     try {
       const response = (await addStudent(formData)) as AddStudentResponse;
       if (response.data) {
@@ -115,6 +115,7 @@ export const AddStudent = () => {
         );
 
         setIsToastShown(true);
+        setIsPageLoaded(false);
 
         setUserInfo({
           firstName: "",
@@ -140,7 +141,7 @@ export const AddStudent = () => {
           type: "error",
         })
       );
-
+      setIsPageLoaded(false);
       setUserInfo({
         firstName: "",
         lastName: "",
@@ -335,9 +336,35 @@ export const AddStudent = () => {
         <div className='flex my-8 justify-center w-full'>
           <button
             onClick={addNewStudent}
-            className='btn rounded-md border bg-green-600 text-white w-1/4 hover:text-white btn-success'
+            className={`btn rounded-md border ${
+              isPageLoaded ? "bg-green-600" : "bg-green-600"
+            } text-white w-1/4 hover:text-white btn-success`}
+            disabled={isPageLoaded}
           >
-            Register
+            {isPageLoaded ? (
+              <svg
+                className='animate-spin h-5 w-5 text-blue-700 mx-auto'
+                xmlns='http://www.w3.org/2000/svg'
+                fill='none'
+                viewBox='0 0 24 24'
+              >
+                <circle
+                  className='opacity-25 text-blue-800'
+                  cx='12'
+                  cy='12'
+                  r='10'
+                  stroke='currentColor'
+                  strokeWidth='4'
+                ></circle>
+                <path
+                  className='opacity-75'
+                  fill='currentColor'
+                  d='M4 12a8 8 0 018-8v8H4z'
+                ></path>
+              </svg>
+            ) : (
+              "Register"
+            )}
           </button>
         </div>
       </section>
