@@ -6,6 +6,7 @@ import { useDispatch } from "react-redux";
 import { showToast } from "@/utils/toastSlice";
 import ToastNotification from "@/components/toastNotification/ToastNotification";
 import { FaPencilAlt } from "react-icons/fa";
+import { editImage } from "@/utils/imageController";
 
 interface props {
   id: any;
@@ -59,6 +60,43 @@ export const Details: React.FC<props> = ({ id, setView, setDate }) => {
     } catch (error) {}
   };
 
+  const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files[0]) {
+      const file = e.target.files[0];
+      console.log("File size (MB):", file.size / (1024 * 1024)); // Convert to MB
+      // Log file size for debugging
+      if (file.size > 50 * 1024 * 1024) {
+        // Check for 50MB file size
+        alert("File is too large!");
+        return;
+      }
+      const reader = new FileReader();
+      reader.onloadend = async () => {
+        try {
+          await editImage(student.id, reader.result as string);
+          setStudent((prev: any) => ({
+            ...prev,
+            image: URL.createObjectURL(file),
+          }));
+          dispatch(
+            showToast({
+              message: "Image updated successfully",
+              type: "success",
+            })
+          );
+        } catch (error) {
+          dispatch(
+            showToast({
+              message: "Failed to update image",
+              type: "error",
+            })
+          );
+        }
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
   useEffect(() => {
     getDetails();
   }, [student?.status]);
@@ -97,10 +135,18 @@ export const Details: React.FC<props> = ({ id, setView, setDate }) => {
                 alt='Student'
                 className='h-32 w-32 rounded-full object-cover'
               />
-              <FaPencilAlt
-                className='  text-gray-600 absolute bottom-[15px] left-[100px] cursor-pointer'
-                style={{ transform: "translate(50%, 50%)" }}
+              <input
+                type='file'
+                id='image-upload'
+                style={{ display: "none" }}
+                onChange={handleImageChange}
               />
+              <label htmlFor='image-upload'>
+                <FaPencilAlt
+                  className='  text-gray-600 absolute bottom-[15px] left-[100px] cursor-pointer'
+                  style={{ transform: "translate(50%, 50%)" }}
+                />
+              </label>
             </div>
           ) : (
             <div className='h-32 w-32 rounded-full bg-gray-200 flex items-center justify-center'>
