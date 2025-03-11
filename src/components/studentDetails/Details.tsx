@@ -149,8 +149,8 @@ export const Details: React.FC<props> = ({ id, setView, setDate }) => {
               </label>
             </div>
           ) : (
-            <div className='h-32 w-32 rounded-full bg-gray-200 flex items-center justify-center'>
-              No Image
+            <div className='h-16 w-16 rounded-full bg-gray-200 flex items-center justify-center'>
+              <div className='animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-gray-500'></div>
             </div>
           )}
         </div>
