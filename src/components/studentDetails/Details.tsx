@@ -24,6 +24,7 @@ export const Details: React.FC<props> = ({ id, setView, setDate }) => {
   const getDetails = async () => {
     try {
       const result = await getStudentById(id);
+      console.log(result);
 
       if (result) {
         // @ts-ignore
@@ -145,6 +146,7 @@ export const Details: React.FC<props> = ({ id, setView, setDate }) => {
 
   useEffect(() => {
     getDetails();
+    console.log(student.id);
   }, [student?.status]);
 
   return (
