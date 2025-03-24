@@ -134,7 +134,7 @@ export const AddStudent = () => {
           image: null,
         });
 
-        router.push("/management");
+        router.push("/");
       }
     } catch (error) {
       const err = error as { response: { data: { message: string } } };
