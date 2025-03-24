@@ -161,7 +161,7 @@ const Card: React.FC<Prop> = ({ studentId, isOpen, onClose }) => {
                   />
                 ) : (
                   <div className='h-16 w-16 rounded-full bg-gray-200 flex items-center justify-center'>
-                    <div className='animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-gray-500'></div>
+                    No Image
                   </div>
                 )}
               </div>
@@ -227,12 +227,12 @@ const Card: React.FC<Prop> = ({ studentId, isOpen, onClose }) => {
             >
               Print
             </button>
-            {/* <button
+            <button
               className='px-4 py-2 bg-green-500 text-white rounded-md ml-2'
               onClick={() => setIsFront(!isFront)} // Toggle between front and back side
             >
               {isFront ? "Show Back" : "Show Front"}
-            </button> */}
+            </button>
           </div>
         </div>
       </div>

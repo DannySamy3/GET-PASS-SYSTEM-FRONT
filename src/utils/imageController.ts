@@ -1,6 +1,6 @@
 import axiosInstance from "./axioInstance";
 
-export const editImage = async (fileName: string, newImageData: string) => {
+export const editImage = async (fileName: string, newImageData: any) => {
   try {
     const response = await axiosInstance.put("/getPass/images/edit", {
       fileName,

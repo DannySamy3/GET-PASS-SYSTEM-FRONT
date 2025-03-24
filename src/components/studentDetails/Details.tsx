@@ -70,30 +70,38 @@ export const Details: React.FC<props> = ({ id, setView, setDate }) => {
         alert("File is too large!");
         return;
       }
-      const reader = new FileReader();
-      reader.onloadend = async () => {
-        try {
-          await editImage(student.id, reader.result as string);
-          setStudent((prev: any) => ({
-            ...prev,
-            image: URL.createObjectURL(file),
-          }));
-          dispatch(
-            showToast({
-              message: "Image updated successfully",
-              type: "success",
-            })
-          );
-        } catch (error) {
-          dispatch(
-            showToast({
-              message: "Failed to update image",
-              type: "error",
-            })
-          );
+      // const reader = new FileReader();
+      const formData = new FormData();
+      formData.append("file", file);
+
+      try {
+        const response = await editImage(student.id, formData);
+        //@ts-ignore
+        if (!response.ok) {
+          throw new Error("Failed to update image");
         }
-      };
-      reader.readAsDataURL(file);
+        //@ts-ignore
+        const result = await response.json();
+        setStudent((prev: any) => ({
+          ...prev,
+          image: result.imageUrl, // Assuming the backend sends the image URL in response
+        }));
+        dispatch(
+          showToast({
+            message: "Image updated successfully",
+            type: "success",
+          })
+        );
+      } catch (error) {
+        dispatch(
+          showToast({
+            message: "Failed to update image",
+            type: "error",
+          })
+        );
+      }
+
+      // reader.readAsDataURL(file);
     }
   };
 
