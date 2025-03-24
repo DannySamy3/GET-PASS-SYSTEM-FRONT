@@ -146,9 +146,9 @@ export const Details: React.FC<props> = ({ id, setView, setDate }) => {
 
   useEffect(() => {
     getDetails();
-    console.log(student.id);
   }, [student?.status]);
 
+  console.log(student.id);
   return (
     <div className=' h-[80vh] '>
       <div className='bg-white shadow-lg rounded-lg p-8 w-full font-montserrat '>
