@@ -115,39 +115,17 @@ export const Details: React.FC<props> = ({ id, setView, setDate }) => {
         return;
       }
 
-      // Create a FormData object to send the file as form data
-      const formData = new FormData();
-      formData.append("file", file);
-
-      // If there is a previous image URL, append it to the form data
-      if (student.image) {
-        formData.append("previousImageUrl", student.image);
-      }
+      const previousImageUrl = student.image; // Assuming the current image URL is stored in student.image
 
       try {
-        // Make the PUT request to update the image
-        const response = await editImage(
-          student.id,
-          formData // Sending the file and previousImageUrl in the request body
-        );
-        // const response = await fetch(`/getPass/images/edit/${student.id}`, {
-        //   method: "PUT",
-        //   body: formData, // Sending the file and previousImageUrl in the request body
-        // });
-        //@ts-ignore
-        if (!response.ok) {
-          throw new Error("Failed to update image");
-        }
+        const result = await editImage(file, previousImageUrl);
 
-        // Parse the response to get the updated image URL
-        //@ts-ignore
-        const result = await response.json();
         setStudent((prev: any) => ({
           ...prev,
-          image: result.imageUrl, // Assuming the backend returns the updated image URL
+          //@ts-ignore
+          image: result.imageUrl, // Assuming the backend sends the image URL in response
         }));
 
-        // Show success toast
         dispatch(
           showToast({
             message: "Image updated successfully",
@@ -155,7 +133,6 @@ export const Details: React.FC<props> = ({ id, setView, setDate }) => {
           })
         );
       } catch (error) {
-        // Show error toast if there's an issue
         dispatch(
           showToast({
             message: "Failed to update image",

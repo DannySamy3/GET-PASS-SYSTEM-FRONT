@@ -1,11 +1,17 @@
 import axiosInstance from "./axioInstance";
 
-export const editImage = async (fileName: string, newImageData: any) => {
+export const editImage = async (file: File, previousImageUrl: string) => {
   try {
-    const response = await axiosInstance.put("/getPass/images/edit", {
-      fileName,
-      newImageData,
+    const formData = new FormData();
+    formData.append("file", file); // Add the file to the form data
+    formData.append("previousImageUrl", previousImageUrl); // Add previous image URL if needed
+
+    const response = await axiosInstance.put("/getPass/images/edit", formData, {
+      headers: {
+        "Content-Type": "multipart/form-data", // Ensure that the Content-Type is set for multipart/form-data
+      },
     });
+
     return response.data;
   } catch (error) {
     if (error instanceof Error) {
