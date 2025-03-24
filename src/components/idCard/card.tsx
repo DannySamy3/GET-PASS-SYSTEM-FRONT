@@ -48,7 +48,7 @@ const Card: React.FC<Prop> = ({ studentId, isOpen, onClose }) => {
       const printWindow = window.open("", "_blank");
       printWindow?.document.write("<html><head><title>Print</title>");
       printWindow?.document.write(
-        "<style>@page { size: A4; margin: 0; } body { margin: 0; display: flex; align-items: center; justify-content: center; height: 100vh; font-family: Arial, sans-serif; }</style>"
+        "<style>@page { size: A5; margin: 0; } body { margin: 0; display: flex; align-items: center; justify-content: center; height: 100vh; font-family: Arial, sans-serif; }</style>"
       );
       printWindow?.document.write("</head><body>");
 
@@ -71,7 +71,7 @@ const Card: React.FC<Prop> = ({ studentId, isOpen, onClose }) => {
 
       (details as HTMLElement)?.style.setProperty("font-size", "24px");
       (details as HTMLElement)?.style.setProperty("margin-bottom", "8px"); // Add gap between name, class, and reg no
-      header?.style.setProperty("font-size", "28px");
+      header?.style.setProperty("font-size", "22px");
       header?.style.setProperty("font-weight", "bold");
       header?.style.setProperty("text-align", "center"); // Center the header
       header?.style.setProperty("margin-top", "20px"); // Add margin-top to the header
@@ -79,16 +79,16 @@ const Card: React.FC<Prop> = ({ studentId, isOpen, onClose }) => {
 
       // Increase the size of the QR code for the PDF
       const qrCodeClone = qrCode?.cloneNode(true) as HTMLElement;
-      qrCodeClone.style.width = "200px";
-      qrCodeClone.style.height = "200px";
+      qrCodeClone.style.width = "100px";
+      qrCodeClone.style.height = "100px";
       qrCodeClone.style.margin = "auto";
-      qrCodeClone.style.marginLeft = "35%"; // Move the QR code more to the right
+      qrCodeClone.style.marginLeft = "30%"; // Move the QR code more to the right
       qrCodeClone.style.marginTop = "13%"; // Move the QR code more to the right
       qrCodeClone.style.marginBottom = "40%"; // Move the QR code more to the right
       qrCode?.replaceWith(qrCodeClone);
 
-      (img as HTMLElement)?.style.setProperty("height", "140px");
-      (img as HTMLElement)?.style.setProperty("width", "140px");
+      (img as HTMLElement)?.style.setProperty("height", "120px");
+      (img as HTMLElement)?.style.setProperty("width", "120px");
       (img as HTMLElement)?.style.setProperty("display", "block");
       (img as HTMLElement)?.style.setProperty("margin", "auto"); // Center the image
       (img as HTMLElement)?.style.setProperty("border-radius", "50%"); // Make the image circular
@@ -100,8 +100,10 @@ const Card: React.FC<Prop> = ({ studentId, isOpen, onClose }) => {
       const classElement = details?.querySelector("div:nth-child(2)");
       const regNoElement = details?.querySelector("div:nth-child(3)");
 
-      (nameElement as HTMLElement)?.style.setProperty("margin-bottom", "10px");
-      (classElement as HTMLElement)?.style.setProperty("margin-bottom", "10px");
+      (nameElement as HTMLElement)?.style.setProperty("font-size", "17px");
+      (classElement as HTMLElement)?.style.setProperty("font-size", "17px");
+      (regNoElement as HTMLElement)?.style.setProperty("font-size", "17px");
+      // (classElement as HTMLElement)?.style.setProperty("margin-bottom", "10px");
       (regNoElement as HTMLElement)?.style.setProperty("margin-bottom", "10px");
 
       // Align name, class, and reg no to the left in the PDF
@@ -116,8 +118,8 @@ const Card: React.FC<Prop> = ({ studentId, isOpen, onClose }) => {
       container.style.display = "flex";
       container.style.flexDirection = "column";
       container.style.alignItems = "center";
-      container.style.width = "4.5in"; // Increase the width
-      container.style.height = "6.5in"; // Increase the height
+      container.style.width = "3.2in"; // Increase the width
+      container.style.height = "4.8in"; // Increase the height
       container.style.padding = "3px"; // Adjust padding to fit content on one page
       container.style.background = "#e0f7fa"; // Bluish background
       container.style.boxShadow = "0 4px 8px rgba(0, 0, 0, 0.1)";
