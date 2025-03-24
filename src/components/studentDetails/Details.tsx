@@ -60,32 +60,94 @@ export const Details: React.FC<props> = ({ id, setView, setDate }) => {
     } catch (error) {}
   };
 
+  // const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+  //   if (e.target.files && e.target.files[0]) {
+  //     const file = e.target.files[0];
+  //     console.log("File size (MB):", file.size / (1024 * 1024)); // Convert to MB
+  //     // Log file size for debugging
+  //     if (file.size > 50 * 1024 * 1024) {
+  //       // Check for 50MB file size
+  //       alert("File is too large!");
+  //       return;
+  //     }
+  //     // const reader = new FileReader();
+  //     const formData = new FormData();
+  //     formData.append("file", file);
+
+  //     try {
+  //       const response = await editImage(student.id, formData);
+  //       //@ts-ignore
+  //       if (!response.ok) {
+  //         throw new Error("Failed to update image");
+  //       }
+  //       //@ts-ignore
+  //       const result = await response.json();
+  //       setStudent((prev: any) => ({
+  //         ...prev,
+  //         image: result.imageUrl, // Assuming the backend sends the image URL in response
+  //       }));
+  //       dispatch(
+  //         showToast({
+  //           message: "Image updated successfully",
+  //           type: "success",
+  //         })
+  //       );
+  //     } catch (error) {
+  //       dispatch(
+  //         showToast({
+  //           message: "Failed to update image",
+  //           type: "error",
+  //         })
+  //       );
+  //     }
+
+  //     // reader.readAsDataURL(file);
+  //   }
+  // };
+
   const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
       const file = e.target.files[0];
       console.log("File size (MB):", file.size / (1024 * 1024)); // Convert to MB
-      // Log file size for debugging
       if (file.size > 50 * 1024 * 1024) {
         // Check for 50MB file size
         alert("File is too large!");
         return;
       }
-      // const reader = new FileReader();
+
+      // Create a FormData object to send the file as form data
       const formData = new FormData();
       formData.append("file", file);
 
+      // If there is a previous image URL, append it to the form data
+      if (student.image) {
+        formData.append("previousImageUrl", student.image);
+      }
+
       try {
-        const response = await editImage(student.id, formData);
+        // Make the PUT request to update the image
+        const response = await editImage(
+          student.id,
+          formData // Sending the file and previousImageUrl in the request body
+        );
+        // const response = await fetch(`/getPass/images/edit/${student.id}`, {
+        //   method: "PUT",
+        //   body: formData, // Sending the file and previousImageUrl in the request body
+        // });
         //@ts-ignore
         if (!response.ok) {
           throw new Error("Failed to update image");
         }
+
+        // Parse the response to get the updated image URL
         //@ts-ignore
         const result = await response.json();
         setStudent((prev: any) => ({
           ...prev,
-          image: result.imageUrl, // Assuming the backend sends the image URL in response
+          image: result.imageUrl, // Assuming the backend returns the updated image URL
         }));
+
+        // Show success toast
         dispatch(
           showToast({
             message: "Image updated successfully",
@@ -93,6 +155,7 @@ export const Details: React.FC<props> = ({ id, setView, setDate }) => {
           })
         );
       } catch (error) {
+        // Show error toast if there's an issue
         dispatch(
           showToast({
             message: "Failed to update image",
@@ -100,8 +163,6 @@ export const Details: React.FC<props> = ({ id, setView, setDate }) => {
           })
         );
       }
-
-      // reader.readAsDataURL(file);
     }
   };
 
