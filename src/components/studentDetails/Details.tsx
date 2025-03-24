@@ -118,7 +118,7 @@ export const Details: React.FC<props> = ({ id, setView, setDate }) => {
       const previousImageUrl = student.image; // Assuming the current image URL is stored in student.image
 
       try {
-        const result = await editImage(file, previousImageUrl);
+        const result = await editImage(file, previousImageUrl, student.id);
 
         setStudent((prev: any) => ({
           ...prev,
@@ -294,7 +294,7 @@ export const Details: React.FC<props> = ({ id, setView, setDate }) => {
           </div>
         </div>
       </div>
-      <ToastNotification />
+      {/* <ToastNotification /> */}
     </div>
   );
 };

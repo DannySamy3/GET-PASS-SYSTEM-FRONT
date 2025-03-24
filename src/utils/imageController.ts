@@ -1,9 +1,14 @@
 import axiosInstance from "./axioInstance";
 
-export const editImage = async (file: File, previousImageUrl: string) => {
+export const editImage = async (
+  file: File,
+  previousImageUrl: string,
+  studentId: any
+) => {
   try {
     const formData = new FormData();
     formData.append("file", file); // Add the file to the form data
+    formData.append("studentId", studentId); // Add the file to the form data
     formData.append("previousImageUrl", previousImageUrl); // Add previous image URL if needed
 
     const response = await axiosInstance.put("/getPass/images/edit", formData, {
