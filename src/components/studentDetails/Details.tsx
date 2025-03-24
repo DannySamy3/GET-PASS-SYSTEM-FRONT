@@ -24,7 +24,7 @@ export const Details: React.FC<props> = ({ id, setView, setDate }) => {
   const getDetails = async () => {
     try {
       const result = await getStudentById(id);
-      console.log(result);
+      // console.log(result);
 
       if (result) {
         // @ts-ignore
@@ -119,7 +119,7 @@ export const Details: React.FC<props> = ({ id, setView, setDate }) => {
       const previousImageUrl = student.image; // Assuming the current image URL is stored in student.image
 
       try {
-        const result = await editImage(file, previousImageUrl, student.id);
+        const result = await editImage(file, previousImageUrl, student._id);
 
         setStudent((prev: any) => ({
           ...prev,
@@ -148,7 +148,7 @@ export const Details: React.FC<props> = ({ id, setView, setDate }) => {
     getDetails();
   }, [student?.status]);
 
-  console.log(student.id);
+  // console.log(student.id);
   return (
     <div className=' h-[80vh] '>
       <div className='bg-white shadow-lg rounded-lg p-8 w-full font-montserrat '>
