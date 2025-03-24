@@ -5,6 +5,7 @@ import { fetchCountries } from "@/utils/helper";
 import { addStudent } from "@/utils/studentController";
 import { useDispatch } from "react-redux";
 import { showToast } from "@/utils/toastSlice";
+import { useRouter } from "next/navigation";
 
 import "react-toastify/dist/ReactToastify.css";
 
@@ -55,6 +56,8 @@ export const AddStudent = () => {
   const [isToastShown, setIsToastShown] = useState<boolean>(false);
 
   const dispatch = useDispatch();
+
+  const router = useRouter();
 
   const handleFetchSponsor = async () => {
     try {
@@ -130,6 +133,8 @@ export const AddStudent = () => {
           enrollmentYear: "",
           image: null,
         });
+
+        router.push("/management");
       }
     } catch (error) {
       const err = error as { response: { data: { message: string } } };
