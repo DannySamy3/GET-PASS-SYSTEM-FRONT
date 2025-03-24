@@ -82,13 +82,13 @@ const Card: React.FC<Prop> = ({ studentId, isOpen, onClose }) => {
       qrCodeClone.style.width = "100px";
       qrCodeClone.style.height = "100px";
       qrCodeClone.style.margin = "auto";
-      qrCodeClone.style.marginLeft = "30%"; // Move the QR code more to the right
+      qrCodeClone.style.marginLeft = "20%"; // Move the QR code more to the right
       qrCodeClone.style.marginTop = "13%"; // Move the QR code more to the right
       qrCodeClone.style.marginBottom = "40%"; // Move the QR code more to the right
       qrCode?.replaceWith(qrCodeClone);
 
-      (img as HTMLElement)?.style.setProperty("height", "120px");
-      (img as HTMLElement)?.style.setProperty("width", "120px");
+      (img as HTMLElement)?.style.setProperty("height", "125px");
+      (img as HTMLElement)?.style.setProperty("width", "125px");
       (img as HTMLElement)?.style.setProperty("display", "block");
       (img as HTMLElement)?.style.setProperty("margin", "auto"); // Center the image
       (img as HTMLElement)?.style.setProperty("border-radius", "50%"); // Make the image circular
