@@ -187,19 +187,21 @@ export const StudentList = () => {
   }, []);
 
   return (
-    <div className='min-h-screen'>
+    <div className='min-h-screen bg-slate-50'>
       <div className='p-6 space-y-6'>
-        <div className='flex justify-between items-center bg-gray-200 text-gray-800 p-6 rounded-lg shadow-md'>
+        <div className='flex justify-between items-center bg-gradient-to-r from-indigo-600 via-blue-600 to-blue-700 text-white p-6 rounded-lg shadow-lg'>
           <h1 className='text-3xl font-bold tracking-tight'>
             Student Management
           </h1>
-          <Button
-            onClick={() => setChangeView(true)}
-            className='bg-gray-800 hover:bg-gray-700 text-white'
-          >
-            <Plus className='mr-2 h-4 w-4' />
-            Add Student
-          </Button>
+          {!changeView && (
+            <Button
+              onClick={() => setChangeView(true)}
+              className='bg-white text-indigo-700 hover:bg-indigo-50 shadow-sm'
+            >
+              <Plus className='mr-2 h-4 w-4' />
+              Add Student
+            </Button>
+          )}
         </div>
 
         {changeView && !viewDetails.view && <AddStudent />}
@@ -213,10 +215,10 @@ export const StudentList = () => {
         )}
 
         {!changeView && !viewDetails.view && (
-          <UICard className='border-gray-200 shadow-sm'>
-            <CardHeader className='bg-gradient-to-r from-gray-100 to-white text-gray-800 rounded-t-lg border-b'>
+          <UICard className='border-slate-200 shadow-md'>
+            <CardHeader className='bg-gradient-to-r from-indigo-50 via-blue-50 to-white text-indigo-900 rounded-t-lg border-b border-slate-200'>
               <CardTitle>Students List</CardTitle>
-              <CardDescription className='text-gray-600'>
+              <CardDescription className='text-indigo-700'>
                 Manage and view all student information
               </CardDescription>
             </CardHeader>
@@ -225,7 +227,7 @@ export const StudentList = () => {
                 <div className='flex items-center justify-between'>
                   <div className='flex items-center gap-4 flex-1'>
                     <div className='relative flex-1 max-w-md'>
-                      <Search className='absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-500' />
+                      <Search className='absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-indigo-500' />
                       <Input
                         placeholder='Search by Name, Reg No, Course...'
                         value={input}
@@ -237,7 +239,7 @@ export const StudentList = () => {
                             scrollToTop();
                           }
                         }}
-                        className='pl-10'
+                        className='pl-10 border-indigo-200 focus:border-indigo-500 focus:ring-indigo-500'
                       />
                     </div>
                     <Button
@@ -247,12 +249,13 @@ export const StudentList = () => {
                         scrollToTop();
                       }}
                       variant='outline'
+                      className='border-indigo-200 text-indigo-700 hover:bg-indigo-50 hover:border-indigo-300'
                     >
                       Search
                     </Button>
                   </div>
                   <div className='flex items-center gap-4'>
-                    <span className='text-sm text-gray-600'>
+                    <span className='text-sm text-indigo-700 font-medium'>
                       {`${Math.min(
                         totalResults,
                         (currentPage - 1) * limit +
@@ -278,7 +281,7 @@ export const StudentList = () => {
                         }
                       }}
                     >
-                      <SelectTrigger className='w-[100px]'>
+                      <SelectTrigger className='w-[100px] border-indigo-200 focus:ring-indigo-500'>
                         <SelectValue placeholder='Limit' />
                       </SelectTrigger>
                       <SelectContent>
@@ -292,95 +295,117 @@ export const StudentList = () => {
                   </div>
                 </div>
 
-                <div className='rounded-md border'>
-                  <Table>
-                    <TableHeader className='bg-gray-100'>
-                      <TableRow>
-                        <TableHead>S/N</TableHead>
-                        <TableHead>Name</TableHead>
-                        <TableHead>Mid Name</TableHead>
-                        <TableHead>SurName</TableHead>
-                        <TableHead>Course</TableHead>
-                        <TableHead>Reg No</TableHead>
-                        <TableHead className='w-[100px]'>Actions</TableHead>
-                      </TableRow>
-                    </TableHeader>
-                    <TableBody>
-                      {studentsData.students?.length === 0 ? (
+                <div className='rounded-md border border-slate-200 shadow-sm'>
+                  <div className='max-h-[500px] overflow-auto'>
+                    <Table>
+                      <TableHeader className='bg-indigo-50/80 sticky top-0 z-10 backdrop-blur-sm'>
                         <TableRow>
-                          <TableCell
-                            colSpan={7}
-                            className='text-center py-6 text-gray-500'
-                          >
-                            No students found.
-                          </TableCell>
+                          <TableHead className='text-indigo-900 font-semibold'>
+                            S/N
+                          </TableHead>
+                          <TableHead className='text-indigo-900 font-semibold'>
+                            Name
+                          </TableHead>
+                          <TableHead className='text-indigo-900 font-semibold'>
+                            Mid Name
+                          </TableHead>
+                          <TableHead className='text-indigo-900 font-semibold'>
+                            SurName
+                          </TableHead>
+                          <TableHead className='text-indigo-900 font-semibold'>
+                            Course
+                          </TableHead>
+                          <TableHead className='text-indigo-900 font-semibold'>
+                            Reg No
+                          </TableHead>
+                          <TableHead className='w-[100px] text-indigo-900 font-semibold'>
+                            Actions
+                          </TableHead>
                         </TableRow>
-                      ) : (
-                        studentsData.students?.map((student, index) => (
-                          <TableRow
-                            key={student._id}
-                            className='hover:bg-gray-50 cursor-pointer'
-                            onClick={() => {
-                              setViewDetails({
-                                view: true,
-                                id: student._id,
-                                cardId: "",
-                              });
-                              setChangeView(true);
-                            }}
-                          >
-                            <TableCell>
-                              {(currentPage - 1) * limit + index + 1}
-                            </TableCell>
-                            <TableCell className='font-medium'>
-                              {student.firstName}
-                            </TableCell>
-                            <TableCell>{student.secondName}</TableCell>
-                            <TableCell>{student.lastName}</TableCell>
-                            <TableCell>
-                              <Badge
-                                variant='outline'
-                                className='bg-blue-100/70'
-                              >
-                                {student.className}
-                              </Badge>
-                            </TableCell>
-                            <TableCell>
-                              <Badge className='bg-gray-100'>
-                                {student.regNo}
-                              </Badge>
-                            </TableCell>
-                            <TableCell>
-                              <div className='flex space-x-2'>
-                                <Button
-                                  variant='outline'
-                                  size='icon'
-                                  onClick={(e) => {
-                                    e.stopPropagation();
-                                    setViewDetails((prev) => ({
-                                      ...prev,
-                                      cardId: student._id,
-                                    }));
-                                    setViewCard(true);
-                                  }}
-                                >
-                                  <Eye className='h-4 w-4' />
-                                </Button>
-                              </div>
+                      </TableHeader>
+                      <TableBody>
+                        {studentsData.students?.length === 0 ? (
+                          <TableRow>
+                            <TableCell
+                              colSpan={7}
+                              className='text-center py-6 text-indigo-700'
+                            >
+                              No students found.
                             </TableCell>
                           </TableRow>
-                        ))
-                      )}
-                    </TableBody>
-                  </Table>
+                        ) : (
+                          studentsData.students?.map((student, index) => (
+                            <TableRow
+                              key={student._id}
+                              className='hover:bg-indigo-50/50 cursor-pointer transition-colors'
+                              onClick={() => {
+                                setViewDetails({
+                                  view: true,
+                                  id: student._id,
+                                  cardId: "",
+                                });
+                                setChangeView(true);
+                              }}
+                            >
+                              <TableCell className='text-indigo-900'>
+                                {(currentPage - 1) * limit + index + 1}
+                              </TableCell>
+                              <TableCell className='font-medium text-indigo-900'>
+                                {student.firstName}
+                              </TableCell>
+                              <TableCell className='text-indigo-900'>
+                                {student.secondName}
+                              </TableCell>
+                              <TableCell className='text-indigo-900'>
+                                {student.lastName}
+                              </TableCell>
+                              <TableCell>
+                                <Badge
+                                  variant='outline'
+                                  className='bg-indigo-50 text-indigo-700 border-indigo-200 font-medium'
+                                >
+                                  {student.className}
+                                </Badge>
+                              </TableCell>
+                              <TableCell>
+                                <Badge className='bg-indigo-100 text-indigo-800 font-semibold shadow-sm'>
+                                  {student.regNo}
+                                </Badge>
+                              </TableCell>
+                              <TableCell>
+                                <div className='flex space-x-2'>
+                                  <Button
+                                    variant='outline'
+                                    size='icon'
+                                    onClick={(e) => {
+                                      e.stopPropagation();
+                                      setViewDetails((prev) => ({
+                                        ...prev,
+                                        cardId: student._id,
+                                      }));
+                                      setViewCard(true);
+                                    }}
+                                    className='border-indigo-200 text-indigo-700 hover:bg-indigo-50 hover:border-indigo-300'
+                                  >
+                                    <Eye className='h-4 w-4' />
+                                  </Button>
+                                </div>
+                              </TableCell>
+                            </TableRow>
+                          ))
+                        )}
+                      </TableBody>
+                    </Table>
+                  </div>
                 </div>
 
-                <div className='flex items-center justify-center gap-2'>
+                <div className='flex items-center justify-center gap-2 mt-4'>
                   <Button
                     variant='outline'
                     size='icon'
                     onClick={() => handlePagination(currentPage - 1)}
                     disabled={currentPage <= 1}
+                    className='border-indigo-200 text-indigo-700 hover:bg-indigo-50 hover:border-indigo-300'
                   >
                     <ChevronLeft className='h-4 w-4' />
                   </Button>
@@ -391,6 +416,11 @@ export const StudentList = () => {
                         pageNumber === currentPage ? "default" : "outline"
                       }
                       onClick={() => handlePagination(pageNumber)}
+                      className={
+                        pageNumber === currentPage
+                          ? "bg-indigo-600 hover:bg-indigo-700 text-white"
+                          : "border-indigo-200 text-indigo-700 hover:bg-indigo-50 hover:border-indigo-300"
+                      }
                     >
                       {pageNumber}
                     </Button>
@@ -400,6 +430,7 @@ export const StudentList = () => {
                     size='icon'
                     onClick={() => handlePagination(currentPage + 1)}
                     disabled={currentPage >= pageNumbers.length}
+                    className='border-indigo-200 text-indigo-700 hover:bg-indigo-50 hover:border-indigo-300'
                   >
                     <ChevronRight className='h-4 w-4' />
                   </Button>

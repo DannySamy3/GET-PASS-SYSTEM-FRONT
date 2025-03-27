@@ -22,7 +22,13 @@ import {
   X,
 } from "lucide-react";
 
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+} from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -256,25 +262,24 @@ export const AddStudent = () => {
   }, []);
 
   return (
-    <div className='min-h-screen w-full py-8'>
+    <div className='min-h-screen w-full py-4'>
       <Tabs defaultValue='sponsors' className='w-full'>
-        <div className='px-1'>
-          <div className='flex justify-between items-center bg-gray-100 text-gray-500 py-4 px-6 rounded-lg shadow-md border border-gray-300'>
-            <h1 className='text-2xl text-gray-600 font-bold tracking-tight'>
-              Add Student
-            </h1>
-          </div>
-        </div>
-        <TabsContent value='sponsors' className='mt-8 px-1'>
-          <Card className='h-[calc(100vh-10rem)] w-full shadow-lg rounded-none border-0'>
-            <CardContent className='p-6 h-[calc(100vh-14rem)] overflow-y-auto'>
+        <TabsContent value='sponsors' className='px-1'>
+          <Card className='w-full shadow-md rounded-lg border-slate-200'>
+            <CardHeader className='bg-gradient-to-r from-indigo-50 via-blue-50 to-white text-indigo-900 rounded-t-lg border-b border-slate-200'>
+              <CardTitle>Add New Student</CardTitle>
+              <CardDescription className='text-indigo-700'>
+                Fill in the student's information below
+              </CardDescription>
+            </CardHeader>
+            <CardContent className='p-6'>
               <div className='grid grid-cols-1 md:grid-cols-2 gap-6'>
                 <div className='space-y-2'>
                   <Label
                     htmlFor='firstName'
-                    className='flex items-center gap-2'
+                    className='flex items-center gap-2 text-indigo-900'
                   >
-                    <User className='h-4 w-4' />
+                    <User className='h-4 w-4 text-indigo-600' />
                     First Name <span className='text-red-500'>*</span>
                   </Label>
                   <Input
@@ -284,15 +289,16 @@ export const AddStudent = () => {
                     onChange={handleChange}
                     required
                     placeholder="Enter student's first name"
+                    className='border-indigo-200 focus:border-indigo-500 focus:ring-indigo-500'
                   />
                 </div>
 
                 <div className='space-y-2'>
                   <Label
                     htmlFor='secondName'
-                    className='flex items-center gap-2'
+                    className='flex items-center gap-2 text-indigo-900'
                   >
-                    <User className='h-4 w-4' />
+                    <User className='h-4 w-4 text-indigo-600' />
                     Middle Name <span className='text-red-500'>*</span>
                   </Label>
                   <Input
@@ -302,12 +308,16 @@ export const AddStudent = () => {
                     onChange={handleChange}
                     required
                     placeholder="Enter student's middle name"
+                    className='border-indigo-200 focus:border-indigo-500 focus:ring-indigo-500'
                   />
                 </div>
 
                 <div className='space-y-2'>
-                  <Label htmlFor='lastName' className='flex items-center gap-2'>
-                    <User className='h-4 w-4' />
+                  <Label
+                    htmlFor='lastName'
+                    className='flex items-center gap-2 text-indigo-900'
+                  >
+                    <User className='h-4 w-4 text-indigo-600' />
                     Surname <span className='text-red-500'>*</span>
                   </Label>
                   <Input
@@ -317,15 +327,16 @@ export const AddStudent = () => {
                     onChange={handleChange}
                     required
                     placeholder="Enter student's last name"
+                    className='border-indigo-200 focus:border-indigo-500 focus:ring-indigo-500'
                   />
                 </div>
 
                 <div className='space-y-2'>
                   <Label
                     htmlFor='nationality'
-                    className='flex items-center gap-2'
+                    className='flex items-center gap-2 text-indigo-900'
                   >
-                    <Flag className='h-4 w-4' />
+                    <Flag className='h-4 w-4 text-indigo-600' />
                     Nationality <span className='text-red-500'>*</span>
                   </Label>
                   <Select
@@ -337,7 +348,7 @@ export const AddStudent = () => {
                       } as React.ChangeEvent<HTMLSelectElement>)
                     }
                   >
-                    <SelectTrigger>
+                    <SelectTrigger className='border-indigo-200 focus:ring-indigo-500'>
                       <SelectValue placeholder='Select Country' />
                     </SelectTrigger>
                     <SelectContent>
@@ -351,8 +362,11 @@ export const AddStudent = () => {
                 </div>
 
                 <div className='space-y-2'>
-                  <Label htmlFor='gender' className='flex items-center gap-2'>
-                    <Users className='h-4 w-4' />
+                  <Label
+                    htmlFor='gender'
+                    className='flex items-center gap-2 text-indigo-900'
+                  >
+                    <Users className='h-4 w-4 text-indigo-600' />
                     Gender <span className='text-red-500'>*</span>
                   </Label>
                   <Select
@@ -364,7 +378,7 @@ export const AddStudent = () => {
                       } as React.ChangeEvent<HTMLSelectElement>)
                     }
                   >
-                    <SelectTrigger>
+                    <SelectTrigger className='border-indigo-200 focus:ring-indigo-500'>
                       <SelectValue placeholder='Select Gender' />
                     </SelectTrigger>
                     <SelectContent>
@@ -377,9 +391,9 @@ export const AddStudent = () => {
                 <div className='space-y-2'>
                   <Label
                     htmlFor='phoneNumber'
-                    className='flex items-center gap-2'
+                    className='flex items-center gap-2 text-indigo-900'
                   >
-                    <Phone className='h-4 w-4' />
+                    <Phone className='h-4 w-4 text-indigo-600' />
                     Phone Number <span className='text-red-500'>*</span>
                   </Label>
                   <Input
@@ -389,12 +403,16 @@ export const AddStudent = () => {
                     onChange={handleChange}
                     required
                     placeholder='Enter an active mobile number'
+                    className='border-indigo-200 focus:border-indigo-500 focus:ring-indigo-500'
                   />
                 </div>
 
                 <div className='space-y-2'>
-                  <Label htmlFor='email' className='flex items-center gap-2'>
-                    <Mail className='h-4 w-4' />
+                  <Label
+                    htmlFor='email'
+                    className='flex items-center gap-2 text-indigo-900'
+                  >
+                    <Mail className='h-4 w-4 text-indigo-600' />
                     Email <span className='text-red-500'>*</span>
                   </Label>
                   <Input
@@ -405,12 +423,16 @@ export const AddStudent = () => {
                     onChange={handleChange}
                     required
                     placeholder='Enter an active email'
+                    className='border-indigo-200 focus:border-indigo-500 focus:ring-indigo-500'
                   />
                 </div>
 
                 <div className='space-y-2'>
-                  <Label htmlFor='classId' className='flex items-center gap-2'>
-                    <Book className='h-4 w-4' />
+                  <Label
+                    htmlFor='classId'
+                    className='flex items-center gap-2 text-indigo-900'
+                  >
+                    <Book className='h-4 w-4 text-indigo-600' />
                     Class <span className='text-red-500'>*</span>
                   </Label>
                   <Select
@@ -422,7 +444,7 @@ export const AddStudent = () => {
                       } as React.ChangeEvent<HTMLSelectElement>)
                     }
                   >
-                    <SelectTrigger>
+                    <SelectTrigger className='border-indigo-200 focus:ring-indigo-500'>
                       <SelectValue placeholder='Select Class' />
                     </SelectTrigger>
                     <SelectContent>
@@ -438,9 +460,9 @@ export const AddStudent = () => {
                 <div className='space-y-2'>
                   <Label
                     htmlFor='sponsorId'
-                    className='flex items-center gap-2'
+                    className='flex items-center gap-2 text-indigo-900'
                   >
-                    <CreditCard className='h-4 w-4' />
+                    <CreditCard className='h-4 w-4 text-indigo-600' />
                     Sponsor <span className='text-red-500'>*</span>
                   </Label>
                   <Select
@@ -452,7 +474,7 @@ export const AddStudent = () => {
                       } as React.ChangeEvent<HTMLSelectElement>)
                     }
                   >
-                    <SelectTrigger>
+                    <SelectTrigger className='border-indigo-200 focus:ring-indigo-500'>
                       <SelectValue placeholder='Select Sponsor' />
                     </SelectTrigger>
                     <SelectContent>
@@ -469,9 +491,9 @@ export const AddStudent = () => {
                   <div className='space-y-2'>
                     <Label
                       htmlFor='fundedAmount'
-                      className='flex items-center gap-2'
+                      className='flex items-center gap-2 text-indigo-900'
                     >
-                      <DollarSign className='h-4 w-4' />
+                      <DollarSign className='h-4 w-4 text-indigo-600' />
                       Funded Amount <span className='text-red-500'>*</span>
                     </Label>
                     <Input
@@ -482,20 +504,21 @@ export const AddStudent = () => {
                       onChange={handleChange}
                       required
                       placeholder='Enter amount funded by sponsor'
+                      className='border-indigo-200 focus:border-indigo-500 focus:ring-indigo-500'
                     />
                   </div>
                 )}
 
                 {showFundedAmount && selectedClass?.tuitionFee && (
                   <div className='space-y-2'>
-                    <Label className='flex items-center gap-2'>
-                      <DollarSign className='h-4 w-4' />
+                    <Label className='flex items-center gap-2 text-indigo-900'>
+                      <DollarSign className='h-4 w-4 text-indigo-600' />
                       Remaining Amount
                     </Label>
-                    <div className='flex items-center h-10 px-3 rounded-md border border-input bg-background text-sm'>
+                    <div className='flex items-center h-10 px-3 rounded-md border border-indigo-200 bg-white text-sm text-indigo-900'>
                       {remainingAmount.toFixed(2)}
                     </div>
-                    <p className='text-xs text-muted-foreground'>
+                    <p className='text-xs text-indigo-700'>
                       Total Tuition Fee: {selectedClass.tuitionFee.toFixed(2)}
                     </p>
                   </div>
@@ -505,8 +528,11 @@ export const AddStudent = () => {
               <Separator className='my-6' />
 
               <div className='space-y-2'>
-                <Label htmlFor='image' className='flex items-center gap-2'>
-                  <Upload className='h-4 w-4' />
+                <Label
+                  htmlFor='image'
+                  className='flex items-center gap-2 text-indigo-900'
+                >
+                  <Upload className='h-4 w-4 text-indigo-600' />
                   Student Photo
                 </Label>
                 <div className='flex items-center gap-4'>
@@ -516,7 +542,7 @@ export const AddStudent = () => {
                     onClick={() =>
                       document.getElementById("image-upload")?.click()
                     }
-                    className='w-full md:w-auto'
+                    className='w-full md:w-auto border-indigo-200 text-indigo-700 hover:bg-indigo-50 hover:border-indigo-300'
                   >
                     Upload Photo
                   </Button>
@@ -536,9 +562,9 @@ export const AddStudent = () => {
                           "/placeholder.svg"
                         }
                         alt='Student Photo'
-                        className='h-12 w-12 rounded-full object-cover border'
+                        className='h-12 w-12 rounded-full object-cover border border-indigo-200'
                       />
-                      <span className='text-sm text-muted-foreground'>
+                      <span className='text-sm text-indigo-700'>
                         {userInfo.image.name}
                       </span>
                     </div>
@@ -550,7 +576,7 @@ export const AddStudent = () => {
                 <Button
                   onClick={addNewStudent}
                   disabled={isPageLoaded}
-                  className='w-full md:w-1/3 bg-blue-500  '
+                  className='w-full md:w-1/3 bg-indigo-600 hover:bg-indigo-700 text-white'
                 >
                   {isPageLoaded ? (
                     <div className='flex items-center gap-2'>
