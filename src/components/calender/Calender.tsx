@@ -97,7 +97,7 @@ const Calendar = () => {
             >
               <ChevronLeft className='h-3 w-3' />
             </button>
-            <div className='text-[10px] font-semibold text-indigo-900'>
+            <div className='text-xs font-semibold text-indigo-900'>
               {getMonthName(currentDate)} {currentDate.getFullYear()}
             </div>
             <button
@@ -121,7 +121,7 @@ const Calendar = () => {
           </div>
 
           {/* Calendar Grid */}
-          <div className='grid grid-cols-7 gap-0.5 flex-1'>
+          <div className='grid grid-cols-7 gap-1.5 flex-1 min-h-0 p-1'>
             {days.map((day) => {
               const today = isToday(day);
               const sameMonth = isSameMonth(day, currentDate);
@@ -130,19 +130,22 @@ const Calendar = () => {
                 <div
                   key={day.toString()}
                   className={`
-                    aspect-square
+                    w-full
+                    h-full
+                    min-h-[20px]
                     flex
                     items-center
                     justify-center
-                    text-sm
+                    text-[15px]
                     font-medium
                     transition-colors
                     duration-200
                     cursor-pointer
-                    rounded-md
+                    rounded-sm
+                    p-1
                     ${
                       today
-                        ? "bg-blue-700 text-white font-bold shadow-lg ring-2 ring-blue-500 ring-offset-2 hover:bg-blue-800"
+                        ? "bg-indigo-600 text-white font-bold"
                         : sameMonth
                         ? "text-indigo-900 hover:bg-indigo-50 hover:text-indigo-600"
                         : "text-indigo-400 hover:bg-indigo-50/50"

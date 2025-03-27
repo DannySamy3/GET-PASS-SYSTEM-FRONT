@@ -248,10 +248,17 @@ const DashBoard = () => {
     },
   ];
 
+  // <div className='p-6 space-y-6'>
+  //       <div className='flex justify-between items-center bg-gradient-to-r from-slate-700 via-slate-800 to-slate-900 text-white p-6 rounded-lg shadow-lg'>
+  //         <h1 className='text-3xl font-bold tracking-tight'>
+  //           Sponsors Management
+  //         </h1>
+  //       </div>
+
   return (
     <div className='min-h-screen bg-slate-50'>
       <div className='p-6 space-y-6'>
-        <div className='flex justify-between items-center bg-gradient-to-r from-blue-700 via-blue-800 to-blue-900 text-white p-6 rounded-lg shadow-lg'>
+        <div className='flex justify-between items-center bg-gradient-to-r from-blue-800 via-slate-700 to-slate-900 text-white p-6 rounded-lg shadow-lg'>
           <h1 className='text-3xl font-bold tracking-tight'>
             Dashboard Overview
           </h1>
@@ -274,7 +281,7 @@ const DashBoard = () => {
               </div>
               <button
                 onClick={() => window.location.reload()}
-                className='btn bg-white text-blue-700 hover:bg-blue-50 shadow-sm h-[42px]'
+                className='btn bg-white text-indigo-700 hover:bg-indigo-50 shadow-sm h-[42px]'
               >
                 <svg
                   xmlns='http://www.w3.org/2000/svg'
