@@ -316,7 +316,7 @@ const DashBoard = () => {
             </div>
           </div>
           <div className='lg:col-span-1'>
-            <div className='bg-white rounded-lg shadow-lg p-3 h-[400px] overflow-hidden'>
+            <div className='h-[400px] overflow-hidden'>
               <Calender />
             </div>
           </div>
