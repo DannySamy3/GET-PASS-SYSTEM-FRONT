@@ -187,7 +187,7 @@ const Sponsors = () => {
   return (
     <div className=' min-h-screen'>
       <div className='p-6 space-y-6'>
-        <div className='flex justify-between items-center bg-gray-200 text-gray-800 p-6 rounded-lg shadow-md'>
+        <div className='flex justify-between items-center bg-gradient-to-r from-slate-700 via-slate-800 to-slate-900 text-white p-6 rounded-lg shadow-lg'>
           <h1 className='text-3xl font-bold tracking-tight'>
             Sponsors Management
           </h1>

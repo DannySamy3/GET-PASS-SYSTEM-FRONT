@@ -189,14 +189,14 @@ export const StudentList = () => {
   return (
     <div className='min-h-screen bg-slate-50'>
       <div className='p-6 space-y-6'>
-        <div className='flex justify-between items-center bg-gradient-to-r from-indigo-600 via-blue-600 to-blue-700 text-white p-6 rounded-lg shadow-lg'>
+        <div className='flex justify-between items-center bg-gradient-to-r from-slate-700 via-slate-800 to-slate-900 text-white p-6 rounded-lg shadow-lg'>
           <h1 className='text-3xl font-bold tracking-tight'>
             Student Management
           </h1>
           {!changeView && (
             <Button
               onClick={() => setChangeView(true)}
-              className='bg-white text-indigo-700 hover:bg-indigo-50 shadow-sm'
+              className='bg-white text-slate-700 hover:bg-slate-50 shadow-sm'
             >
               <Plus className='mr-2 h-4 w-4' />
               Add Student
