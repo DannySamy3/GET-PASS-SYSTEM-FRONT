@@ -1,30 +1,50 @@
-import React, { useEffect, useState } from "react";
+"use client";
+
+import type React from "react";
+import { useEffect, useState } from "react";
 import { getStudentById, editStudent } from "@/utils/studentController";
 import { getClassById } from "@/utils/classController";
 import { getSponsorById } from "@/utils/sponsorController";
 import { useDispatch } from "react-redux";
 import { showToast } from "@/utils/toastSlice";
-import ToastNotification from "@/components/toastNotification/ToastNotification";
-import { FaPencilAlt } from "react-icons/fa";
+import { FaPencilAlt, FaMoneyBillWave, FaSave, FaTimes } from "react-icons/fa";
 import { editImage } from "@/utils/imageController";
 
-interface props {
+interface Props {
   id: any;
   setView: any;
   setDate: any;
 }
 
-export const Details: React.FC<props> = ({ id, setView, setDate }) => {
+// Define payment session types
+interface PaymentSession {
+  id: string;
+  name: string;
+}
+
+export const Details: React.FC<Props> = ({ id, setView, setDate }) => {
   const [student, setStudent] = useState<any>();
   const [selectStatus, setSelectStatus] = useState("");
   const [edit, setEdit] = useState(false);
+  const [showPaymentOptions, setShowPaymentOptions] = useState(false);
+  const [selectedSession, setSelectedSession] = useState<string>("");
+  const [paymentAmount, setPaymentAmount] = useState<string>("");
+  const [paymentType, setPaymentType] = useState<string>("");
+
+  // Mock payment sessions - replace with actual data from your API
+  const [paymentSessions, setPaymentSessions] = useState<PaymentSession[]>([
+    { id: "1", name: "First Term Fees" },
+    { id: "2", name: "Second Term Fees" },
+    { id: "3", name: "Third Term Fees" },
+    { id: "4", name: "Examination Fees" },
+    { id: "5", name: "Library Fees" },
+  ]);
 
   const dispatch = useDispatch();
 
   const getDetails = async () => {
     try {
       const result = await getStudentById(id);
-      // console.log(result);
 
       if (result) {
         // @ts-ignore
@@ -58,65 +78,31 @@ export const Details: React.FC<props> = ({ id, setView, setDate }) => {
     try {
       await editStudent(id, selectStatus);
       getDetails();
-    } catch (error) {}
+    } catch (error) {
+      dispatch(
+        showToast({
+          message: "Failed to update status",
+          type: "error",
+        })
+      );
+    }
   };
-
-  // const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
-  //   if (e.target.files && e.target.files[0]) {
-  //     const file = e.target.files[0];
-  //     console.log("File size (MB):", file.size / (1024 * 1024)); // Convert to MB
-  //     // Log file size for debugging
-  //     if (file.size > 50 * 1024 * 1024) {
-  //       // Check for 50MB file size
-  //       alert("File is too large!");
-  //       return;
-  //     }
-  //     // const reader = new FileReader();
-  //     const formData = new FormData();
-  //     formData.append("file", file);
-
-  //     try {
-  //       const response = await editImage(student.id, formData);
-  //       //@ts-ignore
-  //       if (!response.ok) {
-  //         throw new Error("Failed to update image");
-  //       }
-  //       //@ts-ignore
-  //       const result = await response.json();
-  //       setStudent((prev: any) => ({
-  //         ...prev,
-  //         image: result.imageUrl, // Assuming the backend sends the image URL in response
-  //       }));
-  //       dispatch(
-  //         showToast({
-  //           message: "Image updated successfully",
-  //           type: "success",
-  //         })
-  //       );
-  //     } catch (error) {
-  //       dispatch(
-  //         showToast({
-  //           message: "Failed to update image",
-  //           type: "error",
-  //         })
-  //       );
-  //     }
-
-  //     // reader.readAsDataURL(file);
-  //   }
-  // };
 
   const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
       const file = e.target.files[0];
-      console.log("File size (MB):", file.size / (1024 * 1024)); // Convert to MB
+      console.log("File size (MB):", file.size / (1024 * 1024));
       if (file.size > 50 * 1024 * 1024) {
-        // Check for 50MB file size
-        alert("File is too large!");
+        dispatch(
+          showToast({
+            message: "File is too large! Maximum size is 50MB.",
+            type: "error",
+          })
+        );
         return;
       }
 
-      const previousImageUrl = student.image; // Assuming the current image URL is stored in student.image
+      const previousImageUrl = student.image;
 
       try {
         const result = await editImage(file, previousImageUrl, student._id);
@@ -124,7 +110,7 @@ export const Details: React.FC<props> = ({ id, setView, setDate }) => {
         setStudent((prev: any) => ({
           ...prev,
           //@ts-ignore
-          image: result.imageUrl, // Assuming the backend sends the image URL in response
+          image: result.imageUrl,
         }));
 
         dispatch(
@@ -144,14 +130,77 @@ export const Details: React.FC<props> = ({ id, setView, setDate }) => {
     }
   };
 
+  const handlePaymentSubmit = () => {
+    // Implement your payment submission logic here
+    if (!selectedSession || !paymentAmount) {
+      dispatch(
+        showToast({
+          message: "Please select a session and enter payment amount",
+          type: "error",
+        })
+      );
+      return;
+    }
+
+    // Mock API call - replace with your actual payment API
+    console.log("Payment submitted:", {
+      studentId: student?._id,
+      sessionId: selectedSession,
+      amount: paymentAmount,
+      paymentType: paymentType,
+    });
+
+    dispatch(
+      showToast({
+        message: "Payment recorded successfully",
+        type: "success",
+      })
+    );
+
+    // Reset payment form
+    setSelectedSession("");
+    setPaymentAmount("");
+    setPaymentType("");
+    setShowPaymentOptions(false);
+    setEdit(false);
+  };
+
+  const togglePaymentOptions = () => {
+    // Don't show payment options for restricted sponsors
+    if (student?.sponsorName === "Metfund") {
+      dispatch(
+        showToast({
+          message:
+            "Payment options not available for Metfund sponsored students",
+          type: "success",
+        })
+      );
+      return;
+    }
+
+    setShowPaymentOptions(!showPaymentOptions);
+    if (!showPaymentOptions) {
+      setEdit(true);
+    } else {
+      setSelectedSession("");
+      setPaymentAmount("");
+      setPaymentType("");
+    }
+  };
+
+  const isPaymentDisabled = () => {
+    return (
+      student?.sponsorName === "Metfund" || student?.sponsorName === "Hesbl"
+    );
+  };
+
   useEffect(() => {
     getDetails();
   }, [student?.status]);
 
-  // console.log(student.id);
   return (
-    <div className=' h-[80vh] '>
-      <div className='bg-white shadow-lg rounded-lg p-8 w-full font-montserrat '>
+    <div className='h-[80vh] font-montserrat'>
+      <div className='bg-white shadow-lg rounded-lg p-8 w-full'>
         <div className='flex justify-between items-center mb-6'>
           <h2 className='text-3xl font-bold text-gray-700'>Student Details</h2>
           <div className='flex space-x-4'>
@@ -160,143 +209,261 @@ export const Details: React.FC<props> = ({ id, setView, setDate }) => {
                 setView((prev: any) => ({ ...prev, view: false }));
                 setDate(false);
               }}
-              className='btn btn-error text-white'
+              className='px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600 transition-colors flex items-center gap-2'
             >
-              Cancel
+              <FaTimes /> Cancel
             </button>
-            <button
-              onClick={() => {
-                setEdit((prev) => !prev);
-                if (edit) handleEditStatus(id);
-              }}
-              className={`btn ${edit ? "btn-success" : "btn-info"} text-white`}
-            >
-              {edit ? "Save" : "Edit"}
-            </button>
+
+            {!showPaymentOptions && (
+              <button
+                onClick={() => {
+                  setEdit((prev) => !prev);
+                  if (edit) handleEditStatus(id);
+                }}
+                className={`px-4 py-2 ${
+                  edit
+                    ? "bg-green-500 hover:bg-green-600"
+                    : "bg-blue-500 hover:bg-blue-600"
+                } text-white rounded-md transition-colors flex items-center gap-2`}
+              >
+                {edit ? <FaSave /> : <FaPencilAlt />} {edit ? "Save" : "Edit"}
+              </button>
+            )}
+
+            {!isPaymentDisabled() && (
+              <button
+                onClick={togglePaymentOptions}
+                className={`px-4 py-2 ${
+                  showPaymentOptions
+                    ? "bg-amber-500 hover:bg-amber-600"
+                    : "bg-blue-500 hover:bg-blue-600"
+                } text-white rounded-md transition-colors flex items-center gap-2`}
+              >
+                <FaMoneyBillWave />{" "}
+                {showPaymentOptions ? "Cancel Payment" : "Payment"}
+              </button>
+            )}
           </div>
         </div>
-        <div className='fle justify-center my-6 relative'>
+
+        {/* Student Image Section */}
+        <div className='flex justify-center my-6 relative'>
           {student?.image ? (
-            <div className=' flex items-center gap-[%]'>
-              <img
-                src={student.image}
-                alt='Student'
-                className='h-32 w-32 rounded-full object-cover'
-              />
-              <input
-                type='file'
-                id='image-upload'
-                style={{ display: "none" }}
-                onChange={handleImageChange}
-              />
-              <label htmlFor='image-upload'>
-                <FaPencilAlt
-                  className='  text-gray-600 absolute bottom-[15px] left-[100px] cursor-pointer'
-                  style={{ transform: "translate(50%, 50%)" }}
+            <div className='flex items-center gap-4 relative'>
+              <div className='relative'>
+                <img
+                  src={student.image || "/placeholder.svg"}
+                  alt='Student'
+                  className='h-32 w-32 rounded-full object-cover border-4 border-gray-200'
                 />
-              </label>
+                <input
+                  type='file'
+                  id='image-upload'
+                  style={{ display: "none" }}
+                  onChange={handleImageChange}
+                />
+                <label
+                  htmlFor='image-upload'
+                  className='absolute bottom-0 right-0 bg-white p-2 rounded-full shadow-md cursor-pointer hover:bg-gray-100 transition-colors'
+                >
+                  <FaPencilAlt className='text-gray-600' />
+                </label>
+              </div>
+              <div>
+                <h3 className='text-xl font-bold text-gray-800'>{`${
+                  student?.firstName ?? ""
+                } ${student?.lastName ?? ""}`}</h3>
+                <p className='text-gray-600'>{student?.regNo}</p>
+              </div>
             </div>
           ) : (
-            <div className='h-16 w-16 rounded-full bg-gray-200 flex items-center justify-center'>
+            <div className='h-32 w-32 rounded-full bg-gray-200 flex items-center justify-center'>
               <div className='animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-gray-500'></div>
             </div>
           )}
         </div>
-        <div className='grid grid-cols-1 md:grid-cols-2 gap-6  '>
-          <div className='flex flex-col'>
-            <label className='text-[16px] text-gray-600 font-medium'>
+
+        {/* Student Details Grid */}
+        <div className='grid grid-cols-1 md:grid-cols-2 gap-6 mt-6'>
+          <div className='bg-gray-50 p-4 rounded-lg'>
+            <label className='text-sm text-gray-600 font-medium'>
               Full Name
             </label>
-            <span className='text-[15px] font-semibold  text-gray-700'>{`${
+            <p className='text-base font-semibold text-gray-800'>{`${
               student?.firstName ?? ""
-            } ${student?.secondName ?? ""} ${student?.lastName ?? ""}`}</span>
+            } ${student?.secondName ?? ""} ${student?.lastName ?? ""}`}</p>
           </div>
-          <div className='flex flex-col'>
-            <label className='text-[16px] text-gray-600 font-medium'>
-              Gender
-            </label>
-            <span className='text-[15px] font-semibold text-gray-700'>
+
+          <div className='bg-gray-50 p-4 rounded-lg'>
+            <label className='text-sm text-gray-600 font-medium'>Gender</label>
+            <p className='text-base font-semibold text-gray-800'>
               {student?.gender}
-            </span>
+            </p>
           </div>
-          <div className='flex flex-col'>
-            <label className='text-[16px] text-gray-600 font-medium'>
-              Email
-            </label>
-            <span className='text-[15px] font-semibold text-gray-700'>
+
+          <div className='bg-gray-50 p-4 rounded-lg'>
+            <label className='text-sm text-gray-600 font-medium'>Email</label>
+            <p className='text-base font-semibold text-gray-800'>
               {student?.email}
-            </span>
+            </p>
           </div>
-          <div className='flex flex-col'>
-            <label className='text-[16px] text-gray-600 font-medium'>
+
+          <div className='bg-gray-50 p-4 rounded-lg'>
+            <label className='text-sm text-gray-600 font-medium'>
               Phone Number
             </label>
-            <span className='text-[15px] font-semibold text-gray-700'>
+            <p className='text-base font-semibold text-gray-800'>
               {student?.phoneNumber}
-            </span>
+            </p>
           </div>
-          <div className='flex flex-col'>
-            <label className='text-[16px] text-gray-600 font-medium'>
+
+          <div className='bg-gray-50 p-4 rounded-lg'>
+            <label className='text-sm text-gray-600 font-medium'>
               Nationality
             </label>
-            <span className='text-[15px] font-semibold text-gray-700'>
+            <p className='text-base font-semibold text-gray-800'>
               {student?.nationality}
-            </span>
+            </p>
           </div>
-          <div className='flex flex-col'>
-            <label className='text-[16px] text-gray-600 font-medium'>
-              Class
-            </label>
-            <span className='text-[15px] font-semibold text-gray-700'>
+
+          <div className='bg-gray-50 p-4 rounded-lg'>
+            <label className='text-sm text-gray-600 font-medium'>Class</label>
+            <p className='text-base font-semibold text-gray-800'>
               {student?.className}
-            </span>
+            </p>
           </div>
-          <div className='flex flex-col'>
-            <label className='text-[16px] text-gray-600 font-medium'>
+
+          <div className='bg-gray-50 p-4 rounded-lg'>
+            <label className='text-sm text-gray-600 font-medium'>
               Registration Number
             </label>
-            <span className='text-[15px] font-semibold text-gray-700'>
+            <p className='text-base font-semibold text-gray-800'>
               {student?.regNo}
-            </span>
+            </p>
           </div>
-          <div className='flex flex-col'>
+
+          <div className='bg-gray-50 p-4 rounded-lg'>
             <label className='text-sm text-gray-600 font-medium'>Sponsor</label>
-            <span className='text-[16px] font-semibold text-gray-700'>
+            <p className='text-base font-semibold text-gray-800'>
               {student?.sponsorName}
-            </span>
+            </p>
           </div>
-          <div className='flex flex-col'>
+
+          <div className='bg-gray-50 p-4 rounded-lg col-span-1'>
             <label className='text-sm text-gray-600 font-medium'>
               Registration Status
             </label>
-            {edit ? (
+            {edit && !showPaymentOptions ? (
               <select
-                onChange={(e: any) => setSelectStatus(e.target.value)}
-                className='select select-sm border border-gray-300  rounded-md text-gray-700'
+                value={selectStatus}
+                onChange={(e) => setSelectStatus(e.target.value)}
+                className='mt-1 block w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500'
               >
-                <option value={""}>Edit Status</option>
-                <option value={"REGISTERED"} className='text-green-600'>
-                  REGISTERED
-                </option>
-                <option value={"NOT REGISTERED"} className='text-red-600'>
-                  NOT REGISTERED
-                </option>
+                <option value=''>Select Status</option>
+                <option value='REGISTERED'>REGISTERED</option>
+                <option value='NOT REGISTERED'>NOT REGISTERED</option>
               </select>
             ) : (
-              <span
-                className={`text-[15px] font-semibold  ${
+              <p
+                className={`text-base font-semibold ${
                   student?.status === "NOT REGISTERED"
                     ? "text-red-600"
                     : "text-green-600"
                 }`}
               >
                 {student?.status}
-              </span>
+              </p>
             )}
           </div>
         </div>
+
+        {/* Payment Options Section - Moved to bottom */}
+        {showPaymentOptions && (
+          <div className='mt-8 p-6 bg-gray-50 rounded-lg border border-gray-200'>
+            <h3 className='text-lg font-semibold text-gray-700 mb-4'>
+              Payment Options
+            </h3>
+
+            {student?.sponsorName === "Hesbl" ? (
+              <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
+                <div>
+                  <label className='block text-sm font-medium text-gray-700 mb-1'>
+                    Payment Type
+                  </label>
+                  <select
+                    value={paymentType}
+                    onChange={(e) => setPaymentType(e.target.value)}
+                    className='w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500'
+                  >
+                    <option value=''>Select Payment Type</option>
+                    <option value='full'>Full Payment</option>
+                    <option value='partial'>Partial Payment</option>
+                  </select>
+                </div>
+
+                {paymentType && (
+                  <div>
+                    <label className='block text-sm font-medium text-gray-700 mb-1'>
+                      Payment Amount
+                    </label>
+                    <input
+                      type='number'
+                      value={paymentAmount}
+                      onChange={(e) => setPaymentAmount(e.target.value)}
+                      placeholder='Enter amount'
+                      className='w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500'
+                    />
+                  </div>
+                )}
+              </div>
+            ) : (
+              <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
+                <div>
+                  <label className='block text-sm font-medium text-gray-700 mb-1'>
+                    Select Session
+                  </label>
+                  <select
+                    value={selectedSession}
+                    onChange={(e) => setSelectedSession(e.target.value)}
+                    className='w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500'
+                  >
+                    <option value=''>Select Payment Session</option>
+                    {paymentSessions.map((session) => (
+                      <option key={session.id} value={session.id}>
+                        {session.name}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                {selectedSession && (
+                  <div>
+                    <label className='block text-sm font-medium text-gray-700 mb-1'>
+                      Payment Amount
+                    </label>
+                    <input
+                      type='number'
+                      value={paymentAmount}
+                      onChange={(e) => setPaymentAmount(e.target.value)}
+                      placeholder='Enter amount'
+                      className='w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500'
+                    />
+                  </div>
+                )}
+              </div>
+            )}
+
+            <div className='mt-6 flex justify-end'>
+              <button
+                onClick={handlePaymentSubmit}
+                className='px-4 py-2 bg-green-500 text-white rounded-md hover:bg-green-600 transition-colors flex items-center gap-2'
+              >
+                <FaSave /> Submit Payment
+              </button>
+            </div>
+          </div>
+        )}
       </div>
-      {/* <ToastNotification /> */}
     </div>
   );
 };

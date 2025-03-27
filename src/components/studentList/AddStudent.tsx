@@ -1,4 +1,7 @@
-import React, { useEffect, useState } from "react";
+"use client";
+
+import type React from "react";
+import { useEffect, useState } from "react";
 import { getSponsors } from "@/utils/sponsorController";
 import { getClasses } from "@/utils/classController";
 import { fetchCountries } from "@/utils/helper";
@@ -6,8 +9,32 @@ import { addStudent } from "@/utils/studentController";
 import { useDispatch } from "react-redux";
 import { showToast } from "@/utils/toastSlice";
 import { useRouter } from "next/navigation";
+import {
+  User,
+  Book,
+  Upload,
+  Mail,
+  Phone,
+  Flag,
+  Users,
+  CreditCard,
+  DollarSign,
+  X,
+} from "lucide-react";
 
-import "react-toastify/dist/ReactToastify.css";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Separator } from "@/components/ui/separator";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 interface Country {
   name: {
@@ -15,7 +42,7 @@ interface Country {
   };
 }
 
-interface User {
+interface UserInfo {
   firstName: string;
   lastName: string;
   secondName: string;
@@ -27,16 +54,28 @@ interface User {
   gender: string;
   enrollmentYear: string;
   image: File | null;
+  fundedAmount?: number;
 }
 
 interface AddStudentResponse {
   data: {
-    student: User;
+    student: UserInfo;
   };
 }
 
+interface ClassInfo {
+  _id: string;
+  name: string;
+  tuitionFee?: number;
+}
+
+interface SponsorInfo {
+  _id: string;
+  name: string;
+}
+
 export const AddStudent = () => {
-  const [userInfo, setUserInfo] = useState<User>({
+  const [userInfo, setUserInfo] = useState<UserInfo>({
     firstName: "",
     lastName: "",
     secondName: "",
@@ -48,15 +87,18 @@ export const AddStudent = () => {
     gender: "",
     enrollmentYear: "",
     image: null,
+    fundedAmount: 0,
   });
 
-  const [sponsors, setSponsors] = useState<any[]>([]);
-  const [classes, setClasses] = useState<any[]>([]);
+  const [sponsors, setSponsors] = useState<SponsorInfo[]>([]);
+  const [classes, setClasses] = useState<ClassInfo[]>([]);
   const [isPageLoaded, setIsPageLoaded] = useState<boolean>(false);
   const [isToastShown, setIsToastShown] = useState<boolean>(false);
+  const [selectedClass, setSelectedClass] = useState<ClassInfo | null>(null);
+  const [remainingAmount, setRemainingAmount] = useState<number>(0);
+  const [showFundedAmount, setShowFundedAmount] = useState<boolean>(false);
 
   const dispatch = useDispatch();
-
   const router = useRouter();
 
   const handleFetchSponsor = async () => {
@@ -90,11 +132,56 @@ export const AddStudent = () => {
         ...prev,
         image: (e.target as HTMLInputElement).files![0],
       }));
+    } else if (name === "fundedAmount") {
+      const fundedAmount = Number.parseFloat(value) || 0;
+      setUserInfo((prev) => ({
+        ...prev,
+        fundedAmount,
+      }));
+
+      // Calculate remaining amount
+      if (selectedClass && selectedClass.tuitionFee) {
+        const remaining = selectedClass.tuitionFee - fundedAmount;
+        setRemainingAmount(remaining > 0 ? remaining : 0);
+      }
     } else {
       setUserInfo((prev) => ({
         ...prev,
         [name]: value,
       }));
+
+      // Handle sponsor selection
+      if (name === "sponsorId") {
+        const selectedSponsor = sponsors.find(
+          (sponsor) => sponsor._id === value
+        );
+
+        // Show funded amount field for all sponsors EXCEPT METFUND and Private
+        setShowFundedAmount(
+          selectedSponsor ? selectedSponsor.name !== "Metfund" : false
+        );
+
+        // Reset funded amount when switching to METFUND or Private
+        if (
+          selectedSponsor &&
+          (selectedSponsor.name === "METFUND" ||
+            selectedSponsor.name === "Private")
+        ) {
+          setUserInfo((prev) => ({ ...prev, fundedAmount: 0 }));
+        }
+      }
+
+      // Handle class selection
+      if (name === "classId") {
+        const selected = classes.find((cls) => cls._id === value) || null;
+        setSelectedClass(selected);
+
+        // Recalculate remaining amount when class changes
+        if (selected && selected.tuitionFee && userInfo.fundedAmount) {
+          const remaining = selected.tuitionFee - userInfo.fundedAmount;
+          setRemainingAmount(remaining > 0 ? remaining : 0);
+        }
+      }
     }
   };
 
@@ -104,11 +191,9 @@ export const AddStudent = () => {
 
     const formData = new FormData();
     Object.keys(userInfo).forEach((key) => {
-      formData.append(key, userInfo[key as keyof User] as any);
+      formData.append(key, userInfo[key as keyof UserInfo] as any);
     });
-    // if (userInfo.image) {
-    //   formData.append("image", userInfo.image);
-    // }
+
     setIsPageLoaded(true);
     try {
       const response = (await addStudent(formData)) as AddStudentResponse;
@@ -132,6 +217,7 @@ export const AddStudent = () => {
           gender: "",
           enrollmentYear: "",
           image: null,
+          fundedAmount: 0,
         });
 
         router.push("/");
@@ -159,6 +245,7 @@ export const AddStudent = () => {
         gender: "",
         enrollmentYear: "",
         image: null,
+        fundedAmount: 0,
       });
     }
   };
@@ -169,210 +256,335 @@ export const AddStudent = () => {
   }, []);
 
   return (
-    <div className='relative flex justify-center items-center h-[85vh]'>
-      <section className='bg-white shadow-lg rounded-lg p-8 w-full '>
-        <h2 className='text-3xl font-bold text-center mb-6 text-gray-700'>
-          Student Information
-        </h2>
-        <section className='grid grid-cols-1 md:grid-cols-2 gap-6'>
-          <div className='flex flex-col'>
-            <label className='text-sm text-gray-600 font-medium'>
-              First Name
-            </label>
-            <input
-              onChange={handleChange}
-              value={userInfo.firstName}
-              required
-              name='firstName'
-              type='text'
-              placeholder="Enter student's first name"
-              className='border  input input-md text-gray-700 border-gray-300 rounded-md h-10 bg-white'
-            />
+    <div className='min-h-screen w-full py-8'>
+      <Tabs defaultValue='sponsors' className='w-full'>
+        <div className='px-1'>
+          <div className='flex justify-between items-center bg-gray-100 text-gray-500 py-4 px-6 rounded-lg shadow-md border border-gray-300'>
+            <h1 className='text-2xl text-gray-600 font-bold tracking-tight'>
+              Add Student
+            </h1>
           </div>
-          <div className='flex flex-col'>
-            <label className='text-sm text-gray-600 font-medium'>
-              Second Name
-            </label>
-            <input
-              name='secondName'
-              value={userInfo.secondName}
-              onChange={handleChange}
-              required
-              type='text'
-              placeholder="Enter student's middle name"
-              className='border input input-md text-gray-700 border-gray-300 rounded-md h-10 bg-white'
-            />
-          </div>
-          <div className='flex flex-col'>
-            <label className='text-sm text-gray-600 font-medium'>SurName</label>
-            <input
-              name='lastName'
-              value={userInfo.lastName}
-              onChange={handleChange}
-              required
-              type='text'
-              placeholder="Enter student's last name"
-              className='border input input-md text-gray-700 border-gray-300 rounded-md h-10 bg-white'
-            />
-          </div>
-          <div className='flex flex-col'>
-            <label className='text-sm text-gray-600 font-medium'>
-              Nationality
-            </label>
-            <select
-              name='nationality'
-              value={userInfo.nationality}
-              required
-              onChange={handleChange}
-              className='select select-sm text-gray-700 border border-gray-300 h-10 bg-white rounded-md'
-            >
-              <option value=''>Select Country</option>
-              {fetchCountries.map((country, i) => (
-                <option key={i} value={country}>
-                  {country}
-                </option>
-              ))}
-            </select>
-          </div>
-          <div className='flex flex-col'>
-            <label className='text-sm text-gray-600 font-medium'>Gender</label>
-            <select
-              name='gender'
-              value={userInfo.gender}
-              required
-              onChange={handleChange}
-              className='select select-sm border text-gray-700 border-gray-300 h-10 bg-white rounded-md'
-            >
-              <option value={""}>Select Gender</option>
-              <option value='Female'>Female</option>
-              <option value='Male'>Male</option>
-            </select>
-          </div>
-          <div className='flex flex-col'>
-            <label className='text-sm text-gray-600 font-medium'>
-              Phone Number
-            </label>
-            <input
-              name='phoneNumber'
-              onChange={handleChange}
-              value={userInfo.phoneNumber}
-              type='text'
-              required
-              placeholder='Enter an active mobile number'
-              className='border input text-gray-700 input-md border-gray-300 rounded-md h-10 bg-white'
-            />
-          </div>
-          <div className='flex flex-col'>
-            <label className='text-sm text-gray-600 font-medium'>Email</label>
-            <input
-              name='email'
-              value={userInfo.email}
-              required
-              onChange={handleChange}
-              type='email'
-              placeholder='Enter an active email'
-              className='border input text-gray-700 input-md border-gray-300 rounded-md h-10 bg-white'
-            />
-          </div>
-          <div className='flex flex-col'>
-            <label className='text-sm text-gray-600 font-medium'>Class</label>
-            <select
-              name='classId'
-              value={userInfo.classId}
-              required
-              onChange={handleChange}
-              className='select select-sm border text-gray-700 border-gray-300 h-10 bg-white rounded-md'
-            >
-              <option value=''>Select Class</option>
-              {classes.map((classId, i) => (
-                <option key={i} value={classId._id}>
-                  {classId.name}
-                </option>
-              ))}
-            </select>
-          </div>
-          <div className='flex flex-col'>
-            <label className='text-sm text-gray-600 font-medium'>Sponsor</label>
-            <select
-              onChange={handleChange}
-              value={userInfo.sponsorId}
-              required
-              name='sponsorId'
-              className='select select-sm border text-gray-700 border-gray-300 h-10 bg-white rounded-md'
-            >
-              <option value=''>Select Sponsor</option>
-              {sponsors.map((sponsorId, i) => (
-                <option key={i} value={sponsorId._id}>
-                  {sponsorId.name}
-                </option>
-              ))}
-            </select>
-          </div>
-          <div className='flex flex-col col-span-1 md:col-span-2'>
-            <label className='text-sm text-gray-600 font-medium'>Photo</label>
-            <div className='flex items-center'>
-              <input
-                name='image'
-                type='file'
-                accept='image/*'
-                onChange={handleChange}
-                className='hidden'
-                id='image-upload'
-              />
-              <label
-                htmlFor='image-upload'
-                className='cursor-pointer border border-gray-300 rounded-md h-10 flex items-center justify-center px-4 py-2 bg-white text-gray-700'
-              >
-                Upload Photo
-              </label>
-              {userInfo.image && (
-                <div className='ml-4'>
-                  <img
-                    src={URL.createObjectURL(userInfo.image)}
-                    alt='Student Photo'
-                    className='h-10 w-10 rounded-full object-cover'
+        </div>
+        <TabsContent value='sponsors' className='mt-8 px-1'>
+          <Card className='h-[calc(100vh-10rem)] w-full shadow-lg rounded-none border-0'>
+            <CardContent className='p-6 h-[calc(100vh-14rem)] overflow-y-auto'>
+              <div className='grid grid-cols-1 md:grid-cols-2 gap-6'>
+                <div className='space-y-2'>
+                  <Label
+                    htmlFor='firstName'
+                    className='flex items-center gap-2'
+                  >
+                    <User className='h-4 w-4' />
+                    First Name <span className='text-red-500'>*</span>
+                  </Label>
+                  <Input
+                    id='firstName'
+                    name='firstName'
+                    value={userInfo.firstName}
+                    onChange={handleChange}
+                    required
+                    placeholder="Enter student's first name"
                   />
                 </div>
-              )}
-            </div>
-          </div>
-        </section>
 
-        <div className='flex my-8 justify-center w-full'>
-          <button
-            onClick={addNewStudent}
-            className={`btn rounded-md border ${
-              isPageLoaded ? "bg-green-600 cursor-not-allowed" : "bg-green-600"
-            } text-white w-1/4 hover:text-white btn-success`}
-            disabled={isPageLoaded}
-          >
-            {isPageLoaded ? (
-              <svg
-                className='animate-spin h-5 w-5 text-green-800 mx-auto'
-                xmlns='http://www.w3.org/2000/svg'
-                fill='none'
-                viewBox='0 0 24 24'
-              >
-                <circle
-                  className='opacity-20'
-                  cx='12'
-                  cy='12'
-                  r='10'
-                  stroke='currentColor'
-                  strokeWidth='4'
-                ></circle>
-                <path
-                  className='opacity-75'
-                  fill='currentColor'
-                  d='M12 2a10 10 0 00-10 10h4a6 6 0 016-6V2z'
-                ></path>
-              </svg>
-            ) : (
-              "Register"
-            )}
-          </button>
-        </div>
-      </section>
+                <div className='space-y-2'>
+                  <Label
+                    htmlFor='secondName'
+                    className='flex items-center gap-2'
+                  >
+                    <User className='h-4 w-4' />
+                    Middle Name <span className='text-red-500'>*</span>
+                  </Label>
+                  <Input
+                    id='secondName'
+                    name='secondName'
+                    value={userInfo.secondName}
+                    onChange={handleChange}
+                    required
+                    placeholder="Enter student's middle name"
+                  />
+                </div>
+
+                <div className='space-y-2'>
+                  <Label htmlFor='lastName' className='flex items-center gap-2'>
+                    <User className='h-4 w-4' />
+                    Surname <span className='text-red-500'>*</span>
+                  </Label>
+                  <Input
+                    id='lastName'
+                    name='lastName'
+                    value={userInfo.lastName}
+                    onChange={handleChange}
+                    required
+                    placeholder="Enter student's last name"
+                  />
+                </div>
+
+                <div className='space-y-2'>
+                  <Label
+                    htmlFor='nationality'
+                    className='flex items-center gap-2'
+                  >
+                    <Flag className='h-4 w-4' />
+                    Nationality <span className='text-red-500'>*</span>
+                  </Label>
+                  <Select
+                    name='nationality'
+                    value={userInfo.nationality}
+                    onValueChange={(value) =>
+                      handleChange({
+                        target: { name: "nationality", value },
+                      } as React.ChangeEvent<HTMLSelectElement>)
+                    }
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder='Select Country' />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {fetchCountries.map((country, i) => (
+                        <SelectItem key={i} value={country}>
+                          {country}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                <div className='space-y-2'>
+                  <Label htmlFor='gender' className='flex items-center gap-2'>
+                    <Users className='h-4 w-4' />
+                    Gender <span className='text-red-500'>*</span>
+                  </Label>
+                  <Select
+                    name='gender'
+                    value={userInfo.gender}
+                    onValueChange={(value) =>
+                      handleChange({
+                        target: { name: "gender", value },
+                      } as React.ChangeEvent<HTMLSelectElement>)
+                    }
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder='Select Gender' />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value='Female'>Female</SelectItem>
+                      <SelectItem value='Male'>Male</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                <div className='space-y-2'>
+                  <Label
+                    htmlFor='phoneNumber'
+                    className='flex items-center gap-2'
+                  >
+                    <Phone className='h-4 w-4' />
+                    Phone Number <span className='text-red-500'>*</span>
+                  </Label>
+                  <Input
+                    id='phoneNumber'
+                    name='phoneNumber'
+                    value={userInfo.phoneNumber}
+                    onChange={handleChange}
+                    required
+                    placeholder='Enter an active mobile number'
+                  />
+                </div>
+
+                <div className='space-y-2'>
+                  <Label htmlFor='email' className='flex items-center gap-2'>
+                    <Mail className='h-4 w-4' />
+                    Email <span className='text-red-500'>*</span>
+                  </Label>
+                  <Input
+                    id='email'
+                    name='email'
+                    type='email'
+                    value={userInfo.email}
+                    onChange={handleChange}
+                    required
+                    placeholder='Enter an active email'
+                  />
+                </div>
+
+                <div className='space-y-2'>
+                  <Label htmlFor='classId' className='flex items-center gap-2'>
+                    <Book className='h-4 w-4' />
+                    Class <span className='text-red-500'>*</span>
+                  </Label>
+                  <Select
+                    name='classId'
+                    value={userInfo.classId}
+                    onValueChange={(value) =>
+                      handleChange({
+                        target: { name: "classId", value },
+                      } as React.ChangeEvent<HTMLSelectElement>)
+                    }
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder='Select Class' />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {classes.map((classInfo, i) => (
+                        <SelectItem key={i} value={classInfo._id}>
+                          {classInfo.name}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                <div className='space-y-2'>
+                  <Label
+                    htmlFor='sponsorId'
+                    className='flex items-center gap-2'
+                  >
+                    <CreditCard className='h-4 w-4' />
+                    Sponsor <span className='text-red-500'>*</span>
+                  </Label>
+                  <Select
+                    name='sponsorId'
+                    value={userInfo.sponsorId}
+                    onValueChange={(value) =>
+                      handleChange({
+                        target: { name: "sponsorId", value },
+                      } as React.ChangeEvent<HTMLSelectElement>)
+                    }
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder='Select Sponsor' />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {sponsors.map((sponsor, i) => (
+                        <SelectItem key={i} value={sponsor._id}>
+                          {sponsor.name}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                {showFundedAmount && (
+                  <div className='space-y-2'>
+                    <Label
+                      htmlFor='fundedAmount'
+                      className='flex items-center gap-2'
+                    >
+                      <DollarSign className='h-4 w-4' />
+                      Funded Amount <span className='text-red-500'>*</span>
+                    </Label>
+                    <Input
+                      id='fundedAmount'
+                      name='fundedAmount'
+                      type='number'
+                      value={userInfo.fundedAmount?.toString() || "0"}
+                      onChange={handleChange}
+                      required
+                      placeholder='Enter amount funded by sponsor'
+                    />
+                  </div>
+                )}
+
+                {showFundedAmount && selectedClass?.tuitionFee && (
+                  <div className='space-y-2'>
+                    <Label className='flex items-center gap-2'>
+                      <DollarSign className='h-4 w-4' />
+                      Remaining Amount
+                    </Label>
+                    <div className='flex items-center h-10 px-3 rounded-md border border-input bg-background text-sm'>
+                      {remainingAmount.toFixed(2)}
+                    </div>
+                    <p className='text-xs text-muted-foreground'>
+                      Total Tuition Fee: {selectedClass.tuitionFee.toFixed(2)}
+                    </p>
+                  </div>
+                )}
+              </div>
+
+              <Separator className='my-6' />
+
+              <div className='space-y-2'>
+                <Label htmlFor='image' className='flex items-center gap-2'>
+                  <Upload className='h-4 w-4' />
+                  Student Photo
+                </Label>
+                <div className='flex items-center gap-4'>
+                  <Button
+                    type='button'
+                    variant='outline'
+                    onClick={() =>
+                      document.getElementById("image-upload")?.click()
+                    }
+                    className='w-full md:w-auto'
+                  >
+                    Upload Photo
+                  </Button>
+                  <input
+                    id='image-upload'
+                    name='image'
+                    type='file'
+                    accept='image/*'
+                    onChange={handleChange}
+                    className='hidden'
+                  />
+                  {userInfo.image && (
+                    <div className='flex items-center gap-2'>
+                      <img
+                        src={
+                          URL.createObjectURL(userInfo.image) ||
+                          "/placeholder.svg"
+                        }
+                        alt='Student Photo'
+                        className='h-12 w-12 rounded-full object-cover border'
+                      />
+                      <span className='text-sm text-muted-foreground'>
+                        {userInfo.image.name}
+                      </span>
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              <div className='mt-8 flex justify-center'>
+                <Button
+                  onClick={addNewStudent}
+                  disabled={isPageLoaded}
+                  className='w-full md:w-1/3 bg-blue-500  '
+                >
+                  {isPageLoaded ? (
+                    <div className='flex items-center gap-2'>
+                      <svg
+                        className='animate-spin h-5 w-5'
+                        xmlns='http://www.w3.org/2000/svg'
+                        fill='none'
+                        viewBox='0 0 24 24'
+                      >
+                        <circle
+                          className='opacity-25'
+                          cx='12'
+                          cy='12'
+                          r='10'
+                          stroke='currentColor'
+                          strokeWidth='4'
+                        ></circle>
+                        <path
+                          className='opacity-75'
+                          fill='currentColor'
+                          d='M12 2a10 10 0 00-10 10h4a6 6 0 016-6V2z'
+                        ></path>
+                      </svg>
+                      Processing...
+                    </div>
+                  ) : (
+                    "Register Student"
+                  )}
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+        </TabsContent>
+      </Tabs>
     </div>
   );
 };
