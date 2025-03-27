@@ -251,7 +251,7 @@ const DashBoard = () => {
   return (
     <div className='min-h-screen bg-slate-50'>
       <div className='p-6 space-y-6'>
-        <div className='flex justify-between items-center bg-gradient-to-r from-indigo-600 via-blue-600 to-blue-700 text-white p-6 rounded-lg shadow-lg'>
+        <div className='flex justify-between items-center bg-gradient-to-r from-indigo-600 via-blue-600 to-blue-700 text-white p-6 rounded-lg shadow-lg mb-8'>
           <h1 className='text-3xl font-bold tracking-tight'>
             Dashboard Overview
           </h1>
@@ -295,7 +295,7 @@ const DashBoard = () => {
           </div>
         </div>
 
-        <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6'>
+        <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6   mb-'>
           {cards.map((card, index) => (
             <div className='w-full cursor-pointer' key={index}>
               <Cards
@@ -309,14 +309,14 @@ const DashBoard = () => {
           ))}
         </div>
 
-        <div className='grid grid-cols-1 lg:grid-cols-3 gap-6'>
+        <div className='grid grid-cols-1 lg:grid-cols-3  gap-8'>
           <div className='lg:col-span-2'>
             <div className='bg-white rounded-lg shadow-lg p-6 h-[400px]'>
               <DashboardGraph />
             </div>
           </div>
           <div className='lg:col-span-1'>
-            <div className='bg-white rounded-lg shadow-lg p-4 h-[400px]'>
+            <div className='bg-white rounded-lg shadow-lg p-3 h-[400px] overflow-hidden'>
               <Calender />
             </div>
           </div>

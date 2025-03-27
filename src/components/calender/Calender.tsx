@@ -75,30 +75,30 @@ const Calendar = () => {
   return (
     <div className='w-full h-full flex flex-col'>
       {/* Month Navigation */}
-      <div className='flex justify-between items-center mb-4'>
+      <div className='flex justify-between items-center mb-2'>
         <button
           onClick={goToPreviousMonth}
-          className='p-1.5 rounded-full hover:bg-gray-100 transition-colors text-gray-600 hover:text-gray-900'
+          className='p-1 rounded-full hover:bg-gray-100 transition-colors text-gray-600 hover:text-gray-900'
         >
-          <ChevronLeft className='h-3.5 w-3.5' />
+          <ChevronLeft className='h-3 w-3' />
         </button>
-        <div className='text-sm font-semibold text-gray-800'>
+        <div className='text-xs font-semibold text-gray-800'>
           {getMonthName(currentDate)} {currentDate.getFullYear()}
         </div>
         <button
           onClick={goToNextMonth}
-          className='p-1.5 rounded-full hover:bg-gray-100 transition-colors text-gray-600 hover:text-gray-900'
+          className='p-1 rounded-full hover:bg-gray-100 transition-colors text-gray-600 hover:text-gray-900'
         >
-          <ChevronRight className='h-3.5 w-3.5' />
+          <ChevronRight className='h-3 w-3' />
         </button>
       </div>
 
       {/* Weekday Headers */}
-      <div className='grid grid-cols-7 text-center mb-1.5'>
+      <div className='grid grid-cols-7 text-center mb-1'>
         {["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].map((day) => (
           <div
             key={day}
-            className='text-[10px] font-medium text-gray-500 uppercase'
+            className='text-[9px] font-medium text-gray-500 uppercase'
           >
             {day}
           </div>
@@ -106,7 +106,7 @@ const Calendar = () => {
       </div>
 
       {/* Calendar Grid */}
-      <div className='grid grid-cols-7 gap-[2px] flex-grow'>
+      <div className='grid grid-cols-7 gap-0.5 flex-1'>
         {days.map((day) => {
           const today = isToday(day);
           const sameMonth = isSameMonth(day, currentDate);
@@ -119,7 +119,7 @@ const Calendar = () => {
                 flex
                 items-center
                 justify-center
-                text-xs
+                text-[10px]
                 font-medium
                 transition-colors
                 duration-200
