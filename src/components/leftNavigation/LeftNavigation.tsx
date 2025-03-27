@@ -1,6 +1,7 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import Modal from "../LogOutModal.tsx/Modal";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -71,9 +72,9 @@ const LeftNavigation: React.FC<props> = ({
   const router = useRouter();
   return (
     <aside
-      className={`  lg:fixed lg:top-0 lg:left-0  font-montserrat ${
-        isCollapsed ? "lg:w-20 " : "lg:w-[300px] " // Adjust the width here (w-60 is a bit smaller than w-80)
-      } h-screen bg-white text-gray-900 shadow-lg z-50 transition-width duration-300 flex flex-col`}
+      className={`lg:fixed lg:top-0 lg:left-0 font-montserrat ${
+        isCollapsed ? "lg:w-20" : "lg:w-[300px]"
+      } h-screen bg-white text-gray-900 shadow-[0_0_10px_rgba(0,0,0,0.1)] z-50 transition-width duration-300 flex flex-col`}
     >
       <div
         className={`p-4 flex items-center justify-between ${
@@ -82,47 +83,48 @@ const LeftNavigation: React.FC<props> = ({
       >
         {showModal && <Modal handleModal={setShowModal} />}
 
-        {/* User icon inside a circle */}
-        {!isCollapsed && (
-          <div className='flex mt-1  flex-col w-full items-center gap-5 lg:w-fit lg:flex lg:flex-row lg:items-center lg:gap-[12px] lg:mt-2 mb-3'>
-            <div className='lg:w-10 lg:h-10 rounded-full flex items-center justify-center'>
-              <svg
-                xmlns='http://www.w3.org/2000/svg'
-                viewBox='0 0 24 24'
-                fill='currentColor'
-                className='lg:w-12 lg:h-12 w-20 h-20 '
-              >
-                <path
-                  fillRule='evenodd'
-                  d='M18.685 19.097A9.723 9.723 0 0 0 21.75 12c0-5.385-4.365-9.75-9.75-9.75S2.25 6.615 2.25 12a9.723 9.723 0 0 0 3.065 7.097A9.716 9.716 0 0 0 12 21.75a9.716 9.716 0 0 0 6.685-2.653Zm-12.54-1.285A7.486 7.486 0 0 1 12 15a7.486 7.486 0 0 1 5.855 2.812A8.224 8.224 0 0 1 12 20.25a8.224 8.224 0 0 1-5.855-2.438ZM15.75 9a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0Z'
-                  clipRule='evenodd'
-                />
-              </svg>
-            </div>
-            <span className='text-xl lg:text-lg font-semibold text-[#5D5D5D]'>
-              {user.lastName}
-            </span>
-          </div>
-        )}
+        {/* Logo */}
+        <div className={`${isCollapsed ? "w-12" : "w-16"} mb-4`}>
+          <svg
+            version='1.0'
+            width='131pt'
+            height='126.70727pt'
+            viewBox='0 0 131 126.70727'
+            preserveAspectRatio='xMidYMid meet'
+            className='w-full h-full'
+          >
+            <g
+              transform='matrix(0.1,0,0,-0.1,-9.5,137.87639)'
+              fill='#000000'
+              stroke='none'
+            >
+              <path d='m 760,1332 c 0,-45 -3,-50 -25,-56 -14,-4 -25,-11 -25,-16 0,-5 -17,-12 -37,-15 -57,-10 -133,-35 -183,-60 -25,-13 -61,-26 -81,-29 -34,-6 -38,-4 -58,29 -13,23 -27,35 -38,33 -28,-5 -26,-27 7,-60 27,-26 30,-35 21,-50 -6,-10 -11,-26 -11,-37 0,-10 -15,-44 -34,-74 -18,-31 -39,-78 -46,-104 -8,-26 -22,-54 -32,-61 -10,-7 -18,-24 -18,-38 0,-22 -4,-24 -50,-24 -31,0 -50,4 -50,11 0,8 15,10 47,6 36,-5 43,-4 30,4 -25,15 -82,7 -82,-11 0,-11 14,-16 53,-18 40,-2 52,-7 52,-19 0,-9 7,-25 16,-34 10,-11 18,-40 19,-71 2,-30 12,-70 24,-93 12,-21 21,-35 21,-30 0,6 13,-9 28,-32 36,-55 34,-88 -8,-123 -23,-18 -31,-32 -27,-44 10,-26 34,-19 62,18 30,40 34,39 170,-25 44,-21 98,-41 120,-45 22,-4 48,-15 58,-25 10,-11 22,-19 28,-19 6,0 7,-19 3,-49 -7,-54 7,-74 33,-48 13,12 13,22 5,54 -10,35 -11,36 -10,8 1,-59 -2,-69 -12,-59 -7,7 -8,28 -4,52 6,36 10,42 31,42 13,0 36,9 51,19 15,11 45,22 67,26 22,3 72,21 110,39 39,19 86,36 105,40 32,5 37,3 58,-30 14,-21 30,-34 39,-32 30,6 25,28 -13,63 -33,30 -36,36 -23,52 7,10 -3,3 -23,-16 -24,-21 -42,-31 -53,-27 -9,3 -33,-5 -55,-19 -199,-126 -485,-85 -651,92 -33,36 -58,70 -56,76 2,6 19,16 38,22 33,11 35,10 64,-26 44,-54 85,-85 159,-120 165,-77 373,-36 499,100 53,58 54,58 85,45 18,-7 32,-18 32,-23 0,-6 -28,-40 -61,-76 -34,-36 -57,-65 -52,-65 10,0 87,78 113,116 8,11 23,23 33,27 10,4 17,12 15,19 -1,7 4,24 11,37 7,13 15,49 17,79 3,31 11,63 19,72 8,9 15,22 15,29 0,9 16,11 53,9 46,-3 52,-1 52,17 0,16 -7,20 -38,21 l -37,1 35,-4 c 52,-6 42,-23 -14,-23 -45,0 -48,2 -48,26 0,14 -10,35 -22,48 -11,12 -21,29 -21,37 0,17 -56,138 -74,159 -7,8 -16,30 -19,47 -6,29 -2,36 28,59 38,29 45,51 18,61 -11,4 -26,-5 -48,-32 -21,-24 -35,-33 -39,-26 -4,6 -11,11 -16,11 -5,0 5,-13 21,-29 46,-47 34,-60 -13,-14 -51,48 -131,95 -208,119 -30,10 -68,27 -83,38 -25,18 -28,26 -25,66 2,40 0,45 -20,48 -20,3 -22,-1 -22,-46 z m 30,-7 c 0,-25 -4,-45 -10,-45 -5,0 -10,20 -10,45 0,25 5,45 10,45 6,0 10,-20 10,-45 z m 24,-61 c 32,-12 15,-19 -39,-16 -30,2 -53,8 -49,13 6,10 64,12 88,3 z m 54,-39 c 93,-22 168,-63 240,-129 72,-68 106,-121 133,-207 20,-65 26,-212 9,-239 -5,-9 -5,-19 2,-27 8,-10 6,-13 -6,-13 -10,0 -14,5 -11,10 3,6 2,10 -3,10 -20,0 -20,-14 1,-31 12,-11 18,-19 12,-18 -23,3 -27,-2 -14,-18 10,-11 10,-14 2,-9 -8,4 -13,2 -13,-4 0,-6 -5,-8 -11,-4 -8,4 -7,9 2,16 9,5 4,6 -15,2 -21,-5 -27,-4 -22,5 4,6 16,11 27,11 10,0 19,4 19,9 0,5 -10,7 -22,4 -19,-5 -21,-3 -10,8 20,22 15,41 -9,34 -15,-5 -19,-4 -14,4 4,7 21,9 43,6 l 37,-5 -33,13 -33,12 -2,90 c -3,118 -30,185 -104,265 -220,238 -623,157 -728,-146 -10,-28 -18,-86 -19,-136 -2,-54 -8,-93 -16,-103 -7,-8 -15,-13 -18,-10 -3,2 1,12 9,22 15,18 16,18 -32,-2 -21,-8 -29,20 -29,105 1,129 40,228 132,326 66,71 70,84 8,28 -25,-23 -40,-31 -40,-22 0,23 49,63 78,63 15,1 56,16 91,34 113,58 240,74 359,46 z m -524,-49 c 37,-49 32,-56 -9,-16 -19,19 -35,38 -35,42 0,18 19,6 44,-26 z m 876,5 c 0,-10 -64,-61 -76,-61 -4,0 7,16 26,35 34,35 50,43 50,26 z m -371,-42 c 161,-37 296,-178 317,-332 l 7,-47 h -42 c -41,0 -41,0 -41,38 0,20 -7,46 -15,56 -8,11 -15,14 -15,8 0,-7 -7,-12 -16,-12 -13,0 -15,7 -9,36 4,24 3,34 -4,29 -6,-3 -11,2 -11,11 0,14 3,15 12,6 16,-16 51,-16 45,1 -2,6 -14,11 -26,9 -15,-2 -24,4 -30,20 -6,13 -10,17 -10,11 -1,-18 -28,-16 -35,3 -3,9 -6,34 -6,56 0,51 -13,43 -14,-8 -1,-23 -7,-39 -15,-42 -10,-3 -12,0 -8,12 5,12 3,16 -5,13 -7,-2 -12,-12 -10,-22 2,-10 -1,-14 -7,-10 -7,3 -11,-3 -11,-15 0,-19 -4,-21 -25,-16 -19,5 -25,2 -25,-10 0,-12 7,-15 25,-12 18,4 23,2 16,-6 -6,-7 -8,-21 -5,-33 7,-24 -14,-42 -26,-23 -10,15 -30,-18 -30,-49 0,-36 -10,-48 -36,-43 -13,2 -26,8 -29,12 -2,4 5,51 16,103 19,89 20,99 5,128 -9,18 -16,39 -17,48 0,12 -3,11 -8,-4 -5,-11 -7,-33 -4,-50 2,-16 0,-48 -6,-70 -10,-38 -10,-37 -8,23 2,34 2,62 0,62 -1,0 -7,-8 -12,-18 -7,-13 -5,-49 5,-112 8,-51 13,-99 10,-106 -7,-19 -46,-18 -46,1 0,11 -16,15 -67,17 -55,2 -68,6 -71,20 -2,11 2,16 10,14 7,-2 32,-7 55,-10 l 43,-6 -26,37 c -30,45 -27,79 12,131 l 27,34 -43,-7 c -24,-4 -58,-13 -76,-21 -30,-12 -34,-12 -43,4 -9,15 -10,15 -11,-4 0,-12 -17,-33 -44,-53 -25,-19 -59,-54 -77,-78 l -32,-45 42,7 c 39,6 41,6 41,-19 0,-14 -3,-26 -7,-27 -5,-1 -22,-2 -40,-3 -18,-1 -35,-5 -39,-9 -4,-4 80,-8 187,-9 107,-1 214,-2 239,-3 25,-1 123,-3 218,-4 l 172,-1 v -35 c 0,-23 -6,-38 -16,-42 -24,-9 -37,-52 -22,-71 10,-12 10,-14 1,-8 -7,4 -13,4 -14,-1 -7,-82 -95,-169 -219,-217 -109,-43 -261,-28 -369,37 -59,36 -131,111 -131,137 0,10 -7,23 -15,30 -8,6 -14,15 -13,18 0,4 0,9 -2,12 -1,3 -4,16 -6,30 -2,13 -9,27 -15,31 -7,4 -10,39 -7,95 3,70 9,101 29,144 83,175 288,273 478,229 z M 783,951 c -7,-44 -21,-63 -17,-24 1,15 3,42 3,58 1,22 4,26 10,16 5,-8 7,-30 4,-50 z m -154,12 c -23,-45 -23,-59 -5,-96 l 15,-27 -82,6 c -45,3 -102,1 -127,-4 -24,-6 -46,-9 -48,-7 -7,6 63,77 105,106 47,33 106,57 139,58 l 22,1 z m 374,-22 c 4,-1 7,-14 7,-30 0,-33 -23,-47 -40,-25 -10,11 -10,14 0,14 10,0 10,3 0,15 -15,18 -22,14 -24,-17 -1,-15 -7,-22 -16,-20 -10,2 -11,0 -5,-6 6,-5 43,-15 83,-22 50,-9 69,-17 62,-24 -14,-14 -13,-43 3,-49 6,-2 9,-7 6,-11 -4,-4 -28,-2 -54,4 -28,6 -77,8 -115,4 l -66,-6 4,36 c 4,31 8,36 37,42 27,5 32,10 27,26 -3,11 1,24 9,29 10,6 10,9 2,9 -15,0 -17,27 -3,32 8,2 51,2 83,-1 z M 548,821 c 4,-11 -5,-12 -44,-7 -36,4 -43,3 -26,-4 12,-5 65,-13 117,-16 112,-8 127,-24 23,-23 -69,1 -191,15 -158,18 12,1 12,3 2,9 -7,5 -10,16 -6,26 5,13 16,16 47,14 23,-2 42,-9 45,-17 z M 230,769 c 0,-37 -4,-58 -10,-54 -16,10 -11,115 6,115 2,0 4,-27 4,-61 z m 1060,1 c 0,-27 -4,-52 -10,-55 -6,-4 -10,17 -10,55 0,38 4,59 10,55 6,-3 10,-28 10,-55 z M 330,616 c 0,-8 -13,-21 -30,-30 -25,-12 -30,-12 -30,-1 0,11 26,30 58,44 1,1 2,-5 2,-13 z m 33,-27 c -4,-16 -8,-17 -14,-7 -7,10 -9,9 -9,-4 0,-10 -4,-18 -10,-18 -5,0 -10,6 -10,13 0,11 15,22 47,36 0,1 -1,-8 -4,-20 z m 21,-34 c -4,-8 -10,-15 -14,-15 -5,0 -16,-3 -26,-7 -12,-4 -15,-2 -12,8 2,7 15,16 29,20 13,4 25,7 26,8 1,1 0,-6 -3,-14 z m 816,-20 c 7,-8 16,-12 21,-9 5,3 9,1 9,-5 0,-5 -9,-9 -20,-8 -11,1 -20,5 -20,9 0,4 -7,8 -16,8 -8,0 -12,5 -9,10 9,14 21,12 35,-5 z M 408,362 c -13,-6 -68,39 -68,55 0,11 12,5 38,-18 21,-19 34,-35 30,-37 z m -82,-20 c -19,-20 -39,-33 -43,-28 -9,9 58,74 71,68 4,-3 -8,-21 -28,-40 z m 843,-6 c 18,-19 28,-36 23,-40 -6,-3 -25,12 -42,34 -39,49 -26,53 19,6 z M 795,240 c -3,-5 -26,-10 -50,-10 -24,0 -47,5 -50,10 -4,6 15,10 50,10 35,0 54,-4 50,-10 z' />
+              <path d='m 560,1165 c 0,-17 10,-24 26,-18 21,8 17,32 -6,30 -11,-1 -20,-6 -20,-12 z' />
+              <path d='m 331,988 c -11,-17 -10,-22 1,-29 28,-18 38,-4 16,20 -11,11 -10,13 5,8 20,-7 24,8 4,16 -7,3 -19,-4 -26,-15 z' />
+              <path d='m 700,720 c 0,-11 7,-20 15,-20 8,0 15,9 15,20 0,11 -7,20 -15,20 -8,0 -15,-9 -15,-20 z' />
+              <path d='m 719,644 c -11,-14 -11,-21 3,-45 17,-29 17,-29 -10,-29 -32,0 -52,-16 -52,-41 0,-10 -9,-19 -22,-21 -13,-3 1,-5 29,-6 43,-1 55,3 68,21 l 15,21 23,-22 c 30,-28 53,-28 68,0 10,18 8,24 -11,40 -12,10 -26,15 -32,12 -18,-11 -59,7 -67,29 -11,30 -3,47 21,47 18,0 20,-5 15,-37 -6,-35 -5,-36 8,-19 18,24 19,38 3,54 -17,17 -43,15 -59,-4 z m 21,-92 c 0,-17 -39,-44 -55,-39 -18,8 -20,33 -2,40 20,9 57,8 57,-1 z m 88,-14 c -4,-31 -19,-32 -52,-3 l -29,25 h 42 c 38,0 42,-2 39,-22 z' />
+            </g>
+          </svg>
+        </div>
       </div>
 
       {/* Sidebar Links */}
       <nav className='mt-4 flex-grow'>
         <ul
-          className={`flex flex-col gap-4  lg:w-auto items-center lg:block lg:mx-0 space-y-2 px-4 ${
+          className={`flex flex-col gap-2 lg:w-auto items-center lg:block lg:mx-0 space-y-1 px-4 ${
             isCollapsed ? "px-2" : ""
           }`}
         >
-          <li className=' w-full lg:w-auto md:w-auto '>
+          <li className='w-full lg:w-auto md:w-auto'>
             <Link
               onClick={handleLinkClick}
               href={"/dashboard"}
-              className={`w-full flex justify-center md:justify-stretch lg:justify-stretch items-center gap-4 py-3 px-4 text-lg rounded ${
+              className={`w-full flex justify-center md:justify-stretch lg:justify-stretch items-center gap-4 py-3 px-4 text-base rounded-lg transition-colors duration-200 ${
                 isCollapsed ? "justify-center" : ""
               } ${
                 pathname === "/dashboard"
-                  ? "bg-blue-600 text-white"
-                  : "text-gray-700 hover:bg-gray-200"
+                  ? "bg-[#0066CC] text-white shadow-md"
+                  : "text-gray-700 hover:bg-gray-50"
               }`}
             >
               <svg
@@ -131,7 +133,7 @@ const LeftNavigation: React.FC<props> = ({
                 viewBox='0 0 24 24'
                 strokeWidth={1.5}
                 stroke='currentColor'
-                className='w-4 h-4'
+                className='w-5 h-5'
               >
                 <path
                   strokeLinecap='round'
@@ -143,16 +145,16 @@ const LeftNavigation: React.FC<props> = ({
               {!isCollapsed && "Dashboard"}
             </Link>
           </li>
-          <li className='  w-full lg:w-auto md:w-auto '>
+          <li className='w-full lg:w-auto md:w-auto'>
             <Link
               onClick={handleLinkClick}
               href={"/management"}
-              className={`w-full  lg:ml-0 flex justify-center md:justify-stretch lg:justify-stretch items-center gap-4 py-3 px-4 text-lg rounded ${
+              className={`w-full flex justify-center md:justify-stretch lg:justify-stretch items-center gap-4 py-3 px-4 text-base rounded-lg transition-colors duration-200 ${
                 isCollapsed ? "justify-center" : ""
               } ${
                 pathname === "/management"
-                  ? "bg-blue-600 text-white"
-                  : "text-gray-700 hover:bg-gray-200"
+                  ? "bg-[#0066CC] text-white shadow-md"
+                  : "text-gray-700 hover:bg-gray-50"
               }`}
             >
               <svg
@@ -173,16 +175,16 @@ const LeftNavigation: React.FC<props> = ({
               {!isCollapsed && "Management"}
             </Link>
           </li>
-          <li className=' w-full lg:w-auto md:w-auto '>
+          <li className='w-full lg:w-auto md:w-auto'>
             <Link
               onClick={handleLinkClick}
               href={"/sponsors"}
-              className={`w-full flex justify-center md:justify-stretch lg:justify-stretch items-center gap-4 py-3 px-4 text-lg rounded ${
+              className={`w-full flex justify-center md:justify-stretch lg:justify-stretch items-center gap-4 py-3 px-4 text-base rounded-lg transition-colors duration-200 ${
                 isCollapsed ? "justify-center" : ""
               } ${
                 pathname === "/sponsors"
-                  ? "bg-blue-600 text-white"
-                  : "text-gray-700 hover:bg-gray-200"
+                  ? "bg-[#0066CC] text-white shadow-md"
+                  : "text-gray-700 hover:bg-gray-50"
               }`}
             >
               <svg
@@ -205,16 +207,16 @@ const LeftNavigation: React.FC<props> = ({
               {!isCollapsed && "Sponsors"}
             </Link>
           </li>
-          <li className=' w-full lg:w-auto md:w-auto '>
+          <li className='w-full lg:w-auto md:w-auto'>
             <Link
               onClick={handleLinkClick}
               href={"/course"}
-              className={`w-full flex justify-center md:justify-stretch lg:justify-stretch items-center gap-4 py-3 px-4 text-lg rounded ${
+              className={`w-full flex justify-center md:justify-stretch lg:justify-stretch items-center gap-4 py-3 px-4 text-base rounded-lg transition-colors duration-200 ${
                 isCollapsed ? "justify-center" : ""
               } ${
                 pathname === "/course"
-                  ? "bg-blue-600 text-white"
-                  : "text-gray-700 hover:bg-gray-200"
+                  ? "bg-[#0066CC] text-white shadow-md"
+                  : "text-gray-700 hover:bg-gray-50"
               }`}
             >
               <svg
@@ -237,66 +239,12 @@ const LeftNavigation: React.FC<props> = ({
               {!isCollapsed && "Course"}
             </Link>
           </li>
-          {/* <li className=' w-full lg:w-auto md:w-auto '>
-            <Link
-              onClick={handleLinkClick}
-              href={"/setting"}
-              className={`w-full flex justify-center md:justify-stretch lg:justify-stretch items-center gap-4 py-3 px-4 text-lg rounded ${
-                isCollapsed ? "justify-center" : ""
-              } ${
-                pathname === "/setting"
-                  ? "bg-blue-600 text-white"
-                  : "text-gray-700 hover:bg-gray-200"
-              }`}
-            >
-              <svg
-                width='24'
-                height='25'
-                viewBox='0 0 24 25'
-                fill='none'
-                xmlns='http://www.w3.org/2000/svg'
-              >
-                <g clipPath='url(#clip0_37_860)'>
-                  <path
-                    d='M11.1389 4.96333C11.6122 3.01222 14.3878 3.01222 14.8611 4.96333C14.9321 5.25644 15.0714 5.52864 15.2675 5.75778C15.4636 5.98691 15.711 6.1665 15.9896 6.28194C16.2682 6.39738 16.5702 6.44539 16.8709 6.42208C17.1716 6.39876 17.4625 6.30478 17.72 6.14778C19.4344 5.10333 21.3978 7.06556 20.3533 8.78111C20.1966 9.03851 20.1027 9.32926 20.0795 9.62975C20.0562 9.93023 20.1042 10.232 20.2195 10.5104C20.3348 10.7889 20.5142 11.0362 20.743 11.2323C20.9719 11.4284 21.2438 11.5677 21.5367 11.6389C23.4878 12.1122 23.4878 14.8878 21.5367 15.3611C21.2436 15.4321 20.9714 15.5714 20.7422 15.7675C20.5131 15.9636 20.3335 16.211 20.2181 16.4896C20.1026 16.7682 20.0546 17.0702 20.0779 17.3709C20.1012 17.6716 20.1952 17.9625 20.3522 18.22C21.3967 19.9344 19.4344 21.8978 17.7189 20.8533C17.4615 20.6966 17.1707 20.6027 16.8703 20.5795C16.5698 20.5562 16.268 20.6042 15.9896 20.7195C15.7111 20.8348 15.4638 21.0142 15.2677 21.243C15.0716 21.4719 14.9323 21.7438 14.8611 22.0367C14.3878 23.9878 11.6122 23.9878 11.1389 22.0367C11.0679 21.7436 10.9286 21.4714 10.7325 21.2422C10.5364 21.0131 10.289 20.8335 10.0104 20.7181C9.73176 20.6026 9.42982 20.5546 9.12913 20.5779C8.82844 20.6012 8.5375 20.6952 8.28 20.8522C6.56556 21.8967 4.60222 19.9344 5.64667 18.2189C5.80345 17.9615 5.89728 17.6707 5.92054 17.3703C5.9438 17.0698 5.89583 16.768 5.78052 16.4896C5.66522 16.2111 5.48584 15.9638 5.25697 15.7677C5.02809 15.5716 4.75618 15.4323 4.46333 15.3611C2.51222 14.8878 2.51222 12.1122 4.46333 11.6389C4.75644 11.5679 5.02864 11.4286 5.25778 11.2325C5.48691 11.0364 5.6665 10.789 5.78194 10.5104C5.89738 10.2318 5.94539 9.92982 5.92208 9.62913C5.89876 9.32844 5.80478 9.0375 5.64778 8.78C4.60333 7.06556 6.56556 5.10222 8.28111 6.14667C9.38778 6.82222 10.8322 6.22444 11.1389 4.96333Z'
-                    stroke='#696E75'
-                    strokeWidth='2'
-                    strokeLinecap='round'
-                    strokeLinejoin='round'
-                    // fill={pathname === "/category" ? "#FFFFFF" : ""}
-                  />
-                  <path
-                    d='M17 13.5C17 14.5609 16.5786 15.5783 15.8284 16.3284C15.0783 17.0786 14.0609 17.5 13 17.5C11.9391 17.5 10.9217 17.0786 10.1716 16.3284C9.42143 15.5783 9 14.5609 9 13.5C9 12.4391 9.42143 11.4217 10.1716 10.6716C10.9217 9.92143 11.9391 9.5 13 9.5C14.0609 9.5 15.0783 9.92143 15.8284 10.6716C16.5786 11.4217 17 12.4391 17 13.5Z'
-                    stroke='#595959'
-                    strokeWidth='2'
-                    strokeLinecap='round'
-                    strokeLinejoin='round'
-                    // fill={pathname === "/category" ? "#FFFFFF" : ""}
-                  />
-                </g>
-                <defs>
-                  <clipPath id='clip0_37_860'>
-                    <rect
-                      width='24'
-                      height='24'
-                      fill='white'
-                      transform='translate(0 0.5)'
-                    />
-                  </clipPath>
-                </defs>
-              </svg>
-
-              {!isCollapsed && "Setting"}
-            </Link>
-          </li> */}
-          <li className=' w-full lg:w-auto md:w-auto '>
+          <li className='w-full lg:w-auto md:w-auto'>
             <button
               onClick={() => {
-                // dispatch(logout());
-                // router.push("/");
                 setShowModal(true);
               }}
-              className={`w-full text-[##595959] justify-center lg:justify-stretch md:justify-stretch  font-[500] leading-[31.69px]  flex items-center gap-4 py-3 px-4 text-lg rounded hover:bg-gray-200 ${
+              className={`w-full text-[##595959] justify-center lg:justify-stretch md:justify-stretch font-[500] leading-[31.69px] flex items-center gap-4 py-3 px-4 text-base rounded-lg hover:bg-gray-50 ${
                 isCollapsed ? "text-center" : ""
               } no-underline`}
             >
@@ -322,25 +270,49 @@ const LeftNavigation: React.FC<props> = ({
         </ul>
       </nav>
 
-      <div className='absolute  bottom-4 left-1/2 lg:left-auto lg:right-4 lg:transform-none lg:translate-x-0 transform -translate-x-1/2 lg:absolute  '>
+      {/* User section */}
+      {!isCollapsed && (
+        <div className='flex items-center gap-3 px-4 py-3 border-t border-gray-100 bg-gray-50'>
+          <div className='w-10 h-10 rounded-full bg-white shadow-sm flex items-center justify-center'>
+            <svg
+              xmlns='http://www.w3.org/2000/svg'
+              viewBox='0 0 24 24'
+              fill='currentColor'
+              className='w-6 h-6 text-gray-600'
+            >
+              <path
+                fillRule='evenodd'
+                d='M18.685 19.097A9.723 9.723 0 0 0 21.75 12c0-5.385-4.365-9.75-9.75-9.75S2.25 6.615 2.25 12a9.723 9.723 0 0 0 3.065 7.097A9.716 9.716 0 0 0 12 21.75a9.716 9.716 0 0 0 6.685-2.653Zm-12.54-1.285A7.486 7.486 0 0 1 12 15a7.486 7.486 0 0 1 5.855 2.812A8.224 8.224 0 0 1 12 20.25a8.224 8.224 0 0 1-5.855-2.438ZM15.75 9a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0Z'
+                clipRule='evenodd'
+              />
+            </svg>
+          </div>
+          <div className='flex flex-col'>
+            <span className='text-sm font-medium text-gray-700'>
+              {user.lastName}
+            </span>
+            <span className='text-xs text-gray-500'>User</span>
+          </div>
+        </div>
+      )}
+
+      <div className='absolute bottom-4 left-1/2 lg:left-auto lg:right-4 lg:transform-none lg:translate-x-0 transform -translate-x-1/2 lg:absolute'>
         <button
-          // onClick={toggleCollapse}
           onClick={handleToggleCollapse}
-          className='text-gray-900 focus:outline-none'
+          className='text-gray-600 hover:text-gray-900 focus:outline-none transition-colors duration-200'
           aria-label={isCollapsed ? "Expand Sidebar" : "Collapse Sidebar"}
         >
-          <div className=' hidden lg:block '>
+          <div className='hidden lg:block'>
             <FontAwesomeIcon
               icon={isCollapsed ? faChevronRight : faChevronLeft}
-              className='transition-transform  lg:block'
+              className='transition-transform lg:block'
             />
           </div>
 
-          <div className=' block lg:hidden'>
+          <div className='block lg:hidden'>
             <FontAwesomeIcon
-              // onClick={handleToggleCollapse}
               icon={isCollapsed ? faChevronRight : faChevronUp}
-              className={`transition-transform   lg:hidden   ${
+              className={`transition-transform lg:hidden ${
                 !isCollapsed ? "swipe-up" : ""
               }`}
             />
