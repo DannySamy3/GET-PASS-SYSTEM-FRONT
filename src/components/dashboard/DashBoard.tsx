@@ -249,65 +249,79 @@ const DashBoard = () => {
   ];
 
   return (
-    <div className='w-full max-w-full overflow-y-hidden px-4 mt-3   sm:px-6'>
-      <Header title={"Dashboard"} view={() => {}} />
-
-      <div className='mb-8 flex flex-col sm:w-full sm:flex-row justify-between items-center space-y-4 sm:space-y-0'>
-        <div className='w-full sm:w-3/5'>
-          <label
-            htmlFor='datePicker'
-            className='block text-sm font-medium text-gray-700'
-          >
-            Search by Date
-          </label>
-          <input
-            id='datePicker'
-            type='date'
-            className='input input-bordered w-full sm:max-w-xs max-w-full mt-2'
-            value={selectedDate.toISOString().split("T")[0]}
-            onChange={handleDateChange}
-          />
-        </div>
-
-        <button
-          onClick={() => window.location.reload()}
-          className='btn bg-blue-500 text-white hidden sm:block w-full sm:w-[120px] py-2 mt-4 sm:mt-0'
-        >
-          Refresh
-        </button>
-      </div>
-
-      <div className='hidden sm:grid grid-cols-2 lg:grid-cols-4 gap-4 place-items-center'>
-        {cards.map((card, index) => (
-          <div className='w-full cursor-pointer' key={index}>
-            <Cards
-              identifier={card.identifier}
-              //@ts-ignore
-              status={card.status}
-              value={card.value}
-              svg={card.svg}
-            />
+    <div className='min-h-screen bg-slate-50'>
+      <div className='p-6 space-y-6'>
+        <div className='flex justify-between items-center bg-gradient-to-r from-indigo-600 via-blue-600 to-blue-700 text-white p-6 rounded-lg shadow-lg'>
+          <h1 className='text-3xl font-bold tracking-tight'>
+            Dashboard Overview
+          </h1>
+          <div className='flex items-center gap-4'>
+            <div className='flex items-center gap-4'>
+              <div className='flex flex-col'>
+                <label
+                  htmlFor='datePicker'
+                  className='text-sm font-medium text-white/90 mb-1'
+                >
+                  Search by Date
+                </label>
+                <input
+                  id='datePicker'
+                  type='date'
+                  className='input input-bordered w-[200px] bg-white/10 border-white/20 text-white placeholder:text-white/50'
+                  value={selectedDate.toISOString().split("T")[0]}
+                  onChange={handleDateChange}
+                />
+              </div>
+              <div className='flex flex-col justify-end'>
+                <button
+                  onClick={() => window.location.reload()}
+                  className='btn bg-white text-indigo-700 hover:bg-indigo-50 shadow-sm h-[42px]'
+                >
+                  <svg
+                    xmlns='http://www.w3.org/2000/svg'
+                    className='h-5 w-5'
+                    viewBox='0 0 20 20'
+                    fill='currentColor'
+                  >
+                    <path
+                      fillRule='evenodd'
+                      d='M4 2a1 1 0 011 1v2.101a7.002 7.002 0 0111.601 2.566 1 1 0 11-1.885.666A5.002 5.002 0 005.999 7H9a1 1 0 010 2H4a1 1 0 01-1-1V3a1 1 0 011-1zm.008 9.057a1 1 0 011.276.61A5.002 5.002 0 0014.001 13H11a1 1 0 110-2h5a1 1 0 011 1v5a1 1 0 11-2 0v-2.101a7.002 7.002 0 01-11.601-2.566 1 1 0 01.61-1.276z'
+                      clipRule='evenodd'
+                    />
+                  </svg>
+                </button>
+              </div>
+            </div>
           </div>
-        ))}
-      </div>
+        </div>
 
-      <div className='sm:hidden'>
-        <div className='w-full cursor-pointer' onClick={handleCardClick}>
-          <Cards
-            identifier={cards[currentCardIndex].identifier}
-            //@ts-ignore
-            status={cards[currentCardIndex].status}
-            value={cards[currentCardIndex].value}
-            svg={cards[currentCardIndex].svg}
-          />
+        <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6'>
+          {cards.map((card, index) => (
+            <div className='w-full cursor-pointer' key={index}>
+              <Cards
+                identifier={card.identifier}
+                //@ts-ignore
+                status={card.status}
+                value={card.value}
+                svg={card.svg}
+              />
+            </div>
+          ))}
+        </div>
+
+        <div className='grid grid-cols-1 lg:grid-cols-3 gap-6'>
+          <div className='lg:col-span-2'>
+            <div className='bg-white rounded-lg shadow-lg p-6 h-[400px]'>
+              <DashboardGraph />
+            </div>
+          </div>
+          <div className='lg:col-span-1'>
+            <div className='bg-white rounded-lg shadow-lg p-4 h-[400px]'>
+              <Calender />
+            </div>
+          </div>
         </div>
       </div>
-
-      <div className='  flex flex-col gap-4  md:flex md:flex-row lg:min-h-auto   md:gap-4 lg:gap-8 lg:flex  lg:flex-row md:mt-24  '>
-        <DashboardGraph />
-        <Calender />
-      </div>
-      {/* <ToastNotification /> */}
     </div>
   );
 };

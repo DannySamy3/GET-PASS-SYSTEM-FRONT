@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 
 const Calendar = () => {
   const [currentDate, setCurrentDate] = useState(new Date());
@@ -72,32 +73,32 @@ const Calendar = () => {
   const days = generateCalendarDays(currentDate);
 
   return (
-    <div className='w-[100%] lg:w-[30%] md:w-[45%]  lg:mt-0 md:mt-0  h-[330px] md:h-[380px] lg:h-auto  lg:mb-3 bg-white dark:bg-neutral-900 rounded-xl shadow-lg overflow-hidden font-montserrat'>
+    <div className='w-full h-full flex flex-col'>
       {/* Month Navigation */}
-      <div className='flex justify-between items-center p-4 bg-white dark:bg-neutral-800 border-b border-gray-200 dark:border-neutral-700'>
+      <div className='flex justify-between items-center mb-4'>
         <button
           onClick={goToPreviousMonth}
-          className='p-2 rounded-full hover:bg-gray-200 dark:hover:bg-neutral-700 transition-colors'
+          className='p-1.5 rounded-full hover:bg-gray-100 transition-colors text-gray-600 hover:text-gray-900'
         >
-          ◀
+          <ChevronLeft className='h-3.5 w-3.5' />
         </button>
-        <div className='text-xl font-semibold text-gray-800 dark:text-white'>
+        <div className='text-sm font-semibold text-gray-800'>
           {getMonthName(currentDate)} {currentDate.getFullYear()}
         </div>
         <button
           onClick={goToNextMonth}
-          className='p-2 rounded-full hover:bg-gray-200 dark:hover:bg-neutral-700 transition-colors'
+          className='p-1.5 rounded-full hover:bg-gray-100 transition-colors text-gray-600 hover:text-gray-900'
         >
-          ▶
+          <ChevronRight className='h-3.5 w-3.5' />
         </button>
       </div>
 
       {/* Weekday Headers */}
-      <div className='grid grid-cols-7 text-center bg-gray-100   dark:bg-neutral-800 py-2'>
+      <div className='grid grid-cols-7 text-center mb-1.5'>
         {["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].map((day) => (
           <div
             key={day}
-            className='text-xs font-medium text-gray-500 dark:text-gray-400 uppercase'
+            className='text-[10px] font-medium text-gray-500 uppercase'
           >
             {day}
           </div>
@@ -105,7 +106,7 @@ const Calendar = () => {
       </div>
 
       {/* Calendar Grid */}
-      <div className='grid grid-cols-7 gap-1 p-2'>
+      <div className='grid grid-cols-7 gap-[2px] flex-grow'>
         {days.map((day) => {
           const today = isToday(day);
           const sameMonth = isSameMonth(day, currentDate);
@@ -114,22 +115,24 @@ const Calendar = () => {
             <div
               key={day.toString()}
               className={`
-                  text-center 
-                  p-2 
-                  rounded-lg 
-                  text-sm 
-                  font-medium 
-                  transition-colors 
-                  duration-200
-                  cursor-pointer
-                  ${
-                    today
-                      ? "bg-blue-500 text-white font-bold"
-                      : sameMonth
-                      ? "text-gray-800 dark:text-white hover:bg-blue-100 dark:hover:bg-neutral-700"
-                      : "text-gray-400 dark:text-neutral-600 hover:bg-gray-100 dark:hover:bg-neutral-800"
-                  }
-                `}
+                aspect-square
+                flex
+                items-center
+                justify-center
+                text-xs
+                font-medium
+                transition-colors
+                duration-200
+                cursor-pointer
+                rounded-sm
+                ${
+                  today
+                    ? "bg-indigo-600 text-white font-bold"
+                    : sameMonth
+                    ? "text-gray-800 hover:bg-indigo-50 hover:text-indigo-600"
+                    : "text-gray-400 hover:bg-gray-50"
+                }
+              `}
             >
               {day.getDate()}
             </div>

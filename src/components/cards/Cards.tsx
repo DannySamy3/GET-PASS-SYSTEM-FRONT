@@ -12,9 +12,9 @@ const Cards: React.FC<CardProps> = ({ identifier, status, value, svg }) => {
     "flex items-center gap-2 font-bold text-3xl sm:text-[42px] leading-tight sm:leading-[51.2px]";
 
   const identifierColors: Record<string, string> = {
-    GRANTED: "text-[#9A1BA0]",
+    GRANTED: "text-[#4CAF50]",
     DENIED: "text-[#E14242]",
-    REGISTERED: "text-[#AFA939]",
+    REGISTERED: "text-[#55ACEE]",
     "FULLY PAID": "text-[#40434F]",
     default: "text-[#FFCC33]",
   };
@@ -38,22 +38,30 @@ const Cards: React.FC<CardProps> = ({ identifier, status, value, svg }) => {
   };
 
   return (
-    <div className='rounded-xl pt-4 pb-4 px-5 sm:px-6 font-montserrat bg-white shadow-lg transition-transform transform hover:scale-105 hover:shadow-2xl duration-300 w-full h-[140px] sm:h-[160px]'>
-      <section className='flex items-center justify-between mb-2'>
-        <span className='text-[#40434F] font-bold text-sm sm:text-[16.5px]'>
-          {identifier}
-        </span>
-        <div className='w-6 h-6 sm:w-auto sm:h-auto'>{svg}</div>
-      </section>
-      <div
-        className={`text-xs sm:text-[12px] leading-tight sm:leading-[20px] mb-2 sm:my-3 text-[#40434F] font-semibold ${
-          value === "Failed to fetch" ? "text-red-500" : ""
-        }`}
-      >
-        {status}
-      </div>
-      <div className={`${baseValueStyles} ${textColor}`}>
-        {formatValueText()}
+    <div className='group relative rounded-xl p-6 font-montserrat bg-white shadow-md hover:shadow-xl transition-all duration-300 overflow-hidden'>
+      <div className='absolute inset-0 bg-gradient-to-br from-white to-gray-50 opacity-0 group-hover:opacity-100 transition-opacity duration-300' />
+
+      <div className='relative z-10'>
+        <section className='flex items-center justify-between mb-4'>
+          <span className='text-[#40434F] font-bold text-sm sm:text-[16.5px]'>
+            {identifier}
+          </span>
+          <div className='w-8 h-8 sm:w-10 sm:h-10 flex items-center justify-center rounded-full bg-gray-50 group-hover:bg-white transition-colors duration-300'>
+            {svg}
+          </div>
+        </section>
+
+        <div
+          className={`text-xs sm:text-[12px] leading-tight sm:leading-[20px] mb-4 text-[#40434F] font-semibold ${
+            value === "Failed to fetch" ? "text-red-500" : ""
+          }`}
+        >
+          {status}
+        </div>
+
+        <div className={`${baseValueStyles} ${textColor}`}>
+          {formatValueText()}
+        </div>
       </div>
     </div>
   );

@@ -57,17 +57,19 @@ export const DashboardGraph = () => {
     datasets: [
       {
         label: "Un Registered",
-        data: Object.values(classes.unregistered), // student numbers for group 1
-        backgroundColor: "rgba(255, 99, 132, 0.6)", // Bar color for Group 1
+        data: Object.values(classes.unregistered),
+        backgroundColor: "rgba(255, 99, 132, 0.6)",
         borderColor: "rgba(255, 99, 132, 1)",
         borderWidth: 1,
+        borderRadius: 6,
       },
       {
         label: "Registered",
-        data: Object.values(classes.registered), // student numbers for group 3
-        backgroundColor: "rgba(75, 192, 192, 0.6)", // Bar color for Group 3
+        data: Object.values(classes.registered),
+        backgroundColor: "rgba(75, 192, 192, 0.6)",
         borderColor: "rgba(75, 192, 192, 1)",
         borderWidth: 1,
+        borderRadius: 6,
       },
     ],
   };
@@ -75,23 +77,39 @@ export const DashboardGraph = () => {
   // Graph options
   const options = {
     responsive: true,
-    maintainAspectRatio: false, // Important for responsiveness
+    maintainAspectRatio: false,
     plugins: {
       title: {
         display: true,
         text: "PAYMENT STATISTICS",
         font: {
-          size: 14, // Smaller font size for mobile
+          size: 16,
+          weight: "bold" as const,
+        },
+        padding: {
+          bottom: 20,
         },
       },
       legend: {
+        position: "top" as const,
         labels: {
           font: {
-            size: 10, // Smaller legend font for mobile
+            size: 12,
+            weight: "normal" as const,
           },
+          padding: 20,
+          usePointStyle: true,
+          pointStyle: "circle",
         },
       },
       tooltip: {
+        backgroundColor: "rgba(255, 255, 255, 0.9)",
+        titleColor: "#1f2937",
+        bodyColor: "#4b5563",
+        borderColor: "#e5e7eb",
+        borderWidth: 1,
+        padding: 12,
+        displayColors: true,
         callbacks: {
           label: function (tooltipItem: any) {
             return `${tooltipItem.dataset.label}: ${tooltipItem.raw} students`;
@@ -105,30 +123,42 @@ export const DashboardGraph = () => {
           display: true,
           text: "Course",
           font: {
-            size: 10, // Smaller axis title for mobile
+            size: 12,
+            weight: "normal" as const,
+          },
+          padding: {
+            top: 10,
           },
         },
         ticks: {
           font: {
-            size: 8, // Smaller tick labels for mobile
+            size: 11,
           },
         },
-        stacked: false,
+        grid: {
+          display: false,
+        },
       },
       y: {
         title: {
           display: true,
           text: "Student %",
           font: {
-            size: 10, // Smaller axis title for mobile
+            size: 12,
+            weight: "normal" as const,
+          },
+          padding: {
+            bottom: 10,
           },
         },
         ticks: {
           font: {
-            size: 8, // Smaller tick labels for mobile
+            size: 11,
           },
         },
-        stacked: false,
+        grid: {
+          color: "rgba(0, 0, 0, 0.05)",
+        },
       },
     },
   };
@@ -145,8 +175,8 @@ export const DashboardGraph = () => {
   }, []);
 
   return (
-    <div className='w-full lg:block    md:mb-0 md:w-[55%] px-2 lg:max-w-full  lg:w-[69%] lg:h-[40vh] lg:mb-3  bg-white h-auto md:h-[380px]  shadow-lg rounded-lg '>
-      <div className='w-full  h-full'>
+    <div className='w-full h-full'>
+      <div className='w-full h-[400px]'>
         <Bar data={data} options={options} />
       </div>
     </div>
