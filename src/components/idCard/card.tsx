@@ -134,111 +134,108 @@ const Card: React.FC<Prop> = ({ studentId, isOpen, onClose }) => {
   };
 
   return (
-    <>
+    <div
+      className='fixed inset-0 bg-gray-800 z-50 flex justify-center items-center'
+      onClick={onClose}
+    >
       <div
-        className='fixed inset-0 bg-gray-800 bg-opacity-100g z-50 flex justify-center items-center'
-        onClick={onClose}
+        className='bg-gray-100 p-6 space-y-4 max-w-sm w-full shadow-lg rounded-lg card'
+        onClick={(e) => e.stopPropagation()} // Prevent closing when clicking inside the modal
+        ref={cardRef} // Assign the ref to the card modal
       >
-        <div
-          className='bg-gray-100 p-6 space-y-4 max-w-sm w-full shadow-lg rounded-lg card'
-          onClick={(e) => e.stopPropagation()} // Prevent closing when clicking inside the modal
-          ref={cardRef} // Assign the ref to the card modal
-        >
-          {isFront ? (
-            <>
-              <div
-                id=''
-                className='text-center font-bold text-lg text-gray-800 header'
-              >
-                Student ID Card
-              </div>
-
-              {/* Image Section */}
-              <div className='flex justify-center'>
-                {student?.image ? (
-                  <img
-                    src={student.image}
-                    alt='Student'
-                    className='h-16 w-16 rounded-full object-cover'
-                  />
-                ) : (
-                  <div className='h-16 w-16 rounded-full bg-gray-200 flex items-center justify-center'>
-                    <div className='animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-gray-500'></div>
-                  </div>
-                )}
-              </div>
-
-              {student ? (
-                <article className='space-y-2 mt-4 details'>
-                  <div className='text-base text-gray-600'>
-                    <strong>Name:</strong> {student?.firstName}{" "}
-                    {student?.lastName}
-                  </div>
-                  <div className='text-base text-gray-600'>
-                    <strong>Class:</strong> {student?.className}
-                  </div>
-                  <div className='text-base text-gray-600'>
-                    <strong>Reg No:</strong> {student?.regNo}
-                  </div>
-                </article>
-              ) : (
-                <div>Loading...</div>
-              )}
-
-              {/* QR Code Section */}
-              <div className='flex justify-center mt-4 qr-code'>
-                <QRCode value={JSON.stringify(qrData)} size={100} />
-              </div>
-            </>
-          ) : (
-            <div className='text-center font-bold text-lg text-gray-800 header'>
-              Back Side of the Card
-              <div className='mt-4 text-base text-gray-600 space-y-2'>
-                <p>
-                  <strong>University:</strong> XYZ University
-                </p>
-
-                <p>
-                  <strong>Issued Date:</strong>{" "}
-                  {new Date().toLocaleDateString()}
-                </p>
-                <p>
-                  <strong>Valid Until:</strong>{" "}
-                  {new Date(
-                    new Date().setFullYear(new Date().getFullYear() + 1)
-                  ).toLocaleDateString()}
-                </p>
-                <p>
-                  <strong>If found, please return to:</strong> XYZ University,
-                  123 University St, City, Country
-                </p>
-              </div>
+        {isFront ? (
+          <>
+            <div
+              id=''
+              className='text-center font-bold text-lg text-gray-800 header'
+            >
+              Student ID Card
             </div>
-          )}
 
-          <div className='mt-4 text-center'>
-            <button
-              className='px-4 py-2 bg-red-500 text-white rounded-md'
-              onClick={onClose}
-            >
-              Close
-            </button>
-            <button
-              className='px-4 py-2 bg-blue-500 text-white rounded-md ml-2'
-              onClick={handlePrint} // Trigger print on button click
-            >
-              Print
-            </button>
-            {/* <button
-              className='px-4 py-2 bg-green-500 text-white rounded-md ml-2'
-              onClick={() => setIsFront(!isFront)} // Toggle between front and back side
-            >
-              {isFront ? "Show Back" : "Show Front"}
-            </button> */}
+            {/* Image Section */}
+            <div className='flex justify-center'>
+              {student?.image ? (
+                <img
+                  src={student.image}
+                  alt='Student'
+                  className='h-16 w-16 rounded-full object-cover'
+                />
+              ) : (
+                <div className='h-16 w-16 rounded-full bg-gray-200 flex items-center justify-center'>
+                  <div className='animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-gray-500'></div>
+                </div>
+              )}
+            </div>
+
+            {student ? (
+              <article className='space-y-2 mt-4 details'>
+                <div className='text-base text-gray-600'>
+                  <strong>Name:</strong> {student?.firstName}{" "}
+                  {student?.lastName}
+                </div>
+                <div className='text-base text-gray-600'>
+                  <strong>Class:</strong> {student?.className}
+                </div>
+                <div className='text-base text-gray-600'>
+                  <strong>Reg No:</strong> {student?.regNo}
+                </div>
+              </article>
+            ) : (
+              <div>Loading...</div>
+            )}
+
+            {/* QR Code Section */}
+            <div className='flex justify-center mt-4 qr-code'>
+              <QRCode value={JSON.stringify(qrData)} size={100} />
+            </div>
+          </>
+        ) : (
+          <div className='text-center font-bold text-lg text-gray-800 header'>
+            Back Side of the Card
+            <div className='mt-4 text-base text-gray-600 space-y-2'>
+              <p>
+                <strong>University:</strong> XYZ University
+              </p>
+
+              <p>
+                <strong>Issued Date:</strong> {new Date().toLocaleDateString()}
+              </p>
+              <p>
+                <strong>Valid Until:</strong>{" "}
+                {new Date(
+                  new Date().setFullYear(new Date().getFullYear() + 1)
+                ).toLocaleDateString()}
+              </p>
+              <p>
+                <strong>If found, please return to:</strong> XYZ University, 123
+                University St, City, Country
+              </p>
+            </div>
           </div>
+        )}
+
+        <div className='mt-4 text-center'>
+          <button
+            className='px-4 py-2 bg-red-500 text-white rounded-md'
+            onClick={onClose}
+          >
+            Close
+          </button>
+          <button
+            className='px-4 py-2 bg-blue-500 text-white rounded-md ml-2'
+            onClick={handlePrint} // Trigger print on button click
+          >
+            Print
+          </button>
+          {/* <button
+            className='px-4 py-2 bg-green-500 text-white rounded-md ml-2'
+            onClick={() => setIsFront(!isFront)} // Toggle between front and back side
+          >
+            {isFront ? "Show Back" : "Show Front"}
+          </button> */}
         </div>
       </div>
-    </>
+    </div>
   );
 };
 
