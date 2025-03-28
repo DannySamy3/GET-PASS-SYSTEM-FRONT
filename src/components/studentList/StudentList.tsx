@@ -188,7 +188,7 @@ export const StudentList = () => {
 
   return (
     <div className='min-h-screen bg-slate-50'>
-      <div className='p-6 space-y-6'>
+      <div className='p-6 space-y-6 h-screen overflow-hidden'>
         <div className='flex justify-between items-center bg-gradient-to-r from-blue-700 via-slate-800 to-slate-900 text-white p-6 rounded-lg shadow-lg'>
           <h1 className='text-3xl font-bold tracking-tight'>
             Student Management
@@ -215,15 +215,15 @@ export const StudentList = () => {
         )}
 
         {!changeView && !viewDetails.view && (
-          <UICard className='border-slate-200 shadow-md'>
+          <UICard className='border-slate-200 shadow-md h-[calc(100vh-200px)] flex flex-col'>
             <CardHeader className='bg-gradient-to-r from-indigo-50 via-blue-50 to-white text-indigo-900 rounded-t-lg border-b border-slate-200'>
               <CardTitle>Students List</CardTitle>
               <CardDescription className='text-indigo-700'>
                 Manage and view all student information
               </CardDescription>
             </CardHeader>
-            <CardContent className='pt-6'>
-              <div className='flex flex-col gap-6'>
+            <CardContent className='flex-1 overflow-hidden flex flex-col'>
+              <div className='flex flex-col gap-6 h-full'>
                 <div className='flex items-center justify-between'>
                   <div className='flex items-center gap-4 flex-1'>
                     <div className='relative flex-1 max-w-md'>
@@ -295,8 +295,8 @@ export const StudentList = () => {
                   </div>
                 </div>
 
-                <div className='rounded-md border border-slate-200 shadow-sm'>
-                  <div className='max-h-[calc(100vh-400px)] sm:max-h-[500px] overflow-auto'>
+                <div className='rounded-md border border-slate-200 shadow-sm flex-1 overflow-hidden'>
+                  <div className='h-full overflow-auto'>
                     <Table>
                       <TableHeader className='bg-indigo-50/80 sticky top-0 z-10 backdrop-blur-sm'>
                         <TableRow>
