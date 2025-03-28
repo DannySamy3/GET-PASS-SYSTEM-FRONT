@@ -325,7 +325,7 @@ const Course = () => {
                       </TableRow>
                     </TableHeader>
                   </Table>
-                  <div className='max-h-[300px] overflow-auto'>
+                  <div className='max-h-[200px] overflow-auto'>
                     <Table>
                       <TableBody>
                         {classes.length === 0 ? (
