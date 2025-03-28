@@ -306,13 +306,19 @@ const Course = () => {
                 <Table>
                   <TableHeader className='bg-blue-100/70'>
                     <TableRow>
-                      <TableHead className='text-gray-700'>Name</TableHead>
-                      <TableHead className='text-gray-700'>Initial</TableHead>
-                      <TableHead className='text-gray-700'>Duration</TableHead>
-                      <TableHead className='text-gray-700'>
+                      <TableHead className='text-gray-700 w-[25%]'>
+                        Name
+                      </TableHead>
+                      <TableHead className='text-gray-700 w-[20%]'>
+                        Initial
+                      </TableHead>
+                      <TableHead className='text-gray-700 w-[20%]'>
+                        Duration
+                      </TableHead>
+                      <TableHead className='text-gray-700 w-[25%]'>
                         Tuition Fee
                       </TableHead>
-                      <TableHead className='text-gray-700 w-[100px]'>
+                      <TableHead className='text-gray-700 w-[10%] text-right'>
                         Actions
                       </TableHead>
                     </TableRow>
@@ -338,13 +344,13 @@ const Course = () => {
                               index % 2 === 0 ? "bg-white" : "bg-blue-100/50"
                             }
                           >
-                            <TableCell className='font-medium'>
+                            <TableCell className='font-medium w-[25%]'>
                               <div className='flex items-center gap-2'>
                                 <div className='w-3 h-3 rounded-full bg-gradient-to-r from-blue-300 to-blue-400'></div>
                                 {course.name}
                               </div>
                             </TableCell>
-                            <TableCell>
+                            <TableCell className='w-[20%]'>
                               <Badge
                                 variant='outline'
                                 className='bg-blue-100/70 text-gray-700 border-blue-300'
@@ -352,12 +358,12 @@ const Course = () => {
                                 {course.classInitial}
                               </Badge>
                             </TableCell>
-                            <TableCell>
+                            <TableCell className='w-[20%]'>
                               <Badge className='bg-blue-200/70 hover:bg-blue-300/70 text-gray-800'>
                                 {course.duration}
                               </Badge>
                             </TableCell>
-                            <TableCell>
+                            <TableCell className='w-[25%]'>
                               <Badge className='bg-green-200/70 hover:bg-green-300/70 text-gray-800'>
                                 {new Intl.NumberFormat("en-US").format(
                                   Number(course.tuitionFee || 0)
@@ -365,8 +371,8 @@ const Course = () => {
                                 /=
                               </Badge>
                             </TableCell>
-                            <TableCell>
-                              <div className='flex space-x-2'>
+                            <TableCell className='w-[10%]'>
+                              <div className='flex justify-end space-x-2'>
                                 <Button
                                   variant='outline'
                                   size='icon'
@@ -389,7 +395,6 @@ const Course = () => {
                         ))
                       )}
                     </TableBody>
-                    <Table />
                   </Table>
                 </div>
               </CardContent>
