@@ -304,27 +304,29 @@ const Course = () => {
               </CardHeader>
               <CardContent className='pt-6'>
                 <div className='relative w-full'>
+                  <Table>
+                    <TableHeader className='bg-blue-100/70'>
+                      <TableRow>
+                        <TableHead className='text-gray-700 min-w-[150px]'>
+                          Name
+                        </TableHead>
+                        <TableHead className='text-gray-700 min-w-[100px]'>
+                          Initial
+                        </TableHead>
+                        <TableHead className='text-gray-700 min-w-[100px]'>
+                          Duration
+                        </TableHead>
+                        <TableHead className='text-gray-700 min-w-[120px]'>
+                          Tuition Fee
+                        </TableHead>
+                        <TableHead className='text-gray-700 min-w-[100px] text-right'>
+                          Actions
+                        </TableHead>
+                      </TableRow>
+                    </TableHeader>
+                  </Table>
                   <div className='max-h-[400px] overflow-auto'>
                     <Table>
-                      <TableHeader className='bg-blue-100/70 sticky top-0 z-10'>
-                        <TableRow>
-                          <TableHead className='text-gray-700 min-w-[150px]'>
-                            Name
-                          </TableHead>
-                          <TableHead className='text-gray-700 min-w-[100px]'>
-                            Initial
-                          </TableHead>
-                          <TableHead className='text-gray-700 min-w-[100px]'>
-                            Duration
-                          </TableHead>
-                          <TableHead className='text-gray-700 min-w-[120px]'>
-                            Tuition Fee
-                          </TableHead>
-                          <TableHead className='text-gray-700 min-w-[100px] text-right'>
-                            Actions
-                          </TableHead>
-                        </TableRow>
-                      </TableHeader>
                       <TableBody>
                         {classes.length === 0 ? (
                           <TableRow>
