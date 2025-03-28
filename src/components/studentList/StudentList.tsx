@@ -7,6 +7,7 @@ import { getClassById } from "@/utils/classController";
 import { AddStudent } from "./AddStudent";
 import { Details } from "../studentDetails/Details";
 import StudentCard from "../idCard/card";
+// import { getCourseById } from "@/utils/courseController";
 import {
   Card as UICard,
   CardContent,
@@ -57,9 +58,8 @@ interface ApiResponse {
 
 interface ClassResponse {
   data: {
-    data: {
-      name: string;
-    };
+    name: string;
+    classInitial: string;
   };
 }
 
@@ -157,7 +157,8 @@ export const StudentList = () => {
             const classData = (await getClassById(
               student.classId
             )) as ClassResponse;
-            const course = classData?.data?.data?.name ?? (
+
+            const course = classData?.data?.classInitial ?? (
               <span className='text-red-600 text-sm'>Failed getting class</span>
             );
             return { ...student, className: course };
@@ -185,6 +186,8 @@ export const StudentList = () => {
   useEffect(() => {
     fetchstudents();
   }, []);
+
+  console.log(studentsData);
 
   return (
     <div className='min-h-screen bg-slate-50'>
