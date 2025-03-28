@@ -371,7 +371,7 @@ export const StudentList = () => {
                                 </Badge>
                               </TableCell>
                               <TableCell>
-                                <Badge className='bg-indigo-100 text-indigo-800 font-semibold shadow-sm'>
+                                <Badge className='bg-indigo-100 text-indigo-800 font-semibold shadow-sm hover:bg-indigo-200 transition-colors'>
                                   {student.regNo}
                                 </Badge>
                               </TableCell>
