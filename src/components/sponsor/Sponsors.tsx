@@ -73,20 +73,21 @@ const Sponsors = () => {
       name: "First Semester 2024/2025",
       startDate: "2024-09-01",
       endDate: "2024-12-15",
-      amount: "50000", // Added amount
+      amount: "50000",
     },
     {
       id: "2",
       name: "Second Semester 2024/2025",
       startDate: "2025-01-15",
       endDate: "2025-05-30",
-      amount: "45000", // Added amount
+      amount: "45000",
     },
   ]);
   const [currentSession, setCurrentSession] = useState<string>("1");
   const [enableGracePeriod, setEnableGracePeriod] = useState(false);
   const [gracePeriodDays, setGracePeriodDays] = useState("14");
   const [activeTab, setActiveTab] = useState("sponsors");
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const dispatch = useDispatch<any>();
 
   const fetchSponsors = async () => {
@@ -209,6 +210,29 @@ const Sponsors = () => {
 
   const formatCurrency = (amount: string) => {
     return new Intl.NumberFormat("en-US").format(Number(amount));
+  };
+
+  const handleSubmitPaymentSessions = async () => {
+    try {
+      setIsSubmitting(true);
+      // Here you would typically make an API call to save the payment sessions
+      // For now, we'll just show a success message
+      dispatch(
+        showToast({
+          message: "Payment sessions updated successfully",
+          type: "success",
+        })
+      );
+    } catch (error) {
+      dispatch(
+        showToast({
+          message: "Failed to update payment sessions",
+          type: "error",
+        })
+      );
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   useEffect(() => {
@@ -529,14 +553,135 @@ const Sponsors = () => {
                       </div>
                     </div>
                   ))}
-                  <Button
-                    variant='outline'
-                    onClick={handleAddSession}
-                    className='border-gray-300 text-gray-700 hover:bg-gray-100'
-                  >
-                    <Plus className='mr-2 h-4 w-4' />
-                    Add Payment Session
-                  </Button>
+                  <div className='flex justify-between items-center'>
+                    <Button
+                      variant='outline'
+                      onClick={handleAddSession}
+                      className='border-gray-300 text-gray-700 hover:bg-gray-100'
+                    >
+                      <Plus className='mr-2 h-4 w-4' />
+                      Add Payment Session
+                    </Button>
+                    <Button
+                      className='bg-blue-600 hover:bg-blue-700 text-white'
+                      onClick={handleSubmitPaymentSessions}
+                      disabled={isSubmitting}
+                    >
+                      {isSubmitting ? (
+                        <>
+                          <span className='animate-spin mr-2'>⏳</span>
+                          Saving...
+                        </>
+                      ) : (
+                        <>
+                          <Save className='mr-2 h-4 w-4' />
+                          Save Payment Sessions
+                        </>
+                      )}
+                    </Button>
+                  </div>
+                </div>
+
+                <Separator className='my-6 bg-gray-200' />
+
+                <div className='space-y-4'>
+                  <div className='flex items-center justify-between'>
+                    <h3 className='text-lg font-semibold text-gray-800'>
+                      Active Payment Sessions
+                    </h3>
+                    <Badge
+                      variant='outline'
+                      className='bg-green-100 text-green-800 border-green-200'
+                    >
+                      {paymentSessions.length} Sessions
+                    </Badge>
+                  </div>
+                  <div className='rounded-md border'>
+                    <Table>
+                      <TableHeader className='bg-gray-50'>
+                        <TableRow>
+                          <TableHead className='font-medium text-gray-700'>
+                            Session Name
+                          </TableHead>
+                          <TableHead className='font-medium text-gray-700'>
+                            Duration
+                          </TableHead>
+                          <TableHead className='font-medium text-gray-700'>
+                            Amount
+                          </TableHead>
+                          <TableHead className='font-medium text-gray-700'>
+                            Status
+                          </TableHead>
+                        </TableRow>
+                      </TableHeader>
+                      <TableBody>
+                        {paymentSessions.map((session) => {
+                          const startDate = new Date(session.startDate);
+                          const endDate = new Date(session.endDate);
+                          const today = new Date();
+                          const isActive =
+                            today >= startDate && today <= endDate;
+                          const isUpcoming = today < startDate;
+                          const isPast = today > endDate;
+
+                          return (
+                            <TableRow
+                              key={session.id}
+                              className='hover:bg-gray-50'
+                            >
+                              <TableCell className='font-medium'>
+                                {session.name}
+                              </TableCell>
+                              <TableCell>
+                                <div className='flex flex-col'>
+                                  <span className='text-sm text-gray-600'>
+                                    {startDate.toLocaleDateString()} -{" "}
+                                    {endDate.toLocaleDateString()}
+                                  </span>
+                                  <span className='text-xs text-gray-500'>
+                                    {Math.ceil(
+                                      (endDate.getTime() -
+                                        startDate.getTime()) /
+                                        (1000 * 60 * 60 * 24)
+                                    )}{" "}
+                                    days
+                                  </span>
+                                </div>
+                              </TableCell>
+                              <TableCell>
+                                <div className='flex flex-col'>
+                                  <span className='font-medium'>
+                                    {formatCurrency(session.amount)}/=
+                                  </span>
+                                  <span className='text-xs text-gray-500'>
+                                    USD
+                                  </span>
+                                </div>
+                              </TableCell>
+                              <TableCell>
+                                <Badge
+                                  variant='outline'
+                                  className={
+                                    isActive
+                                      ? "bg-green-100 text-green-800 border-green-200"
+                                      : isUpcoming
+                                      ? "bg-blue-100 text-blue-800 border-blue-200"
+                                      : "bg-gray-100 text-gray-800 border-gray-200"
+                                  }
+                                >
+                                  {isActive
+                                    ? "Active"
+                                    : isUpcoming
+                                    ? "Upcoming"
+                                    : "Past"}
+                                </Badge>
+                              </TableCell>
+                            </TableRow>
+                          );
+                        })}
+                      </TableBody>
+                    </Table>
+                  </div>
                 </div>
 
                 <Separator className='my-6 bg-gray-200' />
@@ -611,9 +756,22 @@ const Sponsors = () => {
                   </div>
 
                   <div className='flex justify-end'>
-                    <Button className='bg-gray-200 hover:bg-gray-300 text-gray-800'>
-                      <Save className='mr-2 h-4 w-4' />
-                      Save Settings
+                    <Button
+                      className='bg-gray-200 hover:bg-gray-300 text-gray-800'
+                      onClick={handleSubmitPaymentSessions}
+                      disabled={isSubmitting}
+                    >
+                      {isSubmitting ? (
+                        <>
+                          <span className='animate-spin mr-2'>⏳</span>
+                          Saving...
+                        </>
+                      ) : (
+                        <>
+                          <Save className='mr-2 h-4 w-4' />
+                          Save Settings
+                        </>
+                      )}
                     </Button>
                   </div>
                 </div>
