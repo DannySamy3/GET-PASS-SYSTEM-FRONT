@@ -307,25 +307,25 @@ const Course = () => {
                   <Table>
                     <TableHeader className='bg-blue-100/70'>
                       <TableRow>
-                        <TableHead className='text-gray-700 min-w-[150px]'>
+                        <TableHead className='text-gray-700 w-[30%]'>
                           Name
                         </TableHead>
-                        <TableHead className='text-gray-700 min-w-[100px]'>
+                        <TableHead className='text-gray-700 w-[20%] text-center'>
                           Initial
                         </TableHead>
-                        <TableHead className='text-gray-700 min-w-[100px]'>
+                        <TableHead className='text-gray-700 w-[20%] text-center'>
                           Duration
                         </TableHead>
-                        <TableHead className='text-gray-700 min-w-[120px]'>
+                        <TableHead className='text-gray-700 w-[20%]'>
                           Tuition Fee
                         </TableHead>
-                        <TableHead className='text-gray-700 min-w-[100px] text-right'>
+                        <TableHead className='text-gray-700 w-[10%] text-right'>
                           Actions
                         </TableHead>
                       </TableRow>
                     </TableHeader>
                   </Table>
-                  <div className='max-h-[400px] overflow-auto'>
+                  <div className='max-h-[300px] overflow-auto'>
                     <Table>
                       <TableBody>
                         {classes.length === 0 ? (
@@ -345,26 +345,30 @@ const Course = () => {
                                 index % 2 === 0 ? "bg-white" : "bg-blue-100/50"
                               }
                             >
-                              <TableCell className='font-medium min-w-[150px]'>
+                              <TableCell className='font-medium w-[30%]'>
                                 <div className='flex items-center gap-2'>
                                   <div className='w-3 h-3 rounded-full bg-gradient-to-r from-blue-300 to-blue-400'></div>
                                   {course.name}
                                 </div>
                               </TableCell>
-                              <TableCell className='min-w-[100px]'>
-                                <Badge
-                                  variant='outline'
-                                  className='bg-blue-100/70 text-gray-700 border-blue-300'
-                                >
-                                  {course.classInitial}
-                                </Badge>
+                              <TableCell className='w-[20%]'>
+                                <div className='flex justify-center'>
+                                  <Badge
+                                    variant='outline'
+                                    className='bg-blue-100/70 text-gray-700 border-blue-300'
+                                  >
+                                    {course.classInitial}
+                                  </Badge>
+                                </div>
                               </TableCell>
-                              <TableCell className='min-w-[100px]'>
-                                <Badge className='bg-blue-200/70 hover:bg-blue-300/70 text-gray-800'>
-                                  {course.duration}
-                                </Badge>
+                              <TableCell className='w-[20%]'>
+                                <div className='flex justify-center'>
+                                  <Badge className='bg-blue-200/70 hover:bg-blue-300/70 text-gray-800'>
+                                    {course.duration}
+                                  </Badge>
+                                </div>
                               </TableCell>
-                              <TableCell className='min-w-[120px]'>
+                              <TableCell className='w-[20%]'>
                                 <Badge className='bg-green-200/70 hover:bg-green-300/70 text-gray-800'>
                                   {new Intl.NumberFormat("en-US").format(
                                     Number(course.tuitionFee || 0)
@@ -372,7 +376,7 @@ const Course = () => {
                                   /=
                                 </Badge>
                               </TableCell>
-                              <TableCell className='min-w-[100px]'>
+                              <TableCell className='w-[10%]'>
                                 <div className='flex justify-end space-x-2'>
                                   <Button
                                     variant='outline'
