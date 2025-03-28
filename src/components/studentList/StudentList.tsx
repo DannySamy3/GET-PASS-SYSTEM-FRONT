@@ -296,7 +296,7 @@ export const StudentList = () => {
                 </div>
 
                 <div className='rounded-md border border-slate-200 shadow-sm'>
-                  <div className='max-h-[500px] overflow-auto'>
+                  <div className='max-h-[calc(100vh-400px)] sm:max-h-[500px] overflow-auto'>
                     <Table>
                       <TableHeader className='bg-indigo-50/80 sticky top-0 z-10 backdrop-blur-sm'>
                         <TableRow>
