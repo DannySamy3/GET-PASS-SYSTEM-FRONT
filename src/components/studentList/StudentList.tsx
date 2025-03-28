@@ -439,15 +439,15 @@ export const StudentList = () => {
             </CardContent>
           </UICard>
         )}
-
-        {viewCard && (
-          <StudentCard
-            studentId={viewDetails.cardId}
-            isOpen={viewCard}
-            onClose={() => setViewCard(false)}
-          />
-        )}
       </div>
+
+      {viewCard && (
+        <StudentCard
+          studentId={viewDetails.cardId}
+          isOpen={viewCard}
+          onClose={() => setViewCard(false)}
+        />
+      )}
     </div>
   );
 };
