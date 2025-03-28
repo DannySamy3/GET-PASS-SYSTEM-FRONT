@@ -256,12 +256,12 @@ const Course = () => {
                           $
                         </span>
                       </div>
-                      <p className='text-xs text-gray-600'>
+                      {/* <p className='text-xs text-gray-600'>
                         {new Intl.NumberFormat("en-US").format(
                           Number(courseData.tuitionFee || 0)
                         )}
                         /=
-                      </p>
+                      </p> */}
                     </div>
                   </div>
                   <div className='flex justify-end gap-2'>
@@ -318,7 +318,7 @@ const Course = () => {
                     </TableRow>
                   </TableHeader>
                 </Table>
-                <div className='h-[180px] sm:h-[200px] md:h-[220px] lg:h-[112px] overflow-auto'>
+                <div className='h-[180px] sm:h-[200px] md:h-[220px] lg:h-[120px] overflow-auto'>
                   <Table>
                     <TableBody>
                       {classes.length === 0 ? (
