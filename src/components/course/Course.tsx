@@ -317,76 +317,81 @@ const Course = () => {
                       </TableHead>
                     </TableRow>
                   </TableHeader>
-                  <TableBody>
-                    {classes.length === 0 ? (
-                      <TableRow>
-                        <TableCell
-                          colSpan={5}
-                          className='text-center py-6 text-gray-500'
-                        >
-                          No courses found. Add your first course above.
-                        </TableCell>
-                      </TableRow>
-                    ) : (
-                      classes.map((course, index) => (
-                        <TableRow
-                          key={course._id}
-                          className={
-                            index % 2 === 0 ? "bg-white" : "bg-blue-100/50"
-                          }
-                        >
-                          <TableCell className='font-medium'>
-                            <div className='flex items-center gap-2'>
-                              <div className='w-3 h-3 rounded-full bg-gradient-to-r from-blue-300 to-blue-400'></div>
-                              {course.name}
-                            </div>
-                          </TableCell>
-                          <TableCell>
-                            <Badge
-                              variant='outline'
-                              className='bg-blue-100/70 text-gray-700 border-blue-300'
-                            >
-                              {course.classInitial}
-                            </Badge>
-                          </TableCell>
-                          <TableCell>
-                            <Badge className='bg-blue-200/70 hover:bg-blue-300/70 text-gray-800'>
-                              {course.duration}
-                            </Badge>
-                          </TableCell>
-                          <TableCell>
-                            <Badge className='bg-green-200/70 hover:bg-green-300/70 text-gray-800'>
-                              {new Intl.NumberFormat("en-US").format(
-                                Number(course.tuitionFee || 0)
-                              )}
-                              /=
-                            </Badge>
-                          </TableCell>
-                          <TableCell>
-                            <div className='flex space-x-2'>
-                              <Button
-                                variant='outline'
-                                size='icon'
-                                onClick={() => handleEdit(course._id!)}
-                                className='border-blue-300 text-gray-700 hover:bg-blue-100/70'
-                              >
-                                <Pencil className='h-4 w-4' />
-                              </Button>
-                              <Button
-                                variant='outline'
-                                size='icon'
-                                onClick={() => handleDelete(course._id!)}
-                                className='border-red-300 text-red-600 hover:bg-red-50'
-                              >
-                                <Trash2 className='h-4 w-4' />
-                              </Button>
-                            </div>
+                </Table>
+                <div className='h-[180px] sm:h-[200px] md:h-[220px] lg:h-[132px] overflow-auto'>
+                  <Table>
+                    <TableBody>
+                      {classes.length === 0 ? (
+                        <TableRow>
+                          <TableCell
+                            colSpan={5}
+                            className='text-center py-6 text-gray-500'
+                          >
+                            No courses found. Add your first course above.
                           </TableCell>
                         </TableRow>
-                      ))
-                    )}
-                  </TableBody>
-                </Table>
+                      ) : (
+                        classes.map((course, index) => (
+                          <TableRow
+                            key={course._id}
+                            className={
+                              index % 2 === 0 ? "bg-white" : "bg-blue-100/50"
+                            }
+                          >
+                            <TableCell className='font-medium'>
+                              <div className='flex items-center gap-2'>
+                                <div className='w-3 h-3 rounded-full bg-gradient-to-r from-blue-300 to-blue-400'></div>
+                                {course.name}
+                              </div>
+                            </TableCell>
+                            <TableCell>
+                              <Badge
+                                variant='outline'
+                                className='bg-blue-100/70 text-gray-700 border-blue-300'
+                              >
+                                {course.classInitial}
+                              </Badge>
+                            </TableCell>
+                            <TableCell>
+                              <Badge className='bg-blue-200/70 hover:bg-blue-300/70 text-gray-800'>
+                                {course.duration}
+                              </Badge>
+                            </TableCell>
+                            <TableCell>
+                              <Badge className='bg-green-200/70 hover:bg-green-300/70 text-gray-800'>
+                                {new Intl.NumberFormat("en-US").format(
+                                  Number(course.tuitionFee || 0)
+                                )}
+                                /=
+                              </Badge>
+                            </TableCell>
+                            <TableCell>
+                              <div className='flex space-x-2'>
+                                <Button
+                                  variant='outline'
+                                  size='icon'
+                                  onClick={() => handleEdit(course._id!)}
+                                  className='border-blue-300 text-gray-700 hover:bg-blue-100/70'
+                                >
+                                  <Pencil className='h-4 w-4' />
+                                </Button>
+                                <Button
+                                  variant='outline'
+                                  size='icon'
+                                  onClick={() => handleDelete(course._id!)}
+                                  className='border-red-300 text-red-600 hover:bg-red-50'
+                                >
+                                  <Trash2 className='h-4 w-4' />
+                                </Button>
+                              </div>
+                            </TableCell>
+                          </TableRow>
+                        ))
+                      )}
+                    </TableBody>
+                    <Table />
+                  </Table>
+                </div>
               </CardContent>
             </Card>
           </TabsContent>
