@@ -51,6 +51,7 @@ interface PaymentSession {
   startDate: string;
   endDate: string;
   amount: string; // Added amount field
+  isEditing?: boolean;
 }
 
 interface ApiResponse {
@@ -88,6 +89,7 @@ const Sponsors = () => {
   const [gracePeriodDays, setGracePeriodDays] = useState("14");
   const [activeTab, setActiveTab] = useState("sponsors");
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [editingSessionId, setEditingSessionId] = useState<string | null>(null);
   const dispatch = useDispatch<any>();
 
   const fetchSponsors = async () => {
@@ -233,6 +235,50 @@ const Sponsors = () => {
     } finally {
       setIsSubmitting(false);
     }
+  };
+
+  const handleEditSession = (sessionId: string) => {
+    setEditingSessionId(sessionId);
+    const session = paymentSessions.find((s) => s.id === sessionId);
+    if (session) {
+      setPaymentSessions((prev) =>
+        prev.map((s) => (s.id === sessionId ? { ...s, isEditing: true } : s))
+      );
+    }
+  };
+
+  const handleDeleteSession = (sessionId: string) => {
+    if (
+      window.confirm("Are you sure you want to delete this payment session?")
+    ) {
+      setPaymentSessions((prev) => prev.filter((s) => s.id !== sessionId));
+      dispatch(
+        showToast({
+          message: "Payment session deleted successfully",
+          type: "success",
+        })
+      );
+    }
+  };
+
+  const handleSaveSession = (sessionId: string) => {
+    setEditingSessionId(null);
+    setPaymentSessions((prev) =>
+      prev.map((s) => (s.id === sessionId ? { ...s, isEditing: false } : s))
+    );
+    dispatch(
+      showToast({
+        message: "Payment session updated successfully",
+        type: "success",
+      })
+    );
+  };
+
+  const handleCancelEdit = (sessionId: string) => {
+    setEditingSessionId(null);
+    setPaymentSessions((prev) =>
+      prev.map((s) => (s.id === sessionId ? { ...s, isEditing: false } : s))
+    );
   };
 
   useEffect(() => {
@@ -612,6 +658,9 @@ const Sponsors = () => {
                           <TableHead className='font-medium text-gray-700'>
                             Status
                           </TableHead>
+                          <TableHead className='font-medium text-gray-700 text-right'>
+                            Actions
+                          </TableHead>
                         </TableRow>
                       </TableHeader>
                       <TableBody>
@@ -623,6 +672,7 @@ const Sponsors = () => {
                             today >= startDate && today <= endDate;
                           const isUpcoming = today < startDate;
                           const isPast = today > endDate;
+                          const isEditing = editingSessionId === session.id;
 
                           return (
                             <TableRow
@@ -630,33 +680,106 @@ const Sponsors = () => {
                               className='hover:bg-gray-50'
                             >
                               <TableCell className='font-medium'>
-                                {session.name}
+                                {isEditing ? (
+                                  <Input
+                                    value={session.name}
+                                    onChange={(e) =>
+                                      handleSessionChange(
+                                        paymentSessions.findIndex(
+                                          (s) => s.id === session.id
+                                        ),
+                                        "name",
+                                        e.target.value
+                                      )
+                                    }
+                                    className='border-gray-300 focus:border-gray-400 bg-white'
+                                  />
+                                ) : (
+                                  session.name
+                                )}
                               </TableCell>
                               <TableCell>
-                                <div className='flex flex-col'>
-                                  <span className='text-sm text-gray-600'>
-                                    {startDate.toLocaleDateString()} -{" "}
-                                    {endDate.toLocaleDateString()}
-                                  </span>
-                                  <span className='text-xs text-gray-500'>
-                                    {Math.ceil(
-                                      (endDate.getTime() -
-                                        startDate.getTime()) /
-                                        (1000 * 60 * 60 * 24)
-                                    )}{" "}
-                                    days
-                                  </span>
-                                </div>
+                                {isEditing ? (
+                                  <div className='space-y-2'>
+                                    <Input
+                                      type='date'
+                                      value={session.startDate}
+                                      onChange={(e) =>
+                                        handleSessionChange(
+                                          paymentSessions.findIndex(
+                                            (s) => s.id === session.id
+                                          ),
+                                          "startDate",
+                                          e.target.value
+                                        )
+                                      }
+                                      className='border-gray-300 focus:border-gray-400 bg-white'
+                                    />
+                                    <Input
+                                      type='date'
+                                      value={session.endDate}
+                                      onChange={(e) =>
+                                        handleSessionChange(
+                                          paymentSessions.findIndex(
+                                            (s) => s.id === session.id
+                                          ),
+                                          "endDate",
+                                          e.target.value
+                                        )
+                                      }
+                                      className='border-gray-300 focus:border-gray-400 bg-white'
+                                    />
+                                  </div>
+                                ) : (
+                                  <div className='flex flex-col'>
+                                    <span className='text-sm text-gray-600'>
+                                      {startDate.toLocaleDateString()} -{" "}
+                                      {endDate.toLocaleDateString()}
+                                    </span>
+                                    <span className='text-xs text-gray-500'>
+                                      {Math.ceil(
+                                        (endDate.getTime() -
+                                          startDate.getTime()) /
+                                          (1000 * 60 * 60 * 24)
+                                      )}{" "}
+                                      days
+                                    </span>
+                                  </div>
+                                )}
                               </TableCell>
                               <TableCell>
-                                <div className='flex flex-col'>
-                                  <span className='font-medium'>
-                                    {formatCurrency(session.amount)}/=
-                                  </span>
-                                  <span className='text-xs text-gray-500'>
-                                    USD
-                                  </span>
-                                </div>
+                                {isEditing ? (
+                                  <div className='relative'>
+                                    <Input
+                                      type='number'
+                                      value={session.amount}
+                                      onChange={(e) =>
+                                        handleSessionChange(
+                                          paymentSessions.findIndex(
+                                            (s) => s.id === session.id
+                                          ),
+                                          "amount",
+                                          e.target.value
+                                        )
+                                      }
+                                      className='border-gray-300 focus:border-gray-400 bg-white pl-8'
+                                      min='0'
+                                      step='1000'
+                                    />
+                                    <span className='absolute left-3 top-1/2 -translate-y-1/2 text-gray-600'>
+                                      $
+                                    </span>
+                                  </div>
+                                ) : (
+                                  <div className='flex flex-col'>
+                                    <span className='font-medium'>
+                                      {formatCurrency(session.amount)}/=
+                                    </span>
+                                    <span className='text-xs text-gray-500'>
+                                      USD
+                                    </span>
+                                  </div>
+                                )}
                               </TableCell>
                               <TableCell>
                                 <Badge
@@ -675,6 +798,57 @@ const Sponsors = () => {
                                     ? "Upcoming"
                                     : "Past"}
                                 </Badge>
+                              </TableCell>
+                              <TableCell className='text-right'>
+                                <div className='flex justify-end space-x-2'>
+                                  {isEditing ? (
+                                    <>
+                                      <Button
+                                        variant='outline'
+                                        size='icon'
+                                        onClick={() =>
+                                          handleSaveSession(session.id)
+                                        }
+                                        className='border-green-300 text-green-600 hover:bg-green-50 h-7 w-7'
+                                      >
+                                        <Save className='h-4 w-4' />
+                                      </Button>
+                                      <Button
+                                        variant='outline'
+                                        size='icon'
+                                        onClick={() =>
+                                          handleCancelEdit(session.id)
+                                        }
+                                        className='border-gray-300 text-gray-600 hover:bg-gray-50 h-7 w-7'
+                                      >
+                                        <span className='text-lg'>×</span>
+                                      </Button>
+                                    </>
+                                  ) : (
+                                    <>
+                                      <Button
+                                        variant='outline'
+                                        size='icon'
+                                        onClick={() =>
+                                          handleEditSession(session.id)
+                                        }
+                                        className='border-blue-300 text-blue-600 hover:bg-blue-50 h-7 w-7'
+                                      >
+                                        <Pencil className='h-4 w-4' />
+                                      </Button>
+                                      <Button
+                                        variant='outline'
+                                        size='icon'
+                                        onClick={() =>
+                                          handleDeleteSession(session.id)
+                                        }
+                                        className='border-red-300 text-red-600 hover:bg-red-50 h-7 w-7'
+                                      >
+                                        <Trash2 className='h-4 w-4' />
+                                      </Button>
+                                    </>
+                                  )}
+                                </div>
                               </TableCell>
                             </TableRow>
                           );
