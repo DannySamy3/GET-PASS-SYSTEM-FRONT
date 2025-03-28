@@ -15,6 +15,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Separator } from "@/components/ui/separator";
+import ToastNotification from "../toastNotification/ToastNotification";
 import {
   Table,
   TableBody,
@@ -38,7 +39,7 @@ interface CourseData {
   name: string;
   classInitial: string;
   duration: string;
-  tuitionFee: string;
+  fee: string;
 }
 
 interface ApiResponse {
@@ -60,7 +61,7 @@ const Course = () => {
     name: "",
     classInitial: "",
     duration: "",
-    tuitionFee: "",
+    fee: "",
   });
   const [activeTab, setActiveTab] = useState("courses");
   const dispatch = useDispatch();
@@ -127,9 +128,8 @@ const Course = () => {
     try {
       const response = (await getClassById(id)) as ClassResponse;
       if (response?.data?.data) {
-        const { name, classInitial, duration, _id, tuitionFee } =
-          response.data.data;
-        setCourseData({ name, classInitial, duration, _id, tuitionFee });
+        const { name, classInitial, duration, _id, fee } = response.data.data;
+        setCourseData({ name, classInitial, duration, _id, fee });
         setIsEditing(true);
         setActiveTab("courses");
       }
@@ -159,7 +159,7 @@ const Course = () => {
   };
 
   const resetForm = () => {
-    setCourseData({ name: "", classInitial: "", duration: "", tuitionFee: "" });
+    setCourseData({ name: "", classInitial: "", duration: "", fee: "" });
     setIsEditing(false);
   };
 
@@ -237,15 +237,15 @@ const Course = () => {
                       />
                     </div>
                     <div className='space-y-2'>
-                      <Label htmlFor='tuitionFee' className='text-gray-700'>
+                      <Label htmlFor='fee' className='text-gray-700'>
                         Tuition Fee
                       </Label>
                       <div className='relative'>
                         <Input
-                          id='tuitionFee'
-                          name='tuitionFee'
+                          id='fee'
+                          name='fee'
                           type='number'
-                          value={courseData.tuitionFee}
+                          value={courseData.fee}
                           onChange={handleInputChange}
                           placeholder='Enter tuition fee'
                           className='border-gray-300 focus:border-gray-400 pl-8'
@@ -258,7 +258,7 @@ const Course = () => {
                       </div>
                       {/* <p className='text-xs text-gray-600'>
                         {new Intl.NumberFormat("en-US").format(
-                          Number(courseData.tuitionFee || 0)
+                          Number(courseData.fee || 0)
                         )}
                         /=
                       </p> */}
@@ -371,7 +371,7 @@ const Course = () => {
                               <TableCell className='w-[20%]'>
                                 <Badge className='bg-green-200/70 hover:bg-green-300/70 text-gray-800'>
                                   {new Intl.NumberFormat("en-US").format(
-                                    Number(course.tuitionFee || 0)
+                                    Number(course.fee || 0)
                                   )}
                                   /=
                                 </Badge>
@@ -408,6 +408,7 @@ const Course = () => {
           </TabsContent>
         </Tabs>
       </div>
+      <ToastNotification />
     </div>
   );
 };
