@@ -277,81 +277,99 @@ const Sponsors = () => {
                 </CardDescription>
               </CardHeader>
               <CardContent className='pt-6'>
-                <Table>
-                  <TableHeader className='bg-blue-100/70'>
-                    <TableRow>
-                      <TableHead className='text-gray-700'>Name</TableHead>
-                      <TableHead className='text-gray-700'>
-                        Payment Session
-                      </TableHead>
-                      <TableHead className='text-gray-700'>Usage</TableHead>
-                      <TableHead className='text-gray-700 w-[100px]'>
-                        Actions
-                      </TableHead>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    {sponsors.length === 0 ? (
-                      <TableRow>
-                        <TableCell
-                          colSpan={4}
-                          className='text-center py-6 text-gray-500'
-                        >
-                          No sponsors found. Add your first sponsor above.
-                        </TableCell>
-                      </TableRow>
-                    ) : (
-                      sponsors.map((sponsor, index) => (
-                        <TableRow
-                          key={sponsor._id}
-                          className={
-                            index % 2 === 0 ? "bg-white" : "bg-blue-100/50"
-                          }
-                        >
-                          <TableCell className='font-medium'>
-                            <div className='flex items-center gap-2'>
-                              <div className='w-3 h-3 rounded-full bg-gradient-to-r from-blue-300 to-blue-400'></div>
-                              {sponsor.name}
-                            </div>
-                          </TableCell>
-                          <TableCell>
-                            <Badge
-                              variant='outline'
-                              className='bg-blue-100/70 text-gray-700 border-blue-300'
-                            >
-                              {getSessionName(sponsor.paymentSession)}
-                            </Badge>
-                          </TableCell>
-                          <TableCell>
-                            <Badge className='bg-blue-200/70 hover:bg-blue-300/70 text-gray-800'>
-                              20%
-                            </Badge>
-                          </TableCell>
-                          <TableCell>
-                            <div className='flex space-x-2'>
-                              <Button
-                                variant='outline'
-                                size='icon'
-                                onClick={() => handleEdit(sponsor._id!)}
-                                className='border-blue-300 text-gray-700 hover:bg-blue-100/70'
-                              >
-                                <Pencil className='h-4 w-4' />
-                              </Button>
-                              <Button
-                                variant='outline'
-                                size='icon'
-                                onClick={() => handleDelete(sponsor._id!)}
-                                className='border-red-300 text-red-600 hover:bg-red-50'
-                              >
-                                <Trash2 className='h-4 w-4' />
-                              </Button>
-                            </div>
-                          </TableCell>
+                <div className='rounded-md border'>
+                  <div className='relative w-full'>
+                    <Table>
+                      <TableHeader className='bg-blue-100/70'>
+                        <TableRow className='hover:bg-blue-100/70'>
+                          <TableHead className='text-gray-700 text-sm sm:text-base text-left w-[40%]'>
+                            Name
+                          </TableHead>
+                          <TableHead className='text-gray-700 text-sm sm:text-base text-center w-[30%]'>
+                            Payment Session
+                          </TableHead>
+                          <TableHead className='text-gray-700 text-sm sm:text-base text-center w-[20%]'>
+                            Usage
+                          </TableHead>
+                          <TableHead className='text-gray-700 w-[10%] text-sm sm:text-base text-center'>
+                            Actions
+                          </TableHead>
                         </TableRow>
-                      ))
-                    )}
-                  </TableBody>
-                </Table>
+                      </TableHeader>
+                    </Table>
+                    <div className='h-[200px] sm:h-[250px] md:h-[230px] overflow-auto'>
+                      <Table>
+                        <TableBody>
+                          {sponsors.length === 0 ? (
+                            <TableRow>
+                              <TableCell
+                                colSpan={4}
+                                className='text-center py-4 sm:py-6 text-gray-500 text-sm sm:text-base'
+                              >
+                                No sponsors found. Add your first sponsor above.
+                              </TableCell>
+                            </TableRow>
+                          ) : (
+                            sponsors.map((sponsor, index) => (
+                              <TableRow
+                                key={sponsor._id}
+                                className={
+                                  index % 2 === 0
+                                    ? "bg-white"
+                                    : "bg-blue-100/50"
+                                }
+                              >
+                                <TableCell className='font-medium text-sm sm:text-base text-left w-[40%]'>
+                                  <div className='flex items-center gap-2'>
+                                    <div className='w-2 h-2 sm:w-3 sm:h-3 rounded-full bg-gradient-to-r from-blue-300 to-blue-400'></div>
+                                    {sponsor.name}
+                                  </div>
+                                </TableCell>
+                                <TableCell className='text-sm sm:text-base text-center w-[30%]'>
+                                  <div className='flex justify-center'>
+                                    <Badge
+                                      variant='outline'
+                                      className='bg-blue-100/70 text-gray-700 border-blue-300 text-xs sm:text-sm'
+                                    >
+                                      {getSessionName(sponsor.paymentSession)}
+                                    </Badge>
+                                  </div>
+                                </TableCell>
+                                <TableCell className='text-sm sm:text-base text-center w-[20%]'>
+                                  <div className='flex justify-center'>
+                                    <Badge className='bg-blue-200/70 hover:bg-blue-300/70 text-gray-800 text-xs sm:text-sm'>
+                                      20%
+                                    </Badge>
+                                  </div>
+                                </TableCell>
+                                <TableCell className='text-center w-[10%]'>
+                                  <div className='flex justify-center space-x-1 sm:space-x-2'>
+                                    <Button
+                                      variant='outline'
+                                      size='icon'
+                                      onClick={() => handleEdit(sponsor._id!)}
+                                      className='border-blue-300 text-gray-700 hover:bg-blue-100/70 h-7 w-7 sm:h-8 sm:w-8'
+                                    >
+                                      <Pencil className='h-3 w-3 sm:h-4 sm:w-4' />
+                                    </Button>
+                                    <Button
+                                      variant='outline'
+                                      size='icon'
+                                      onClick={() => handleDelete(sponsor._id!)}
+                                      className='border-red-300 text-red-600 hover:bg-red-50 h-7 w-7 sm:h-8 sm:w-8'
+                                    >
+                                      <Trash2 className='h-3 w-3 sm:h-4 sm:w-4' />
+                                    </Button>
+                                  </div>
+                                </TableCell>
+                              </TableRow>
+                            ))
+                          )}
+                        </TableBody>
+                      </Table>
+                    </div>
+                  </div>
+                </div>
               </CardContent>
             </Card>
           </TabsContent>
