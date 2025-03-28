@@ -297,7 +297,7 @@ const Sponsors = () => {
                         </TableRow>
                       </TableHeader>
                     </Table>
-                    <div className='h-[180px] sm:h-[200px] md:h-[220px] lg:h-[162px] overflow-auto'>
+                    <div className='h-[180px] sm:h-[200px] md:h-[220px] lg:h-[132px] overflow-auto'>
                       <Table>
                         <TableBody>
                           {sponsors.length === 0 ? (
