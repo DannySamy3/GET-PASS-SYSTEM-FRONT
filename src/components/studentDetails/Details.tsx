@@ -46,15 +46,17 @@ export const Details: React.FC<Props> = ({ id, setView, setDate }) => {
     try {
       const result = await getStudentById(id);
 
+      console.log("...........", result);
+
       if (result) {
         // @ts-ignore
-        const classData = await getClassById(result?.data.classId);
+        const classData = await getClassById(result?.data.student.classId);
         // @ts-ignore
-        const sponsorData = await getSponsorById(result?.data.sponsor);
+        const sponsorData = await getSponsorById(result?.data.student.sponsor);
 
         setStudent({
           // @ts-ignore
-          ...result.data,
+          ...result.data.student,
           // @ts-ignore
           className: classData.data.name,
           // @ts-ignore
@@ -197,6 +199,8 @@ export const Details: React.FC<Props> = ({ id, setView, setDate }) => {
   useEffect(() => {
     getDetails();
   }, [student?.status]);
+
+  console.log("...........", student);
 
   return (
     <div className='h-[80vh] font-montserrat'>

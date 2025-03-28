@@ -2,6 +2,7 @@
 
 import type React from "react";
 import { useEffect, useState } from "react";
+import { getSponsors, deleteSponsors } from "@/utils/sponsorController";
 import {
   Card,
   CardContent,
@@ -13,6 +14,8 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { showToast } from "@/utils/toastSlice";
+import ToastNotification from "../toastNotification/ToastNotification";
 import {
   Select,
   SelectContent,
@@ -32,6 +35,7 @@ import {
 } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { Pencil, Trash2, Plus, Save } from "lucide-react";
+import { useDispatch, useSelector } from "react-redux";
 
 interface SponsorData {
   id?: string;
@@ -49,11 +53,16 @@ interface PaymentSession {
   amount: string; // Added amount field
 }
 
+interface ApiResponse {
+  data: {
+    data: SponsorData[];
+  };
+}
+
 const Sponsors = () => {
-  const [sponsors, setSponsors] = useState<SponsorData[]>([
-    { _id: "1", name: "Example Sponsor 1", paymentSession: "1" },
-    { _id: "2", name: "Example Sponsor 2", paymentSession: "2" },
-  ]);
+  const [sponsors, setSponsors] = useState<SponsorData[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const [isEditing, setIsEditing] = useState(false);
   const [sponsorData, setSponsorData] = useState<SponsorData>({
     name: "",
@@ -78,11 +87,22 @@ const Sponsors = () => {
   const [enableGracePeriod, setEnableGracePeriod] = useState(false);
   const [gracePeriodDays, setGracePeriodDays] = useState("14");
   const [activeTab, setActiveTab] = useState("sponsors");
+  const dispatch = useDispatch<any>();
 
-  // Simplified mock functions for demonstration
-  const fetchSponsors = () => {
-    // In a real app, this would be an API call
-    console.log("Fetching sponsors...");
+  const fetchSponsors = async () => {
+    try {
+      setIsLoading(true);
+      setError(null);
+      const response = (await getSponsors()) as ApiResponse;
+      if (response && response.data) {
+        setSponsors(response.data.data || []);
+      }
+    } catch (error) {
+      setError("Failed to fetch sponsors. Please try again later.");
+      console.error("Error fetching sponsors:", error);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const handleCreateOrUpdateSponsor = () => {
@@ -131,9 +151,21 @@ const Sponsors = () => {
     }
   };
 
-  const handleDelete = (id: string) => {
-    setSponsors((prev) => prev.filter((sponsor) => sponsor._id !== id));
-    alert("Sponsor deleted successfully");
+  const handleDelete = async (id: string) => {
+    try {
+      await deleteSponsors(id);
+      setSponsors((prev) => prev.filter((sponsor) => sponsor._id !== id));
+      dispatch(
+        // @ts-ignore
+        showToast({ message: response.data.message, type: "success" })
+      );
+      // alert("Sponsor deleted successfully");
+    } catch (error) {
+      const err = error as { response: { data: { message: string } } };
+      dispatch(
+        showToast({ message: err.response?.data?.message, type: "error" })
+      );
+    }
   };
 
   const resetForm = () => {
@@ -180,7 +212,6 @@ const Sponsors = () => {
   };
 
   useEffect(() => {
-    // Simplified for demo purposes
     fetchSponsors();
   }, []);
 
@@ -300,7 +331,25 @@ const Sponsors = () => {
                     <div className='h-[180px] sm:h-[200px] md:h-[220px] lg:h-[142px] overflow-auto'>
                       <Table>
                         <TableBody>
-                          {sponsors.length === 0 ? (
+                          {isLoading ? (
+                            <TableRow>
+                              <TableCell
+                                colSpan={4}
+                                className='text-center py-4 sm:py-6 text-gray-500 text-sm sm:text-base'
+                              >
+                                Loading sponsors...
+                              </TableCell>
+                            </TableRow>
+                          ) : error ? (
+                            <TableRow>
+                              <TableCell
+                                colSpan={4}
+                                className='text-center py-4 sm:py-6 text-red-500 text-sm sm:text-base'
+                              >
+                                {error}
+                              </TableCell>
+                            </TableRow>
+                          ) : sponsors.length === 0 ? (
                             <TableRow>
                               <TableCell
                                 colSpan={4}
@@ -572,6 +621,7 @@ const Sponsors = () => {
             </Card>
           </TabsContent>
         </Tabs>
+        <ToastNotification />
       </div>
     </div>
   );
