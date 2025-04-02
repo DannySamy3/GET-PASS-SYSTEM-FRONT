@@ -4,6 +4,18 @@ import type React from "react";
 import { useEffect, useState } from "react";
 import { getSponsors, deleteSponsors } from "@/utils/sponsorController";
 import {
+  getAllPaymentSessions,
+  createPaymentSession,
+  updatePaymentSession,
+  deletePaymentSession,
+} from "@/utils/paymentSessionController";
+import type {
+  PaymentSession,
+  PaymentSessionResponse,
+  SinglePaymentSessionResponse,
+  CreatePaymentSessionData,
+} from "@/utils/paymentSessionController";
+import {
   Card,
   CardContent,
   CardDescription,
@@ -35,7 +47,7 @@ import {
 } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { Pencil, Trash2, Plus, Save } from "lucide-react";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 
 interface SponsorData {
   id?: string;
@@ -45,19 +57,15 @@ interface SponsorData {
   [key: string]: string | undefined;
 }
 
-interface PaymentSession {
-  id: string;
-  name: string;
-  startDate: string;
-  endDate: string;
-  amount: string; // Added amount field
-  isEditing?: boolean;
-}
-
 interface ApiResponse {
   data: {
     data: SponsorData[];
   };
+}
+
+interface PaymentSessionWithEditing extends PaymentSession {
+  isEditing?: boolean;
+  _id?: string;
 }
 
 const Sponsors = () => {
@@ -68,29 +76,56 @@ const Sponsors = () => {
   const [sponsorData, setSponsorData] = useState<SponsorData>({
     name: "",
   });
-  const [paymentSessions, setPaymentSessions] = useState<PaymentSession[]>([
-    {
-      id: "1",
-      name: "First Semester 2024/2025",
-      startDate: "2024-09-01",
-      endDate: "2024-12-15",
-      amount: "50000",
-    },
-    {
-      id: "2",
-      name: "Second Semester 2024/2025",
-      startDate: "2025-01-15",
-      endDate: "2025-05-30",
-      amount: "45000",
-    },
-  ]);
-  const [currentSession, setCurrentSession] = useState<string>("1");
+  const [paymentSessions, setPaymentSessions] = useState<
+    PaymentSessionWithEditing[]
+  >([]);
+  const [currentSession, setCurrentSession] = useState<string>("");
   const [enableGracePeriod, setEnableGracePeriod] = useState(false);
   const [gracePeriodDays, setGracePeriodDays] = useState("14");
   const [activeTab, setActiveTab] = useState("sponsors");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [editingSessionId, setEditingSessionId] = useState<string | null>(null);
-  const dispatch = useDispatch<any>();
+  const [newSession, setNewSession] = useState({
+    name: "",
+    startDate: "",
+    endDate: "",
+    amount: "",
+  });
+  const [selectedSession, setSelectedSession] =
+    useState<PaymentSessionWithEditing | null>(null);
+  const dispatch = useDispatch();
+
+  const fetchPaymentSessions = async () => {
+    try {
+      const response = await getAllPaymentSessions();
+      console.log("this is the response", response);
+      if (response?.data?.data) {
+        //@ts-ignore
+        const sessions = response.data.data.sessions.map(
+          (session: PaymentSession) => ({
+            ...session,
+            //@ts-ignore
+            _id: session._id,
+            isEditing: false,
+          })
+        );
+        setPaymentSessions(sessions);
+        // Set the first session as current if available
+        if (sessions.length > 0) {
+          setCurrentSession(sessions[0].id);
+        }
+      }
+    } catch (error) {
+      const err = error as { response: { data: { message: string } } };
+      dispatch(
+        showToast({
+          message:
+            err.response?.data?.message || "Failed to fetch payment sessions",
+          type: "error",
+        })
+      );
+    }
+  };
 
   const fetchSponsors = async () => {
     try {
@@ -181,37 +216,186 @@ const Sponsors = () => {
     setSponsorData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleAddSession = () => {
-    const newSession = {
-      id: (paymentSessions.length + 1).toString(),
-      name: `New Session ${paymentSessions.length + 1}`,
-      startDate: new Date().toISOString().split("T")[0],
-      endDate: new Date(new Date().setMonth(new Date().getMonth() + 4))
-        .toISOString()
-        .split("T")[0],
-      amount: "0", // Default amount
-    };
+  const handleAddSession = async () => {
+    try {
+      setIsSubmitting(true);
 
-    setPaymentSessions([...paymentSessions, newSession]);
+      // Validate required fields
+      if (!newSession.name.trim()) {
+        dispatch(
+          showToast({
+            message: "Session name is required",
+            type: "error",
+          })
+        );
+        return;
+      }
+
+      if (!newSession.startDate || !newSession.endDate) {
+        dispatch(
+          showToast({
+            message: "Start date and end date are required",
+            type: "error",
+          })
+        );
+        return;
+      }
+
+      const amount = Number(newSession.amount);
+      if (isNaN(amount) || amount <= 0) {
+        dispatch(
+          showToast({
+            message: "Amount must be greater than 0",
+            type: "error",
+          })
+        );
+        return;
+      }
+
+      const response = await createPaymentSession({
+        sessionName: newSession.name,
+        startDate: newSession.startDate,
+        endDate: newSession.endDate,
+        amount: amount,
+      });
+      console.log("this is the response", response);
+      if (response?.status === 201) {
+        //@ts-ignore
+        const sessionData = response.data.data.session;
+        console.log("this is the session data", sessionData);
+        const createdSession: PaymentSessionWithEditing = {
+          id: sessionData._id,
+          sessionName: sessionData.sessionName,
+          startDate: sessionData.startDate,
+          endDate: sessionData.endDate,
+          amount: sessionData.amount,
+          isEditing: false,
+        };
+
+        dispatch(
+          showToast({
+            message: "Payment session created successfully",
+            type: "success",
+          })
+        );
+        setPaymentSessions((prev) => [...prev, createdSession]);
+        setNewSession({
+          name: "",
+          startDate: "",
+          endDate: "",
+          amount: "",
+        });
+      }
+    } catch (error) {
+      const err = error as { response: { data: { message: string } } };
+      console.log("this is the error", err);
+      dispatch(
+        showToast({
+          message:
+            err.response?.data?.message || "Failed to create payment session",
+          type: "error",
+        })
+      );
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
-  const handleSessionChange = (index: number, field: string, value: string) => {
-    const updatedSessions = [...paymentSessions];
-    updatedSessions[index] = {
-      ...updatedSessions[index],
-      [field]: value,
-    };
-    setPaymentSessions(updatedSessions);
+  const handleAmountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    // Only allow numbers and empty string
+    if (value === "" || /^\d+$/.test(value)) {
+      setNewSession((prev) => ({
+        ...prev,
+        amount: value,
+      }));
+    }
+  };
+
+  const handleSessionChange = async (
+    field: keyof PaymentSession,
+    value: string | number
+  ) => {
+    if (!selectedSession) return;
+
+    try {
+      setIsSubmitting(true);
+      const updatedSession = { ...selectedSession };
+
+      if (field === "amount") {
+        const amount = Number(value);
+        if (isNaN(amount) || amount <= 0) {
+          dispatch(
+            showToast({
+              message: "Amount must be greater than 0",
+              type: "error",
+            })
+          );
+          return;
+        }
+        updatedSession.amount = amount;
+      } else {
+        updatedSession[field] = value as string;
+      }
+
+      const updateData: CreatePaymentSessionData = {
+        sessionName: updatedSession.sessionName,
+        startDate: updatedSession.startDate,
+        endDate: updatedSession.endDate,
+        amount: updatedSession.amount,
+      };
+
+      const response = await updatePaymentSession(
+        selectedSession.id,
+        updateData
+      );
+
+      if (response?.data?.data) {
+        const sessionData = response.data.data.data;
+        const updatedSessionData: PaymentSessionWithEditing = {
+          //@ts-ignore
+          id: sessionData._id,
+          sessionName: sessionData.sessionName,
+          startDate: sessionData.startDate,
+          endDate: sessionData.endDate,
+          amount: sessionData.amount,
+          isEditing: false,
+        };
+        setPaymentSessions((prev) =>
+          prev.map((s) =>
+            s.id === selectedSession.id ? updatedSessionData : s
+          )
+        );
+        setSelectedSession(null);
+        dispatch(
+          showToast({
+            message: "Payment session updated successfully",
+            type: "success",
+          })
+        );
+      }
+    } catch (error) {
+      const err = error as { response: { data: { message: string } } };
+      dispatch(
+        showToast({
+          message:
+            err.response?.data?.message || "Failed to update payment session",
+          type: "error",
+        })
+      );
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const getSessionName = (id: string | undefined) => {
     if (!id) return "Not assigned";
     const session = paymentSessions.find((s) => s.id === id);
-    return session ? session.name : "Unknown Session";
+    return session ? session.sessionName : "Unknown Session";
   };
 
-  const formatCurrency = (amount: string) => {
-    return new Intl.NumberFormat("en-US").format(Number(amount));
+  const formatCurrency = (amount: number) => {
+    return new Intl.NumberFormat("en-US").format(amount);
   };
 
   const handleSubmitPaymentSessions = async () => {
@@ -238,55 +422,103 @@ const Sponsors = () => {
   };
 
   const handleEditSession = (sessionId: string) => {
-    setEditingSessionId(sessionId);
-    const session = paymentSessions.find((s) => s.id === sessionId);
+    //@ts-ignore
+    const session = paymentSessions.find((s) => s._id === sessionId);
+    // console.log("this is the session", paymentSessions);
     if (session) {
-      setPaymentSessions((prev) =>
-        prev.map((s) => (s.id === sessionId ? { ...s, isEditing: true } : s))
-      );
+      // Format the dates to YYYY-MM-DD for the input fields
+      const formattedSession = {
+        ...session,
+        startDate: new Date(session.startDate).toISOString().split("T")[0],
+        endDate: new Date(session.endDate).toISOString().split("T")[0],
+      };
+      setEditingSessionId(sessionId);
+      setSelectedSession(formattedSession);
     }
   };
 
-  const handleDeleteSession = (sessionId: string) => {
-    if (
-      window.confirm("Are you sure you want to delete this payment session?")
-    ) {
-      setPaymentSessions((prev) => prev.filter((s) => s.id !== sessionId));
+  const handleDeleteSession = async (sessionId: string) => {
+    // if (
+    //   window.confirm("Are you sure you want to delete this payment session?")
+    // ) {
+    try {
+      const response = await deletePaymentSession(sessionId);
+
+      if (response?.status === 204) {
+        setPaymentSessions((prev) => prev.filter((s) => s._id !== sessionId));
+        // Update the local state to remove the deleted session
+        dispatch(
+          showToast({
+            message: "Payment session deleted successfully",
+            type: "success",
+          })
+        );
+      }
+    } catch (error) {
+      const err = error as { response: { data: { message: string } } };
       dispatch(
         showToast({
-          message: "Payment session deleted successfully",
-          type: "success",
+          message:
+            err.response?.data?.message || "Failed to delete payment session",
+          type: "error",
         })
       );
     }
   };
 
-  const handleSaveSession = (sessionId: string) => {
-    setEditingSessionId(null);
-    setPaymentSessions((prev) =>
-      prev.map((s) => (s.id === sessionId ? { ...s, isEditing: false } : s))
-    );
-    dispatch(
-      showToast({
-        message: "Payment session updated successfully",
-        type: "success",
-      })
-    );
+  const handleSaveSession = async () => {
+    if (!selectedSession) return;
+
+    try {
+      const updateData: CreatePaymentSessionData = {
+        sessionName: selectedSession.sessionName,
+        startDate: selectedSession.startDate,
+        endDate: selectedSession.endDate,
+        amount: Number(selectedSession.amount),
+      };
+      const response = await updatePaymentSession(
+        selectedSession.id,
+        updateData
+      );
+      if (response?.data?.data) {
+        setPaymentSessions((prev) =>
+          prev.map((s) => (s.id === selectedSession.id ? selectedSession : s))
+        );
+        setEditingSessionId(null);
+        setSelectedSession(null);
+        dispatch(
+          showToast({
+            message: "Payment session updated successfully",
+            type: "success",
+          })
+        );
+      }
+    } catch (error) {
+      const err = error as { response: { data: { message: string } } };
+      dispatch(
+        showToast({
+          message:
+            err.response?.data?.message || "Failed to update payment session",
+          type: "error",
+        })
+      );
+    }
   };
 
-  const handleCancelEdit = (sessionId: string) => {
+  const handleCancelEdit = () => {
     setEditingSessionId(null);
-    setPaymentSessions((prev) =>
-      prev.map((s) => (s.id === sessionId ? { ...s, isEditing: false } : s))
-    );
+    setSelectedSession(null);
   };
 
   useEffect(() => {
     fetchSponsors();
+    fetchPaymentSessions();
   }, []);
 
+  console.log(paymentSessions);
+
   return (
-    <div className=' min-h-screen'>
+    <div className='min-h-screen'>
       <div className='p-6 space-y-6'>
         <div className='flex justify-between items-center bg-gradient-to-r from-blue-700 via-slate-800 to-slate-900 text-white p-6 rounded-lg shadow-lg'>
           <h1 className='text-3xl font-bold tracking-tight'>
@@ -503,125 +735,123 @@ const Sponsors = () => {
               </CardHeader>
               <CardContent className='space-y-6 pt-6'>
                 <div className='space-y-4'>
-                  {paymentSessions.map((session, index) => (
-                    <div
-                      key={session.id}
-                      className='grid grid-cols-1 md:grid-cols-4 gap-4 p-4 border border-gray-200 rounded-md bg-gray-50'
-                    >
-                      <div className='space-y-2'>
-                        <Label
-                          htmlFor={`session-name-${index}`}
-                          className='text-gray-700'
-                        >
-                          Session Name
-                        </Label>
-                        <Input
-                          id={`session-name-${index}`}
-                          value={session.name}
-                          onChange={(e) =>
-                            handleSessionChange(index, "name", e.target.value)
-                          }
-                          className='border-gray-300 focus:border-gray-400 bg-white'
-                        />
-                      </div>
-                      <div className='space-y-2'>
-                        <Label
-                          htmlFor={`start-date-${index}`}
-                          className='text-gray-700'
-                        >
-                          Start Date
-                        </Label>
-                        <Input
-                          id={`start-date-${index}`}
-                          type='date'
-                          value={session.startDate}
-                          onChange={(e) =>
-                            handleSessionChange(
-                              index,
-                              "startDate",
-                              e.target.value
-                            )
-                          }
-                          className='border-gray-300 focus:border-gray-400 bg-white'
-                        />
-                      </div>
-                      <div className='space-y-2'>
-                        <Label
-                          htmlFor={`end-date-${index}`}
-                          className='text-gray-700'
-                        >
-                          End Date
-                        </Label>
-                        <Input
-                          id={`end-date-${index}`}
-                          type='date'
-                          value={session.endDate}
-                          onChange={(e) =>
-                            handleSessionChange(
-                              index,
-                              "endDate",
-                              e.target.value
-                            )
-                          }
-                          className='border-gray-300 focus:border-gray-400 bg-white'
-                        />
-                      </div>
-                      <div className='space-y-2'>
-                        <Label
-                          htmlFor={`amount-${index}`}
-                          className='text-gray-700'
-                        >
-                          Amount
-                        </Label>
-                        <div className='relative'>
-                          <Input
-                            id={`amount-${index}`}
-                            type='number'
-                            value={session.amount}
-                            onChange={(e) =>
-                              handleSessionChange(
-                                index,
-                                "amount",
-                                e.target.value
-                              )
-                            }
-                            className='border-gray-300 focus:border-gray-400 bg-white pl-8'
-                            min='0'
-                            step='1000'
-                          />
-                          <span className='absolute left-3 top-1/2 -translate-y-1/2 text-gray-600'>
-                            $
-                          </span>
-                        </div>
-                        <p className='text-xs text-gray-600'>
-                          {formatCurrency(session.amount)}/=
-                        </p>
-                      </div>
+                  {/* Session Form */}
+                  <div className='grid grid-cols-1 md:grid-cols-4 gap-4 p-4 border border-gray-200 rounded-md bg-gray-50'>
+                    <div className='space-y-2'>
+                      <Label htmlFor='session-name' className='text-gray-700'>
+                        Session Name
+                      </Label>
+                      <Input
+                        id='session-name'
+                        value={selectedSession?.sessionName || newSession.name}
+                        onChange={(e) =>
+                          selectedSession
+                            ? handleSessionChange("sessionName", e.target.value)
+                            : setNewSession((prev) => ({
+                                ...prev,
+                                name: e.target.value,
+                              }))
+                        }
+                        placeholder='Enter session name'
+                        className='border-gray-300 focus:border-gray-400 bg-white'
+                      />
                     </div>
-                  ))}
-                  <div className='flex justify-between items-center'>
+                    <div className='space-y-2'>
+                      <Label htmlFor='start-date' className='text-gray-700'>
+                        Start Date
+                      </Label>
+                      <Input
+                        id='start-date'
+                        type='date'
+                        value={
+                          selectedSession?.startDate || newSession.startDate
+                        }
+                        onChange={(e) =>
+                          selectedSession
+                            ? handleSessionChange("startDate", e.target.value)
+                            : setNewSession((prev) => ({
+                                ...prev,
+                                startDate: e.target.value,
+                              }))
+                        }
+                        className='border-gray-300 focus:border-gray-400 bg-white'
+                      />
+                    </div>
+                    <div className='space-y-2'>
+                      <Label htmlFor='end-date' className='text-gray-700'>
+                        End Date
+                      </Label>
+                      <Input
+                        id='end-date'
+                        type='date'
+                        value={selectedSession?.endDate || newSession.endDate}
+                        onChange={(e) =>
+                          selectedSession
+                            ? handleSessionChange("endDate", e.target.value)
+                            : setNewSession((prev) => ({
+                                ...prev,
+                                endDate: e.target.value,
+                              }))
+                        }
+                        className='border-gray-300 focus:border-gray-400 bg-white'
+                      />
+                    </div>
+                    <div className='space-y-2'>
+                      <Label htmlFor='amount' className='text-gray-700'>
+                        Amount
+                      </Label>
+                      <div className='relative'>
+                        <Input
+                          id='amount'
+                          type='number'
+                          value={selectedSession?.amount || newSession.amount}
+                          onChange={handleAmountChange}
+                          className='border-gray-300 focus:border-gray-400 bg-white pl-8'
+                          min='0'
+                          step='1000'
+                          placeholder='Enter amount'
+                        />
+                        <span className='absolute left-3 top-1/2 -translate-y-1/2 text-gray-600'>
+                          $
+                        </span>
+                      </div>
+                      {/* <p className='text-xs text-gray-600'>
+                        {formatCurrency(
+                          selectedSession?.amount || newSession.amount
+                        )}
+                        /=
+                      </p> */}
+                    </div>
+                  </div>
+
+                  <div className='flex justify-end space-x-2 mt-4'>
+                    {selectedSession && (
+                      <Button
+                        variant='outline'
+                        onClick={handleCancelEdit}
+                        className='border-gray-300 text-gray-700 hover:bg-gray-100'
+                      >
+                        Cancel
+                      </Button>
+                    )}
                     <Button
-                      variant='outline'
-                      onClick={handleAddSession}
-                      className='border-gray-300 text-gray-700 hover:bg-gray-100'
-                    >
-                      <Plus className='mr-2 h-4 w-4' />
-                      Add Payment Session
-                    </Button>
-                    <Button
+                      onClick={
+                        selectedSession ? handleSaveSession : handleAddSession
+                      }
                       className='bg-blue-600 hover:bg-blue-700 text-white'
-                      onClick={handleSubmitPaymentSessions}
                       disabled={isSubmitting}
                     >
                       {isSubmitting ? (
                         <>
                           <span className='animate-spin mr-2'>⏳</span>
-                          Saving...
+                          {selectedSession ? "Saving..." : "Creating..."}
                         </>
                       ) : (
                         <>
                           <Save className='mr-2 h-4 w-4' />
-                          Save Payment Sessions
+                          {selectedSession
+                            ? "Save Changes"
+                            : "Add Payment Session"}
                         </>
                       )}
                     </Button>
@@ -668,11 +898,8 @@ const Sponsors = () => {
                           const startDate = new Date(session.startDate);
                           const endDate = new Date(session.endDate);
                           const today = new Date();
-                          const isActive =
-                            today >= startDate && today <= endDate;
-                          const isUpcoming = today < startDate;
-                          const isPast = today > endDate;
-                          const isEditing = editingSessionId === session.id;
+                          //@ts-ignore
+                          const isActive = session.activeStatus;
 
                           return (
                             <TableRow
@@ -680,106 +907,33 @@ const Sponsors = () => {
                               className='hover:bg-gray-50'
                             >
                               <TableCell className='font-medium'>
-                                {isEditing ? (
-                                  <Input
-                                    value={session.name}
-                                    onChange={(e) =>
-                                      handleSessionChange(
-                                        paymentSessions.findIndex(
-                                          (s) => s.id === session.id
-                                        ),
-                                        "name",
-                                        e.target.value
-                                      )
-                                    }
-                                    className='border-gray-300 focus:border-gray-400 bg-white'
-                                  />
-                                ) : (
-                                  session.name
-                                )}
+                                {session.sessionName}
                               </TableCell>
                               <TableCell>
-                                {isEditing ? (
-                                  <div className='space-y-2'>
-                                    <Input
-                                      type='date'
-                                      value={session.startDate}
-                                      onChange={(e) =>
-                                        handleSessionChange(
-                                          paymentSessions.findIndex(
-                                            (s) => s.id === session.id
-                                          ),
-                                          "startDate",
-                                          e.target.value
-                                        )
-                                      }
-                                      className='border-gray-300 focus:border-gray-400 bg-white'
-                                    />
-                                    <Input
-                                      type='date'
-                                      value={session.endDate}
-                                      onChange={(e) =>
-                                        handleSessionChange(
-                                          paymentSessions.findIndex(
-                                            (s) => s.id === session.id
-                                          ),
-                                          "endDate",
-                                          e.target.value
-                                        )
-                                      }
-                                      className='border-gray-300 focus:border-gray-400 bg-white'
-                                    />
-                                  </div>
-                                ) : (
-                                  <div className='flex flex-col'>
-                                    <span className='text-sm text-gray-600'>
-                                      {startDate.toLocaleDateString()} -{" "}
-                                      {endDate.toLocaleDateString()}
-                                    </span>
-                                    <span className='text-xs text-gray-500'>
-                                      {Math.ceil(
-                                        (endDate.getTime() -
-                                          startDate.getTime()) /
-                                          (1000 * 60 * 60 * 24)
-                                      )}{" "}
-                                      days
-                                    </span>
-                                  </div>
-                                )}
+                                <div className='flex flex-col'>
+                                  <span className='text-sm text-gray-600'>
+                                    {startDate.toLocaleDateString()} -{" "}
+                                    {endDate.toLocaleDateString()}
+                                  </span>
+                                  <span className='text-xs text-gray-500'>
+                                    {Math.ceil(
+                                      (endDate.getTime() -
+                                        startDate.getTime()) /
+                                        (1000 * 60 * 60 * 24)
+                                    )}{" "}
+                                    days
+                                  </span>
+                                </div>
                               </TableCell>
                               <TableCell>
-                                {isEditing ? (
-                                  <div className='relative'>
-                                    <Input
-                                      type='number'
-                                      value={session.amount}
-                                      onChange={(e) =>
-                                        handleSessionChange(
-                                          paymentSessions.findIndex(
-                                            (s) => s.id === session.id
-                                          ),
-                                          "amount",
-                                          e.target.value
-                                        )
-                                      }
-                                      className='border-gray-300 focus:border-gray-400 bg-white pl-8'
-                                      min='0'
-                                      step='1000'
-                                    />
-                                    <span className='absolute left-3 top-1/2 -translate-y-1/2 text-gray-600'>
-                                      $
-                                    </span>
-                                  </div>
-                                ) : (
-                                  <div className='flex flex-col'>
-                                    <span className='font-medium'>
-                                      {formatCurrency(session.amount)}/=
-                                    </span>
-                                    <span className='text-xs text-gray-500'>
-                                      USD
-                                    </span>
-                                  </div>
-                                )}
+                                <div className='flex flex-col'>
+                                  <span className='font-medium'>
+                                    {formatCurrency(session.amount)}
+                                  </span>
+                                  {/* <span className='text-xs text-gray-500'>
+                                    USD
+                                  </span> */}
+                                </div>
                               </TableCell>
                               <TableCell>
                                 <Badge
@@ -787,67 +941,37 @@ const Sponsors = () => {
                                   className={
                                     isActive
                                       ? "bg-green-100 text-green-800 border-green-200"
-                                      : isUpcoming
-                                      ? "bg-blue-100 text-blue-800 border-blue-200"
-                                      : "bg-gray-100 text-gray-800 border-gray-200"
+                                      : "bg-blue-100 text-blue-800 border-blue-200"
+                                    // : "bg-gray-100 text-gray-800 border-gray-200"
                                   }
                                 >
-                                  {isActive
-                                    ? "Active"
-                                    : isUpcoming
-                                    ? "Upcoming"
-                                    : "Past"}
+                                  {isActive ? "Active" : "Dormant"}
                                 </Badge>
                               </TableCell>
                               <TableCell className='text-right'>
                                 <div className='flex justify-end space-x-2'>
-                                  {isEditing ? (
-                                    <>
-                                      <Button
-                                        variant='outline'
-                                        size='icon'
-                                        onClick={() =>
-                                          handleSaveSession(session.id)
-                                        }
-                                        className='border-green-300 text-green-600 hover:bg-green-50 h-7 w-7'
-                                      >
-                                        <Save className='h-4 w-4' />
-                                      </Button>
-                                      <Button
-                                        variant='outline'
-                                        size='icon'
-                                        onClick={() =>
-                                          handleCancelEdit(session.id)
-                                        }
-                                        className='border-gray-300 text-gray-600 hover:bg-gray-50 h-7 w-7'
-                                      >
-                                        <span className='text-lg'>×</span>
-                                      </Button>
-                                    </>
-                                  ) : (
-                                    <>
-                                      <Button
-                                        variant='outline'
-                                        size='icon'
-                                        onClick={() =>
-                                          handleEditSession(session.id)
-                                        }
-                                        className='border-blue-300 text-blue-600 hover:bg-blue-50 h-7 w-7'
-                                      >
-                                        <Pencil className='h-4 w-4' />
-                                      </Button>
-                                      <Button
-                                        variant='outline'
-                                        size='icon'
-                                        onClick={() =>
-                                          handleDeleteSession(session.id)
-                                        }
-                                        className='border-red-300 text-red-600 hover:bg-red-50 h-7 w-7'
-                                      >
-                                        <Trash2 className='h-4 w-4' />
-                                      </Button>
-                                    </>
-                                  )}
+                                  <Button
+                                    variant='outline'
+                                    size='icon'
+                                    onClick={() =>
+                                      //@ts-ignore
+                                      handleEditSession(session._id)
+                                    }
+                                    className='border-blue-300 text-blue-600 hover:bg-blue-50 h-7 w-7'
+                                  >
+                                    <Pencil className='h-4 w-4' />
+                                  </Button>
+                                  <Button
+                                    variant='outline'
+                                    size='icon'
+                                    onClick={() =>
+                                      //@ts-ignore
+                                      handleDeleteSession(session._id)
+                                    }
+                                    className='border-red-300 text-red-600 hover:bg-red-50 h-7 w-7'
+                                  >
+                                    <Trash2 className='h-4 w-4' />
+                                  </Button>
                                 </div>
                               </TableCell>
                             </TableRow>
@@ -878,7 +1002,8 @@ const Sponsors = () => {
                       <SelectContent className='border-gray-200'>
                         {paymentSessions.map((session) => (
                           <SelectItem key={session.id} value={session.id}>
-                            {session.name} - {formatCurrency(session.amount)}/=
+                            {session.sessionName} -{" "}
+                            {formatCurrency(session.amount)}/=
                           </SelectItem>
                         ))}
                       </SelectContent>
