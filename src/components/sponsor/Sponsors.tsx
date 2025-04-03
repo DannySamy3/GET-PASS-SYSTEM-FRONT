@@ -67,6 +67,7 @@ interface PaymentSessionWithEditing extends PaymentSession {
   isEditing?: boolean;
   _id?: string;
   activeStatus?: boolean;
+  grace?: boolean;
 }
 
 const Sponsors = () => {
@@ -111,6 +112,8 @@ const Sponsors = () => {
           })
         );
         setPaymentSessions(sessions);
+
+        console.log("this is the sessions", sessions);
         // Set the current session to the one with activeStatus true, or null if none
         const activeSession = sessions.find(
           (session: PaymentSessionWithEditing) => session.activeStatus === true
@@ -524,10 +527,84 @@ const Sponsors = () => {
     }
   };
 
+  const handleGracePeriodChange = async (checked: boolean) => {
+    try {
+      if (!currentSession) {
+        dispatch(
+          showToast({
+            message: "Please select a session first",
+            type: "error",
+          })
+        );
+        return;
+      }
+
+      const currentSessionData = paymentSessions.find(
+        (session) => session._id === currentSession
+      );
+
+      if (!currentSessionData) {
+        dispatch(
+          showToast({
+            message: "Session not found",
+            type: "error",
+          })
+        );
+        return;
+      }
+
+      const response = await updatePaymentSession(currentSession, {
+        sessionName: currentSessionData.sessionName,
+        startDate: currentSessionData.startDate,
+        endDate: currentSessionData.endDate,
+        amount: currentSessionData.amount,
+        grace: checked,
+      });
+
+      if (response?.data?.data) {
+        // Update the local state to reflect the change
+        setPaymentSessions((prev) =>
+          prev.map((session) =>
+            session._id === currentSession
+              ? { ...session, grace: checked }
+              : session
+          )
+        );
+
+        dispatch(
+          showToast({
+            message: `Grace period ${
+              checked ? "activated" : "deactivated"
+            } successfully`,
+            type: "success",
+          })
+        );
+      }
+    } catch (error) {
+      const err = error as { response: { data: { message: string } } };
+      dispatch(
+        showToast({
+          message:
+            err.response?.data?.message || "Failed to update grace period",
+          type: "error",
+        })
+      );
+    }
+  };
+
   useEffect(() => {
     fetchSponsors();
     fetchPaymentSessions();
   }, []);
+
+  useEffect(() => {
+    if (currentSession) {
+      const currentSessionData = paymentSessions.find(
+        (session) => session._id === currentSession
+      );
+      setEnableGracePeriod(currentSessionData?.grace || false);
+    }
+  }, [currentSession, paymentSessions]);
 
   console.log("this is the current session", currentSession);
 
@@ -907,7 +984,10 @@ const Sponsors = () => {
                             Amount
                           </TableHead>
                           <TableHead className='font-medium text-gray-700'>
-                            Status
+                            Activity
+                          </TableHead>
+                          <TableHead className='font-medium text-gray-700'>
+                            Grace Status
                           </TableHead>
                           <TableHead className='font-medium text-gray-700 text-right'>
                             Actions
@@ -963,10 +1043,21 @@ const Sponsors = () => {
                                     isActive
                                       ? "bg-green-100 text-green-800 border-green-200"
                                       : "bg-blue-100 text-blue-800 border-blue-200"
-                                    // : "bg-gray-100 text-gray-800 border-gray-200"
                                   }
                                 >
                                   {isActive ? "Active" : "Dormant"}
+                                </Badge>
+                              </TableCell>
+                              <TableCell>
+                                <Badge
+                                  variant='outline'
+                                  className={
+                                    session.grace
+                                      ? "bg-yellow-100 text-yellow-800 border-yellow-200"
+                                      : "bg-gray-100 text-gray-800 border-gray-200"
+                                  }
+                                >
+                                  {session.grace ? "Activated" : "Deactivated"}
                                 </Badge>
                               </TableCell>
                               <TableCell className='text-right'>
@@ -1074,7 +1165,7 @@ const Sponsors = () => {
                       <Switch
                         id='grace-period-switch'
                         checked={enableGracePeriod}
-                        onCheckedChange={setEnableGracePeriod}
+                        onCheckedChange={handleGracePeriodChange}
                         className='data-[state=checked]:bg-gray-300'
                       />
                     </div>

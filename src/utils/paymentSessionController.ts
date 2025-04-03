@@ -14,6 +14,7 @@ export interface CreatePaymentSessionData {
   endDate: string;
   amount: number;
   activeStatus?: boolean;
+  grace?: boolean;
 }
 
 export interface PaymentSessionResponse {
