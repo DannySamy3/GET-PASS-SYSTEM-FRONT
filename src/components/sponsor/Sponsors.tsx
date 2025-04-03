@@ -326,10 +326,10 @@ const Sponsors = () => {
 
     if (field === "amount") {
       const amount = Number(value);
-      if (isNaN(amount) || amount <= 0) {
+      if (isNaN(amount)) {
         dispatch(
           showToast({
-            message: "Amount must be greater than 0",
+            message: "Input should be a number",
             type: "error",
           })
         );
@@ -817,7 +817,7 @@ const Sponsors = () => {
                       <div className='relative'>
                         <Input
                           id='amount'
-                          type='number'
+                          type='text'
                           value={selectedSession?.amount || newSession.amount}
                           onChange={(e) =>
                             selectedSession
