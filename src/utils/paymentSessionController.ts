@@ -69,7 +69,7 @@ export const updatePaymentSession = async (
   data: CreatePaymentSessionData
 ) => {
   try {
-    const response = await axiosInstance.put<SinglePaymentSessionResponse>(
+    const response = await axiosInstance.patch<SinglePaymentSessionResponse>(
       `/getPass/sessions/${sessionId}`,
       data
     );

@@ -312,80 +312,31 @@ const Sponsors = () => {
     }
   };
 
-  const handleSessionChange = async (
+  const handleSessionChange = (
     field: keyof PaymentSession,
     value: string | number
   ) => {
     if (!selectedSession) return;
 
-    try {
-      setIsSubmitting(true);
-      const updatedSession = { ...selectedSession };
+    const updatedSession = { ...selectedSession };
 
-      if (field === "amount") {
-        const amount = Number(value);
-        if (isNaN(amount) || amount <= 0) {
-          dispatch(
-            showToast({
-              message: "Amount must be greater than 0",
-              type: "error",
-            })
-          );
-          return;
-        }
-        updatedSession.amount = amount;
-      } else {
-        updatedSession[field] = value as string;
-      }
-
-      const updateData: CreatePaymentSessionData = {
-        sessionName: updatedSession.sessionName,
-        startDate: updatedSession.startDate,
-        endDate: updatedSession.endDate,
-        amount: updatedSession.amount,
-      };
-
-      const response = await updatePaymentSession(
-        selectedSession.id,
-        updateData
-      );
-
-      if (response?.data?.data) {
-        const sessionData = response.data.data.data;
-        const updatedSessionData: PaymentSessionWithEditing = {
-          //@ts-ignore
-          id: sessionData._id,
-          sessionName: sessionData.sessionName,
-          startDate: sessionData.startDate,
-          endDate: sessionData.endDate,
-          amount: sessionData.amount,
-          isEditing: false,
-        };
-        setPaymentSessions((prev) =>
-          prev.map((s) =>
-            s.id === selectedSession.id ? updatedSessionData : s
-          )
-        );
-        setSelectedSession(null);
+    if (field === "amount") {
+      const amount = Number(value);
+      if (isNaN(amount) || amount <= 0) {
         dispatch(
           showToast({
-            message: "Payment session updated successfully",
-            type: "success",
+            message: "Amount must be greater than 0",
+            type: "error",
           })
         );
+        return;
       }
-    } catch (error) {
-      const err = error as { response: { data: { message: string } } };
-      dispatch(
-        showToast({
-          message:
-            err.response?.data?.message || "Failed to update payment session",
-          type: "error",
-        })
-      );
-    } finally {
-      setIsSubmitting(false);
+      updatedSession.amount = amount;
+    } else {
+      updatedSession[field] = value as string;
     }
+
+    setSelectedSession(updatedSession);
   };
 
   const getSessionName = (id: string | undefined) => {
@@ -477,7 +428,8 @@ const Sponsors = () => {
         amount: Number(selectedSession.amount),
       };
       const response = await updatePaymentSession(
-        selectedSession.id,
+        //@ts-ignore
+        selectedSession._id,
         updateData
       );
       if (response?.data?.data) {
@@ -805,7 +757,14 @@ const Sponsors = () => {
                           id='amount'
                           type='number'
                           value={selectedSession?.amount || newSession.amount}
-                          onChange={handleAmountChange}
+                          onChange={(e) =>
+                            selectedSession
+                              ? handleSessionChange("amount", e.target.value)
+                              : setNewSession((prev) => ({
+                                  ...prev,
+                                  amount: e.target.value,
+                                }))
+                          }
                           className='border-gray-300 focus:border-gray-400 bg-white pl-8'
                           min='0'
                           step='1000'
