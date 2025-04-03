@@ -434,7 +434,10 @@ const Sponsors = () => {
       );
       if (response?.data?.data) {
         setPaymentSessions((prev) =>
-          prev.map((s) => (s.id === selectedSession.id ? selectedSession : s))
+          prev.map((s) =>
+            //@ts-ignore
+            s._id === selectedSession._id ? selectedSession : s
+          )
         );
         setEditingSessionId(null);
         setSelectedSession(null);
