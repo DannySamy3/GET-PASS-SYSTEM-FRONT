@@ -13,6 +13,7 @@ export interface CreatePaymentSessionData {
   startDate: string;
   endDate: string;
   amount: number;
+  activeStatus?: boolean;
 }
 
 export interface PaymentSessionResponse {

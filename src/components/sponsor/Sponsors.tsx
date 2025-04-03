@@ -66,6 +66,7 @@ interface ApiResponse {
 interface PaymentSessionWithEditing extends PaymentSession {
   isEditing?: boolean;
   _id?: string;
+  activeStatus?: boolean;
 }
 
 const Sponsors = () => {
@@ -110,10 +111,13 @@ const Sponsors = () => {
           })
         );
         setPaymentSessions(sessions);
-        // Set the first session as current if available
-        if (sessions.length > 0) {
-          setCurrentSession(sessions[0].id);
-        }
+        // Set the current session to the one with activeStatus true, or null if none
+        const activeSession = sessions.find(
+          (session: PaymentSessionWithEditing) => session.activeStatus === true
+        );
+
+        // console.log("this is the active session", activeSession);
+        setCurrentSession(activeSession ? activeSession._id : "");
       }
     } catch (error) {
       const err = error as { response: { data: { message: string } } };
@@ -126,7 +130,7 @@ const Sponsors = () => {
       );
     }
   };
-
+  console.log("this is current session", currentSession);
   const fetchSponsors = async () => {
     try {
       setIsLoading(true);
@@ -397,6 +401,7 @@ const Sponsors = () => {
 
       if (response?.status === 204) {
         setPaymentSessions((prev) => prev.filter((s) => s._id !== sessionId));
+        setCurrentSession("");
         // Update the local state to remove the deleted session
         dispatch(
           showToast({
@@ -465,12 +470,66 @@ const Sponsors = () => {
     setSelectedSession(null);
   };
 
+  const handleCurrentSessionChange = async (sessionId: string) => {
+    console.log("this is the session id", sessionId);
+    try {
+      // Find the session to activate
+      const sessionToActivate = paymentSessions.find(
+        (session) => session._id === sessionId
+      );
+
+      console.log("this is the session to activate", sessionToActivate);
+      if (!sessionToActivate) return;
+
+      // Update the session to active
+      const updateData: CreatePaymentSessionData = {
+        sessionName: sessionToActivate.sessionName,
+        startDate: sessionToActivate.startDate,
+        endDate: sessionToActivate.endDate,
+        amount: Number(sessionToActivate.amount),
+        activeStatus: true,
+      };
+
+      // First, set the current session immediately for better UX
+      setCurrentSession(sessionId);
+
+      const response = await updatePaymentSession(
+        //@ts-ignore
+        sessionToActivate._id,
+        updateData
+      );
+
+      if (response?.data?.data) {
+        // Fetch the latest sessions to ensure we have the correct active status
+        await fetchPaymentSessions();
+
+        dispatch(
+          showToast({
+            message: "Active session updated successfully",
+            type: "success",
+          })
+        );
+      }
+    } catch (error) {
+      // Revert the current session if there's an error
+      setCurrentSession("");
+      const err = error as { response: { data: { message: string } } };
+      dispatch(
+        showToast({
+          message:
+            err.response?.data?.message || "Failed to update active session",
+          type: "error",
+        })
+      );
+    }
+  };
+
   useEffect(() => {
     fetchSponsors();
     fetchPaymentSessions();
   }, []);
 
-  console.log(paymentSessions);
+  console.log("this is the current session", currentSession);
 
   return (
     <div className='min-h-screen'>
@@ -953,17 +1012,39 @@ const Sponsors = () => {
                     </Label>
                     <Select
                       value={currentSession}
-                      onValueChange={setCurrentSession}
+                      onValueChange={(value) =>
+                        handleCurrentSessionChange(value)
+                      }
                     >
                       <SelectTrigger
                         id='current-session'
                         className='border-gray-300 focus:ring-gray-400'
                       >
-                        <SelectValue placeholder='Select current session' />
+                        <SelectValue placeholder='Please select a session'>
+                          {currentSession ? (
+                            <>
+                              {
+                                paymentSessions.find(
+                                  (session) => session._id === currentSession
+                                )?.sessionName
+                              }
+                            </>
+                          ) : (
+                            "Please select a session"
+                          )}
+                        </SelectValue>
                       </SelectTrigger>
                       <SelectContent className='border-gray-200'>
                         {paymentSessions.map((session) => (
-                          <SelectItem key={session.id} value={session.id}>
+                          <SelectItem
+                            key={session._id!}
+                            value={session._id!}
+                            className={
+                              session._id === currentSession
+                                ? "bg-green-50"
+                                : ""
+                            }
+                          >
                             {session.sessionName} -{" "}
                             {formatCurrency(session.amount)}/=
                           </SelectItem>
@@ -971,7 +1052,7 @@ const Sponsors = () => {
                       </SelectContent>
                     </Select>
                     <p className='text-sm text-gray-600 mt-1'>
-                      This is the active payment session for new sponsors
+                      This is the active payment session for students
                     </p>
                   </div>
 
