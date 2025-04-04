@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import { getStudentById, editStudent } from "@/utils/studentController";
 import { getClassById } from "@/utils/classController";
 import { getSponsorById } from "@/utils/sponsorController";
+import { getPaymentById } from "@/utils/paymentController";
 import { useDispatch } from "react-redux";
 import { showToast } from "@/utils/toastSlice";
 import { FaPencilAlt, FaMoneyBillWave, FaSave, FaTimes } from "react-icons/fa";
@@ -30,6 +31,7 @@ export const Details: React.FC<Props> = ({ id, setView, setDate }) => {
   const [selectedSession, setSelectedSession] = useState<string>("");
   const [paymentAmount, setPaymentAmount] = useState<string>("");
   const [paymentType, setPaymentType] = useState<string>("");
+  const [balance, setBalance] = useState<number>(0);
 
   // Mock payment sessions - replace with actual data from your API
   const [paymentSessions, setPaymentSessions] = useState<PaymentSession[]>([
@@ -53,6 +55,9 @@ export const Details: React.FC<Props> = ({ id, setView, setDate }) => {
         const classData = await getClassById(result?.data.student.classId);
         // @ts-ignore
         const sponsorData = await getSponsorById(result?.data.student.sponsor);
+        // @ts-ignore
+        const paymentData = await getPaymentById(result?.data.student._id);
+        console.log("Payment Data:", paymentData);
 
         setStudent({
           // @ts-ignore
@@ -62,6 +67,9 @@ export const Details: React.FC<Props> = ({ id, setView, setDate }) => {
           // @ts-ignore
           sponsorName: sponsorData?.data.data.name,
         });
+
+        // @ts-ignore
+        setBalance(paymentData?.data?.data?.balance || 0);
       }
     } catch (error) {
       const err = error as { response: { data: { message: string } } };
@@ -70,20 +78,6 @@ export const Details: React.FC<Props> = ({ id, setView, setDate }) => {
           message:
             err.response?.data?.message ||
             "Network issue, please check your connection.",
-          type: "error",
-        })
-      );
-    }
-  };
-
-  const handleEditStatus = async (id: string) => {
-    try {
-      await editStudent(id, selectStatus);
-      getDetails();
-    } catch (error) {
-      dispatch(
-        showToast({
-          message: "Failed to update status",
           type: "error",
         })
       );
@@ -222,7 +216,6 @@ export const Details: React.FC<Props> = ({ id, setView, setDate }) => {
               <button
                 onClick={() => {
                   setEdit((prev) => !prev);
-                  if (edit) handleEditStatus(id);
                 }}
                 className={`px-4 py-2 ${
                   edit
@@ -355,18 +348,23 @@ export const Details: React.FC<Props> = ({ id, setView, setDate }) => {
 
           <div className='bg-gray-50 p-4 rounded-lg col-span-1'>
             <label className='text-sm text-gray-600 font-medium'>
-              Registration Status
+              {edit && student?.sponsorName !== "Metfund"
+                ? "Add Payment"
+                : "Registration Status"}
             </label>
-            {edit && !showPaymentOptions ? (
-              <select
-                value={selectStatus}
-                onChange={(e) => setSelectStatus(e.target.value)}
-                className='mt-1 block w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500'
-              >
-                <option value=''>Select Status</option>
-                <option value='REGISTERED'>REGISTERED</option>
-                <option value='NOT REGISTERED'>NOT REGISTERED</option>
-              </select>
+            {edit && student?.sponsorName !== "Metfund" ? (
+              <div>
+                <p className='text-sm text-gray-500 mb-2'>
+                  Current Balance: ${balance}
+                </p>
+                <input
+                  type='number'
+                  value={paymentAmount}
+                  onChange={(e) => setPaymentAmount(e.target.value)}
+                  placeholder='Enter payment amount'
+                  className='mt-1 block w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500'
+                />
+              </div>
             ) : (
               <p
                 className={`text-base font-semibold ${
