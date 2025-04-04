@@ -398,7 +398,6 @@ const Sponsors = () => {
 
       if (response?.data?.data) {
         // Update the local state to reflect the change
-        console.log("this is the response", response);
         setPaymentSessions((prev) =>
           prev.map((session) =>
             session._id === currentSession
@@ -421,6 +420,14 @@ const Sponsors = () => {
         );
       }
     } catch (error) {
+      // Reset the grace period switch to its original state
+      const currentSessionData = paymentSessions.find(
+        (session) => session._id === currentSession
+      );
+      if (currentSessionData) {
+        setEnableGracePeriod(currentSessionData.grace || false);
+      }
+
       const err = error as { response: { data: { message: string } } };
       dispatch(
         showToast({
