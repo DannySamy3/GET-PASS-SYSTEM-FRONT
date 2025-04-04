@@ -197,7 +197,15 @@ export const AddStudent = () => {
 
     const formData = new FormData();
     Object.keys(userInfo).forEach((key) => {
-      formData.append(key, userInfo[key as keyof UserInfo] as any);
+      const value = userInfo[key as keyof UserInfo];
+      // Handle fundedAmount specifically
+      if (key === "fundedAmount") {
+        formData.append(key, value?.toString() || "0");
+      } else if (key === "image" && value instanceof File) {
+        formData.append(key, value);
+      } else {
+        formData.append(key, value as string);
+      }
     });
 
     setIsPageLoaded(true);
