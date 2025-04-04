@@ -6,6 +6,7 @@ export interface PaymentSession {
   startDate: string;
   endDate: string;
   amount: number;
+  graceRemainingDays?: number;
 }
 
 export interface CreatePaymentSessionData {
@@ -15,6 +16,7 @@ export interface CreatePaymentSessionData {
   amount: number;
   activeStatus?: boolean;
   grace?: boolean;
+  gracePeriodDays?: number;
 }
 
 export interface PaymentSessionResponse {

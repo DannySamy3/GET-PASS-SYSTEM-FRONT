@@ -68,6 +68,7 @@ interface PaymentSessionWithEditing extends PaymentSession {
   _id?: string;
   activeStatus?: boolean;
   grace?: boolean;
+  graceRemainingDays?: number;
 }
 
 const Sponsors = () => {
@@ -320,7 +321,7 @@ const Sponsors = () => {
   };
 
   const handleSessionChange = (
-    field: keyof PaymentSession,
+    field: keyof PaymentSessionWithEditing,
     value: string | number
   ) => {
     if (!selectedSession) return;
@@ -340,7 +341,7 @@ const Sponsors = () => {
       }
       updatedSession.amount = amount;
     } else {
-      updatedSession[field] = value as string;
+      (updatedSession[field] as any) = value;
     }
 
     setSelectedSession(updatedSession);
@@ -359,18 +360,72 @@ const Sponsors = () => {
   const handleSubmitPaymentSessions = async () => {
     try {
       setIsSubmitting(true);
-      // Here you would typically make an API call to save the payment sessions
-      // For now, we'll just show a success message
-      dispatch(
-        showToast({
-          message: "Payment sessions updated successfully",
-          type: "success",
-        })
+
+      if (!currentSession) {
+        dispatch(
+          showToast({
+            message: "Please select a session first",
+            type: "error",
+          })
+        );
+        return;
+      }
+
+      const currentSessionData = paymentSessions.find(
+        (session) => session._id === currentSession
       );
+
+      if (!currentSessionData) {
+        dispatch(
+          showToast({
+            message: "Session not found",
+            type: "error",
+          })
+        );
+        return;
+      }
+
+      const response = await updatePaymentSession(currentSession, {
+        sessionName: currentSessionData.sessionName,
+        startDate: currentSessionData.startDate,
+        endDate: currentSessionData.endDate,
+        amount: currentSessionData.amount,
+        grace: enableGracePeriod,
+        gracePeriodDays: enableGracePeriod
+          ? Number(gracePeriodDays)
+          : undefined,
+      });
+
+      if (response?.data?.data) {
+        // Update the local state to reflect the change
+        console.log("this is the response", response);
+        setPaymentSessions((prev) =>
+          prev.map((session) =>
+            session._id === currentSession
+              ? {
+                  ...session,
+                  grace: enableGracePeriod,
+                  graceRemainingDays: enableGracePeriod
+                    ? Number(gracePeriodDays)
+                    : undefined,
+                }
+              : session
+          )
+        );
+
+        dispatch(
+          showToast({
+            message: "Payment settings updated successfully",
+            type: "success",
+          })
+        );
+      }
     } catch (error) {
+      const err = error as { response: { data: { message: string } } };
       dispatch(
         showToast({
-          message: "Failed to update payment sessions",
+          message:
+            err.response?.data?.message || "Failed to update payment settings",
           type: "error",
         })
       );
@@ -527,69 +582,8 @@ const Sponsors = () => {
     }
   };
 
-  const handleGracePeriodChange = async (checked: boolean) => {
-    try {
-      if (!currentSession) {
-        dispatch(
-          showToast({
-            message: "Please select a session first",
-            type: "error",
-          })
-        );
-        return;
-      }
-
-      const currentSessionData = paymentSessions.find(
-        (session) => session._id === currentSession
-      );
-
-      if (!currentSessionData) {
-        dispatch(
-          showToast({
-            message: "Session not found",
-            type: "error",
-          })
-        );
-        return;
-      }
-
-      const response = await updatePaymentSession(currentSession, {
-        sessionName: currentSessionData.sessionName,
-        startDate: currentSessionData.startDate,
-        endDate: currentSessionData.endDate,
-        amount: currentSessionData.amount,
-        grace: checked,
-      });
-
-      if (response?.data?.data) {
-        // Update the local state to reflect the change
-        setPaymentSessions((prev) =>
-          prev.map((session) =>
-            session._id === currentSession
-              ? { ...session, grace: checked }
-              : session
-          )
-        );
-
-        dispatch(
-          showToast({
-            message: `Grace period ${
-              checked ? "activated" : "deactivated"
-            } successfully`,
-            type: "success",
-          })
-        );
-      }
-    } catch (error) {
-      const err = error as { response: { data: { message: string } } };
-      dispatch(
-        showToast({
-          message:
-            err.response?.data?.message || "Failed to update grace period",
-          type: "error",
-        })
-      );
-    }
+  const handleGracePeriodChange = (checked: boolean) => {
+    setEnableGracePeriod(checked);
   };
 
   useEffect(() => {
@@ -1053,11 +1047,20 @@ const Sponsors = () => {
                                   variant='outline'
                                   className={
                                     session.grace
-                                      ? "bg-yellow-100 text-yellow-800 border-yellow-200"
+                                      ? "bg-yellow-100 text-yellow-800 border-yellow-200 min-w-[100px]"
                                       : "bg-gray-100 text-gray-800 border-gray-200"
                                   }
                                 >
-                                  {session.grace ? "Activated" : "Deactivated"}
+                                  {session.grace ? (
+                                    <div className='flex items-center gap-2'>
+                                      <span>Activated</span>
+                                      <span className='text-xs'>
+                                        ({session.graceRemainingDays} days)
+                                      </span>
+                                    </div>
+                                  ) : (
+                                    "Deactivated"
+                                  )}
                                 </Badge>
                               </TableCell>
                               <TableCell className='text-right'>
