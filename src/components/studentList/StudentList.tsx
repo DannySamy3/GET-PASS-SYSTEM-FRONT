@@ -89,6 +89,7 @@ export const StudentList = () => {
   const [viewCard, setViewCard] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
   const dispatch = useDispatch();
+  const [isLoading, setIsLoading] = useState(false);
 
   const searchPlan = (searchQuery: string, limit: number) => {
     const queryObj: any = {};
@@ -142,8 +143,16 @@ export const StudentList = () => {
     return pageNumbers.slice(start, end);
   };
 
+  const calculateSerialNumber = (index: number) => {
+    if (!studentsData.students || studentsData.students.length === 0) {
+      return "-";
+    }
+    return (currentPage - 1) * limit + index + 1;
+  };
+
   const fetchstudents = async (query = {}) => {
     let pageArray;
+    setIsLoading(true);
 
     try {
       const result = (await getAllStudents(query)) as ApiResponse;
@@ -178,6 +187,8 @@ export const StudentList = () => {
           type: "error",
         })
       );
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -327,7 +338,16 @@ export const StudentList = () => {
                         </TableRow>
                       </TableHeader>
                       <TableBody>
-                        {studentsData.students?.length === 0 ? (
+                        {isLoading ? (
+                          <TableRow>
+                            <TableCell
+                              colSpan={7}
+                              className='text-center py-6 text-indigo-700'
+                            >
+                              Loading...
+                            </TableCell>
+                          </TableRow>
+                        ) : studentsData.students?.length === 0 ? (
                           <TableRow>
                             <TableCell
                               colSpan={7}
@@ -351,7 +371,7 @@ export const StudentList = () => {
                               }}
                             >
                               <TableCell className='text-indigo-900'>
-                                {(currentPage - 1) * limit + index + 1}
+                                {calculateSerialNumber(index)}
                               </TableCell>
                               <TableCell className='font-medium text-indigo-900'>
                                 {student.firstName}
