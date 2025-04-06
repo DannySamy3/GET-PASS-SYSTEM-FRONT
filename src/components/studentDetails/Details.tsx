@@ -10,6 +10,7 @@ import { useDispatch } from "react-redux";
 import { showToast } from "@/utils/toastSlice";
 import { FaPencilAlt, FaMoneyBillWave, FaSave, FaTimes } from "react-icons/fa";
 import { editImage } from "@/utils/imageController";
+import { getAllPaymentSessions } from "@/utils/paymentSessionController";
 
 interface Props {
   id: any;
@@ -19,30 +20,51 @@ interface Props {
 
 // Define payment session types
 interface PaymentSession {
-  id: string;
-  name: string;
+  _id?: string;
+  sessionName: string;
+  startDate: string;
+  endDate: string;
+  amount: number;
+  activeStatus?: boolean;
 }
 
 export const Details: React.FC<Props> = ({ id, setView, setDate }) => {
   const [student, setStudent] = useState<any>();
-  const [selectStatus, setSelectStatus] = useState("");
-  const [edit, setEdit] = useState(false);
   const [showPaymentOptions, setShowPaymentOptions] = useState(false);
-  const [selectedSession, setSelectedSession] = useState<string>("");
   const [paymentAmount, setPaymentAmount] = useState<string>("");
   const [paymentType, setPaymentType] = useState<string>("");
   const [balance, setBalance] = useState<number>(0);
-
-  // Mock payment sessions - replace with actual data from your API
-  const [paymentSessions, setPaymentSessions] = useState<PaymentSession[]>([
-    { id: "1", name: "First Term Fees" },
-    { id: "2", name: "Second Term Fees" },
-    { id: "3", name: "Third Term Fees" },
-    { id: "4", name: "Examination Fees" },
-    { id: "5", name: "Library Fees" },
-  ]);
+  const [activeSession, setActiveSession] = useState<PaymentSession | null>(
+    null
+  );
 
   const dispatch = useDispatch();
+
+  const fetchActiveSession = async () => {
+    try {
+      const response = await getAllPaymentSessions();
+      if (response?.data?.data) {
+        // @ts-ignore
+        const sessions = response.data.data.sessions;
+        const active = sessions.find(
+          (session: PaymentSession) => session.activeStatus === true
+        );
+        if (active) {
+          setActiveSession(active);
+          setPaymentAmount(active.amount.toString());
+        }
+      }
+    } catch (error) {
+      const err = error as { response: { data: { message: string } } };
+      dispatch(
+        showToast({
+          message:
+            err.response?.data?.message || "Failed to fetch active session",
+          type: "error",
+        })
+      );
+    }
+  };
 
   const getDetails = async () => {
     try {
@@ -128,7 +150,7 @@ export const Details: React.FC<Props> = ({ id, setView, setDate }) => {
 
   const handlePaymentSubmit = () => {
     // Implement your payment submission logic here
-    if (!selectedSession || !paymentAmount) {
+    if (!activeSession || !paymentAmount) {
       dispatch(
         showToast({
           message: "Please select a session and enter payment amount",
@@ -141,7 +163,7 @@ export const Details: React.FC<Props> = ({ id, setView, setDate }) => {
     // Mock API call - replace with your actual payment API
     console.log("Payment submitted:", {
       studentId: student?._id,
-      sessionId: selectedSession,
+      sessionId: activeSession._id,
       amount: paymentAmount,
       paymentType: paymentType,
     });
@@ -154,11 +176,9 @@ export const Details: React.FC<Props> = ({ id, setView, setDate }) => {
     );
 
     // Reset payment form
-    setSelectedSession("");
     setPaymentAmount("");
     setPaymentType("");
     setShowPaymentOptions(false);
-    setEdit(false);
   };
 
   const togglePaymentOptions = () => {
@@ -176,9 +196,8 @@ export const Details: React.FC<Props> = ({ id, setView, setDate }) => {
 
     setShowPaymentOptions(!showPaymentOptions);
     if (!showPaymentOptions) {
-      setEdit(true);
+      fetchActiveSession();
     } else {
-      setSelectedSession("");
       setPaymentAmount("");
       setPaymentType("");
     }
@@ -194,11 +213,21 @@ export const Details: React.FC<Props> = ({ id, setView, setDate }) => {
     getDetails();
   }, [student?.status]);
 
+  useEffect(() => {
+    if (showPaymentOptions) {
+      fetchActiveSession();
+    }
+  }, [showPaymentOptions]);
+
   console.log("...........", student);
 
   return (
     <div className='h-[80vh] font-montserrat'>
-      <div className='bg-white shadow-lg rounded-lg p-8 w-full'>
+      <div
+        className={`bg-white shadow-lg rounded-lg p-8 w-full ${
+          showPaymentOptions ? "h-[85vh] overflow-y-auto" : ""
+        }`}
+      >
         <div className='flex justify-between items-center mb-6'>
           <h2 className='text-3xl font-bold text-gray-700'>Student Details</h2>
           <div className='flex space-x-4'>
@@ -211,21 +240,6 @@ export const Details: React.FC<Props> = ({ id, setView, setDate }) => {
             >
               <FaTimes /> Cancel
             </button>
-
-            {!showPaymentOptions && (
-              <button
-                onClick={() => {
-                  setEdit((prev) => !prev);
-                }}
-                className={`px-4 py-2 ${
-                  edit
-                    ? "bg-green-500 hover:bg-green-600"
-                    : "bg-blue-500 hover:bg-blue-600"
-                } text-white rounded-md transition-colors flex items-center gap-2`}
-              >
-                {edit ? <FaSave /> : <FaPencilAlt />} {edit ? "Save" : "Edit"}
-              </button>
-            )}
 
             {!isPaymentDisabled() && (
               <button
@@ -348,24 +362,12 @@ export const Details: React.FC<Props> = ({ id, setView, setDate }) => {
 
           <div className='bg-gray-50 p-4 rounded-lg col-span-1'>
             <label className='text-sm text-gray-600 font-medium'>
-              {edit && student?.sponsorName !== "Metfund"
-                ? "Add Payment"
-                : "Registration Status"}
+              Registration Status
             </label>
-            {edit && student?.sponsorName !== "Metfund" ? (
-              <div>
-                <p className='text-sm text-gray-500 mb-2'>
-                  Current Balance: ${balance}
-                </p>
-                <input
-                  type='number'
-                  value={paymentAmount}
-                  onChange={(e) => setPaymentAmount(e.target.value)}
-                  placeholder='Enter payment amount'
-                  className='mt-1 block w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500'
-                />
-              </div>
-            ) : (
+            <div>
+              <p className='text-sm text-gray-500 mb-2'>
+                Current Balance: ${balance}
+              </p>
               <p
                 className={`text-base font-semibold ${
                   student?.status === "NOT REGISTERED"
@@ -375,15 +377,16 @@ export const Details: React.FC<Props> = ({ id, setView, setDate }) => {
               >
                 {student?.status}
               </p>
-            )}
+            </div>
           </div>
         </div>
 
-        {/* Payment Options Section - Moved to bottom */}
+        {/* Payment Options Section - Moved up */}
         {showPaymentOptions && (
-          <div className='mt-8 p-6 bg-gray-50 rounded-lg border border-gray-200'>
-            <h3 className='text-lg font-semibold text-gray-700 mb-4'>
-              Payment Options
+          <div className='mt-4 p-6 bg-gray-50 rounded-lg border border-gray-200'>
+            <h3 className='text-xl font-semibold text-gray-700 mb-6 flex items-center gap-2'>
+              <FaMoneyBillWave className='text-blue-500' />
+              Payment Details
             </h3>
 
             {student?.sponsorName === "Hesbl" ? (
@@ -419,50 +422,60 @@ export const Details: React.FC<Props> = ({ id, setView, setDate }) => {
                 )}
               </div>
             ) : (
-              <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
-                <div>
-                  <label className='block text-sm font-medium text-gray-700 mb-1'>
-                    Select Session
-                  </label>
-                  <select
-                    value={selectedSession}
-                    onChange={(e) => setSelectedSession(e.target.value)}
-                    className='w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500'
-                  >
-                    <option value=''>Select Payment Session</option>
-                    {paymentSessions.map((session) => (
-                      <option key={session.id} value={session.id}>
-                        {session.name}
-                      </option>
-                    ))}
-                  </select>
-                </div>
+              <div className='space-y-6'>
+                {activeSession && (
+                  <>
+                    <div className='bg-white p-4 rounded-lg border border-gray-200 shadow-sm'>
+                      <div className='grid grid-cols-1 md:grid-cols-2 gap-6'>
+                        <div>
+                          <label className='block text-sm font-medium text-gray-700 mb-2'>
+                            Current Session
+                          </label>
+                          <div className='bg-blue-50 p-3 rounded-md border border-blue-100'>
+                            <p className='font-medium text-gray-800 text-lg'>
+                              {activeSession.sessionName}
+                            </p>
+                            <p className='text-sm text-blue-600 mt-1 font-medium'>
+                              Required Amount: $
+                              {activeSession.amount.toLocaleString()}
+                            </p>
+                          </div>
+                        </div>
+                        <div>
+                          <label className='block text-sm font-medium text-gray-700 mb-2'>
+                            Payment Amount
+                          </label>
+                          <div className='relative'>
+                            <span className='absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500'>
+                              $
+                            </span>
+                            <input
+                              type='number'
+                              value={paymentAmount}
+                              onChange={(e) => setPaymentAmount(e.target.value)}
+                              placeholder='Enter amount'
+                              className='w-full pl-8 p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-lg font-medium'
+                            />
+                          </div>
+                          <p className='text-sm text-gray-500 mt-2'>
+                            Enter the amount you wish to pay for this session
+                          </p>
+                        </div>
+                      </div>
+                    </div>
 
-                {selectedSession && (
-                  <div>
-                    <label className='block text-sm font-medium text-gray-700 mb-1'>
-                      Payment Amount
-                    </label>
-                    <input
-                      type='number'
-                      value={paymentAmount}
-                      onChange={(e) => setPaymentAmount(e.target.value)}
-                      placeholder='Enter amount'
-                      className='w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500'
-                    />
-                  </div>
+                    <div className='flex justify-end mt-6'>
+                      <button
+                        onClick={handlePaymentSubmit}
+                        className='px-6 py-3 bg-green-500 text-white rounded-md hover:bg-green-600 transition-colors flex items-center gap-2 text-base font-medium shadow-sm'
+                      >
+                        <FaSave /> Submit Payment
+                      </button>
+                    </div>
+                  </>
                 )}
               </div>
             )}
-
-            <div className='mt-6 flex justify-end'>
-              <button
-                onClick={handlePaymentSubmit}
-                className='px-4 py-2 bg-green-500 text-white rounded-md hover:bg-green-600 transition-colors flex items-center gap-2'
-              >
-                <FaSave /> Submit Payment
-              </button>
-            </div>
           </div>
         )}
       </div>
