@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 import { getStudentById, editStudent } from "@/utils/studentController";
 import { getClassById } from "@/utils/classController";
 import { getSponsorById } from "@/utils/sponsorController";
-import { getPaymentById } from "@/utils/paymentController";
+import { getstudentPaymentById } from "@/utils/paymentController";
 import { useDispatch } from "react-redux";
 import { showToast } from "@/utils/toastSlice";
 import { FaPencilAlt, FaMoneyBillWave, FaSave, FaTimes } from "react-icons/fa";
@@ -26,6 +26,9 @@ interface PaymentSession {
   endDate: string;
   amount: number;
   activeStatus?: boolean;
+  grace?: boolean;
+  gracePeriodDays?: number;
+  graceRemainingDays?: number;
 }
 
 export const Details: React.FC<Props> = ({ id, setView, setDate }) => {
@@ -51,7 +54,8 @@ export const Details: React.FC<Props> = ({ id, setView, setDate }) => {
         );
         if (active) {
           setActiveSession(active);
-          setPaymentAmount(active.amount.toString());
+          const remainingAmount = active.amount - balance;
+          setPaymentAmount(remainingAmount.toString());
         }
       }
     } catch (error) {
@@ -70,16 +74,11 @@ export const Details: React.FC<Props> = ({ id, setView, setDate }) => {
     try {
       const result = await getStudentById(id);
 
-      console.log("...........", result);
-
       if (result) {
         // @ts-ignore
         const classData = await getClassById(result?.data.student.classId);
         // @ts-ignore
         const sponsorData = await getSponsorById(result?.data.student.sponsor);
-        // @ts-ignore
-        const paymentData = await getPaymentById(result?.data.student._id);
-        console.log("Payment Data:", paymentData);
 
         setStudent({
           // @ts-ignore
@@ -91,7 +90,23 @@ export const Details: React.FC<Props> = ({ id, setView, setDate }) => {
         });
 
         // @ts-ignore
-        setBalance(paymentData?.data?.data?.balance || 0);
+        const fundedAmount = result.data.student.fundedAmount || 0;
+        setBalance(fundedAmount);
+
+        // Fetch active session and update payment amount
+        const response = await getAllPaymentSessions();
+        if (response?.data?.data) {
+          // @ts-ignore
+          const sessions = response.data.data.sessions;
+          const active = sessions.find(
+            (session: PaymentSession) => session.activeStatus === true
+          );
+          if (active) {
+            setActiveSession(active);
+            const remainingAmount = active.amount - fundedAmount;
+            setPaymentAmount(remainingAmount.toString());
+          }
+        }
       }
     } catch (error) {
       const err = error as { response: { data: { message: string } } };
@@ -197,6 +212,11 @@ export const Details: React.FC<Props> = ({ id, setView, setDate }) => {
     setShowPaymentOptions(!showPaymentOptions);
     if (!showPaymentOptions) {
       fetchActiveSession();
+      // Set payment amount to the remaining amount
+      if (activeSession?.amount) {
+        const remainingAmount = activeSession.amount - balance;
+        setPaymentAmount(remainingAmount.toString());
+      }
     } else {
       setPaymentAmount("");
       setPaymentType("");
@@ -218,6 +238,12 @@ export const Details: React.FC<Props> = ({ id, setView, setDate }) => {
       fetchActiveSession();
     }
   }, [showPaymentOptions]);
+
+  useEffect(() => {
+    if (activeSession) {
+      getDetails();
+    }
+  }, [activeSession]);
 
   console.log("...........", student);
 
@@ -366,8 +392,23 @@ export const Details: React.FC<Props> = ({ id, setView, setDate }) => {
             </label>
             <div>
               <p className='text-sm text-gray-500 mb-2'>
-                Current Balance: ${balance}
+                Amount Paid: TSH {balance.toLocaleString()}
               </p>
+              <p className='text-sm text-gray-500 mb-2'>
+                Remaining Amount: TSH{" "}
+                {activeSession?.amount
+                  ? (activeSession.amount - balance).toLocaleString()
+                  : "0"}
+              </p>
+              {student?.status === "REGISTERED" &&
+                activeSession?.amount &&
+                activeSession.amount - balance > 0 &&
+                activeSession?.grace && (
+                  <p className='text-sm text-amber-600 mb-2'>
+                    Status: Grace Period Active (
+                    {activeSession.graceRemainingDays} days remaining)
+                  </p>
+                )}
               <p
                 className={`text-base font-semibold ${
                   student?.status === "NOT REGISTERED"
@@ -436,8 +477,12 @@ export const Details: React.FC<Props> = ({ id, setView, setDate }) => {
                               {activeSession.sessionName}
                             </p>
                             <p className='text-sm text-blue-600 mt-1 font-medium'>
-                              Required Amount: $
-                              {activeSession.amount.toLocaleString()}
+                              Required Amount: TSH{" "}
+                              {activeSession?.amount
+                                ? (
+                                    activeSession.amount - balance
+                                  ).toLocaleString()
+                                : "0"}
                             </p>
                           </div>
                         </div>
@@ -447,18 +492,18 @@ export const Details: React.FC<Props> = ({ id, setView, setDate }) => {
                           </label>
                           <div className='relative'>
                             <span className='absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500'>
-                              $
+                              TSH
                             </span>
                             <input
                               type='number'
-                              value={paymentAmount}
+                              // value={}
                               onChange={(e) => setPaymentAmount(e.target.value)}
                               placeholder='Enter amount'
                               className='w-full pl-8 p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-lg font-medium'
                             />
                           </div>
                           <p className='text-sm text-gray-500 mt-2'>
-                            Enter the amount you wish to pay for this session
+                            Pay the remaining amount to get registered
                           </p>
                         </div>
                       </div>

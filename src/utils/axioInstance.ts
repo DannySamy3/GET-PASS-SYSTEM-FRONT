@@ -8,6 +8,13 @@ const axiosInstance = axios.create({
   },
 });
 
+// const axiosInstance = axios.create({
+//   baseURL: "http://localhost:8000/",
+//   timeout: 10000,
+//   // headers: {
+//   //   "Content-Type": "multipart/form-data", // Ensure correct content type
+//   // },
+// });
 // Add an interceptor to handle multipart/form-data requests
 axiosInstance.interceptors.request.use((config) => {
   if (config.data instanceof FormData) {
@@ -16,13 +23,5 @@ axiosInstance.interceptors.request.use((config) => {
   }
   return config;
 });
-
-// const axiosInstance = axios.create({
-//   baseURL: "http://localhost:8000/",
-//   timeout: 10000,
-//   // headers: {
-//   //   "Content-Type": "multipart/form-data", // Ensure correct content type
-//   // },
-// });
 
 export default axiosInstance;
