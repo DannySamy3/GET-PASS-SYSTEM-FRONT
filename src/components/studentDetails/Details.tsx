@@ -60,6 +60,7 @@ export const Details: React.FC<Props> = ({ id, setView, setDate }) => {
       }
     } catch (error) {
       const err = error as { response: { data: { message: string } } };
+      console.error("Error fetching active session:", err);
       dispatch(
         showToast({
           message:
@@ -94,18 +95,30 @@ export const Details: React.FC<Props> = ({ id, setView, setDate }) => {
         setBalance(fundedAmount);
 
         // Fetch active session and update payment amount
-        const response = await getAllPaymentSessions();
-        if (response?.data?.data) {
-          // @ts-ignore
-          const sessions = response.data.data.sessions;
-          const active = sessions.find(
-            (session: PaymentSession) => session.activeStatus === true
-          );
-          if (active) {
-            setActiveSession(active);
-            const remainingAmount = active.amount - fundedAmount;
-            setPaymentAmount(remainingAmount.toString());
+        try {
+          const response = await getAllPaymentSessions();
+          if (response?.data?.data) {
+            // @ts-ignore
+            const sessions = response.data.data.sessions;
+            const active = sessions.find(
+              (session: PaymentSession) => session.activeStatus === true
+            );
+            if (active) {
+              setActiveSession(active);
+              const remainingAmount = active.amount - fundedAmount;
+              setPaymentAmount(remainingAmount.toString());
+            }
           }
+        } catch (error) {
+          const err = error as { response: { data: { message: string } } };
+          console.error("Error fetching active session:", err);
+          dispatch(
+            showToast({
+              message:
+                err.response?.data?.message || "Failed to fetch active session",
+              type: "error",
+            })
+          );
         }
       }
     } catch (error) {
