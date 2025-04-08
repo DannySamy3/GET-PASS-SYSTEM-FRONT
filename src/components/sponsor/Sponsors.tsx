@@ -271,8 +271,13 @@ const Sponsors = () => {
         //@ts-ignore
         const sessionData = response.data.data.session;
         console.log("this is the session data", sessionData);
+
+        // Ensure both id and _id are set to the same value
+        const sessionId = sessionData._id;
+
         const createdSession: PaymentSessionWithEditing = {
-          id: sessionData._id,
+          id: sessionId,
+          _id: sessionId,
           sessionName: sessionData.sessionName,
           startDate: sessionData.startDate,
           endDate: sessionData.endDate,
@@ -538,13 +543,21 @@ const Sponsors = () => {
   const handleCurrentSessionChange = async (sessionId: string) => {
     console.log("this is the session id", sessionId);
     try {
-      // Find the session to activate
+      // Find the session to activate - check both _id and id properties
       const sessionToActivate = paymentSessions.find(
-        (session) => session._id === sessionId
+        (session) => session._id === sessionId || session.id === sessionId
       );
 
       console.log("this is the session to activate", sessionToActivate);
-      if (!sessionToActivate) return;
+      if (!sessionToActivate) {
+        dispatch(
+          showToast({
+            message: "Session not found. Please try again.",
+            type: "error",
+          })
+        );
+        return;
+      }
 
       // Update the session to active
       const updateData: CreatePaymentSessionData = {
@@ -558,11 +571,10 @@ const Sponsors = () => {
       // First, set the current session immediately for better UX
       setCurrentSession(sessionId);
 
-      const response = await updatePaymentSession(
-        //@ts-ignore
-        sessionToActivate._id,
-        updateData
-      );
+      // Use either _id or id for the update
+      const sessionIdToUse = sessionToActivate._id || sessionToActivate.id;
+
+      const response = await updatePaymentSession(sessionIdToUse, updateData);
 
       if (response?.data?.data) {
         // Fetch the latest sessions to ensure we have the correct active status
