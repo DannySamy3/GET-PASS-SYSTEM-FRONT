@@ -261,21 +261,23 @@ export const Details: React.FC<Props> = ({ id, setView, setDate }) => {
   console.log("...........", student);
 
   return (
-    <div className='h-[80vh] font-montserrat'>
+    <div className='min-h-screen w-full font-montserrat p-4'>
       <div
-        className={`bg-white shadow-lg rounded-lg p-8 w-full ${
-          showPaymentOptions ? "h-[85vh] overflow-y-auto" : ""
+        className={`bg-white shadow-lg rounded-lg p-4 md:p-8 w-full ${
+          showPaymentOptions ? "max-h-[90vh] overflow-y-auto" : ""
         }`}
       >
-        <div className='flex justify-between items-center mb-6'>
-          <h2 className='text-3xl font-bold text-gray-700'>Student Details</h2>
-          <div className='flex space-x-4'>
+        <div className='flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6'>
+          <h2 className='text-2xl md:text-3xl font-bold text-gray-700'>
+            Student Details
+          </h2>
+          <div className='flex flex-col sm:flex-row gap-2 w-full md:w-auto'>
             <button
               onClick={() => {
                 setView((prev: any) => ({ ...prev, view: false }));
                 setDate(false);
               }}
-              className='px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600 transition-colors flex items-center gap-2'
+              className='w-full sm:w-auto px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600 transition-colors flex items-center justify-center gap-2'
             >
               <FaTimes /> Cancel
             </button>
@@ -283,11 +285,11 @@ export const Details: React.FC<Props> = ({ id, setView, setDate }) => {
             {!isPaymentDisabled() && (
               <button
                 onClick={togglePaymentOptions}
-                className={`px-4 py-2 ${
+                className={`w-full sm:w-auto px-4 py-2 ${
                   showPaymentOptions
                     ? "bg-amber-500 hover:bg-amber-600"
                     : "bg-blue-500 hover:bg-blue-600"
-                } text-white rounded-md transition-colors flex items-center gap-2`}
+                } text-white rounded-md transition-colors flex items-center justify-center gap-2`}
               >
                 <FaMoneyBillWave />{" "}
                 {showPaymentOptions ? "Cancel Payment" : "Payment"}
@@ -297,9 +299,9 @@ export const Details: React.FC<Props> = ({ id, setView, setDate }) => {
         </div>
 
         {/* Student Image Section */}
-        <div className='flex justify-center my-6 relative'>
+        <div className='flex flex-col md:flex-row justify-center items-center my-6 relative gap-4'>
           {student?.image ? (
-            <div className='flex items-center gap-4 relative'>
+            <div className='flex flex-col md:flex-row items-center gap-4 relative'>
               <div className='relative'>
                 <img
                   src={student.image || "/placeholder.svg"}
@@ -319,7 +321,7 @@ export const Details: React.FC<Props> = ({ id, setView, setDate }) => {
                   <FaPencilAlt className='text-gray-600' />
                 </label>
               </div>
-              <div>
+              <div className='text-center md:text-left'>
                 <h3 className='text-xl font-bold text-gray-800'>{`${
                   student?.firstName ?? ""
                 } ${student?.lastName ?? ""}`}</h3>
@@ -334,12 +336,12 @@ export const Details: React.FC<Props> = ({ id, setView, setDate }) => {
         </div>
 
         {/* Student Details Grid */}
-        <div className='grid grid-cols-1 md:grid-cols-2 gap-6 mt-6'>
+        <div className='grid grid-cols-1 sm:grid-cols-2 gap-4 md:gap-6 mt-6'>
           <div className='bg-gray-50 p-4 rounded-lg'>
             <label className='text-sm text-gray-600 font-medium'>
               Full Name
             </label>
-            <p className='text-base font-semibold text-gray-800'>{`${
+            <p className='text-base font-semibold text-gray-800 break-words'>{`${
               student?.firstName ?? ""
             } ${student?.secondName ?? ""} ${student?.lastName ?? ""}`}</p>
           </div>
@@ -353,7 +355,7 @@ export const Details: React.FC<Props> = ({ id, setView, setDate }) => {
 
           <div className='bg-gray-50 p-4 rounded-lg'>
             <label className='text-sm text-gray-600 font-medium'>Email</label>
-            <p className='text-base font-semibold text-gray-800'>
+            <p className='text-base font-semibold text-gray-800 break-words'>
               {student?.email}
             </p>
           </div>
@@ -399,7 +401,7 @@ export const Details: React.FC<Props> = ({ id, setView, setDate }) => {
             </p>
           </div>
 
-          <div className='bg-gray-50 p-4 rounded-lg col-span-1'>
+          <div className='bg-gray-50 p-4 rounded-lg sm:col-span-2'>
             <label className='text-sm text-gray-600 font-medium'>
               Registration Status
             </label>
@@ -435,9 +437,9 @@ export const Details: React.FC<Props> = ({ id, setView, setDate }) => {
           </div>
         </div>
 
-        {/* Payment Options Section - Moved up */}
+        {/* Payment Options Section */}
         {showPaymentOptions && (
-          <div className='mt-4 p-6 bg-gray-50 rounded-lg border border-gray-200'>
+          <div className='mt-4 p-4 md:p-6 bg-gray-50 rounded-lg border border-gray-200'>
             <h3 className='text-xl font-semibold text-gray-700 mb-6 flex items-center gap-2'>
               <FaMoneyBillWave className='text-blue-500' />
               Payment Details
@@ -509,7 +511,7 @@ export const Details: React.FC<Props> = ({ id, setView, setDate }) => {
                             </span>
                             <input
                               type='number'
-                              // value={}
+                              value={paymentAmount}
                               onChange={(e) => setPaymentAmount(e.target.value)}
                               placeholder='Enter amount'
                               className='w-full pl-8 p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-lg font-medium'
@@ -525,7 +527,7 @@ export const Details: React.FC<Props> = ({ id, setView, setDate }) => {
                     <div className='flex justify-end mt-6'>
                       <button
                         onClick={handlePaymentSubmit}
-                        className='px-6 py-3 bg-green-500 text-white rounded-md hover:bg-green-600 transition-colors flex items-center gap-2 text-base font-medium shadow-sm'
+                        className='w-full sm:w-auto px-6 py-3 bg-green-500 text-white rounded-md hover:bg-green-600 transition-colors flex items-center justify-center gap-2 text-base font-medium shadow-sm'
                       >
                         <FaSave /> Submit Payment
                       </button>

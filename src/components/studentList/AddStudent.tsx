@@ -60,7 +60,6 @@ interface UserInfo {
   gender: string;
   enrollmentYear: string;
   image: File | null;
-  fundedAmount?: number;
 }
 
 interface AddStudentResponse {
@@ -93,7 +92,6 @@ export const AddStudent = () => {
     gender: "",
     enrollmentYear: "",
     image: null,
-    fundedAmount: 0,
   });
 
   const [sponsors, setSponsors] = useState<SponsorInfo[]>([]);
@@ -101,8 +99,6 @@ export const AddStudent = () => {
   const [isPageLoaded, setIsPageLoaded] = useState<boolean>(false);
   const [isToastShown, setIsToastShown] = useState<boolean>(false);
   const [selectedClass, setSelectedClass] = useState<ClassInfo | null>(null);
-  const [remainingAmount, setRemainingAmount] = useState<number>(0);
-  const [showFundedAmount, setShowFundedAmount] = useState<boolean>(false);
 
   const dispatch = useDispatch();
   const router = useRouter();
@@ -138,55 +134,16 @@ export const AddStudent = () => {
         ...prev,
         image: (e.target as HTMLInputElement).files![0],
       }));
-    } else if (name === "fundedAmount") {
-      const fundedAmount = Number.parseFloat(value) || 0;
-      setUserInfo((prev) => ({
-        ...prev,
-        fundedAmount,
-      }));
-
-      // Calculate remaining amount
-      if (selectedClass && selectedClass.tuitionFee) {
-        const remaining = selectedClass.tuitionFee - fundedAmount;
-        setRemainingAmount(remaining > 0 ? remaining : 0);
-      }
     } else {
       setUserInfo((prev) => ({
         ...prev,
         [name]: value,
       }));
 
-      // Handle sponsor selection
-      if (name === "sponsorId") {
-        const selectedSponsor = sponsors.find(
-          (sponsor) => sponsor._id === value
-        );
-
-        // Show funded amount field for all sponsors EXCEPT METFUND and Private
-        setShowFundedAmount(
-          selectedSponsor ? selectedSponsor.name !== "Metfund" : false
-        );
-
-        // Reset funded amount when switching to METFUND or Private
-        if (
-          selectedSponsor &&
-          (selectedSponsor.name === "METFUND" ||
-            selectedSponsor.name === "Private")
-        ) {
-          setUserInfo((prev) => ({ ...prev, fundedAmount: 0 }));
-        }
-      }
-
       // Handle class selection
       if (name === "classId") {
         const selected = classes.find((cls) => cls._id === value) || null;
         setSelectedClass(selected);
-
-        // Recalculate remaining amount when class changes
-        if (selected && selected.tuitionFee && userInfo.fundedAmount) {
-          const remaining = selected.tuitionFee - userInfo.fundedAmount;
-          setRemainingAmount(remaining > 0 ? remaining : 0);
-        }
       }
     }
   };
@@ -198,10 +155,7 @@ export const AddStudent = () => {
     const formData = new FormData();
     Object.keys(userInfo).forEach((key) => {
       const value = userInfo[key as keyof UserInfo];
-      // Handle fundedAmount specifically
-      if (key === "fundedAmount") {
-        formData.append(key, value?.toString() || "0");
-      } else if (key === "image" && value instanceof File) {
+      if (key === "image" && value instanceof File) {
         formData.append(key, value);
       } else {
         formData.append(key, value as string);
@@ -231,7 +185,6 @@ export const AddStudent = () => {
           gender: "",
           enrollmentYear: "",
           image: null,
-          fundedAmount: 0,
         });
 
         router.push("/");
@@ -259,7 +212,6 @@ export const AddStudent = () => {
         gender: "",
         enrollmentYear: "",
         image: null,
-        fundedAmount: 0,
       });
     }
   };
@@ -494,43 +446,6 @@ export const AddStudent = () => {
                     </SelectContent>
                   </Select>
                 </div>
-
-                {showFundedAmount && (
-                  <div className='space-y-2'>
-                    <Label
-                      htmlFor='fundedAmount'
-                      className='flex items-center gap-2 text-indigo-900'
-                    >
-                      <DollarSign className='h-4 w-4 text-indigo-600' />
-                      Funded Amount <span className='text-red-500'>*</span>
-                    </Label>
-                    <Input
-                      id='fundedAmount'
-                      name='fundedAmount'
-                      type='number'
-                      value={userInfo.fundedAmount?.toString() || "0"}
-                      onChange={handleChange}
-                      required
-                      placeholder='Enter amount funded by sponsor'
-                      className='border-indigo-200 focus:border-indigo-500 focus:ring-indigo-500'
-                    />
-                  </div>
-                )}
-
-                {showFundedAmount && selectedClass?.tuitionFee && (
-                  <div className='space-y-2'>
-                    <Label className='flex items-center gap-2 text-indigo-900'>
-                      <DollarSign className='h-4 w-4 text-indigo-600' />
-                      Remaining Amount
-                    </Label>
-                    <div className='flex items-center h-10 px-3 rounded-md border border-indigo-200 bg-white text-sm text-indigo-900'>
-                      {remainingAmount.toFixed(2)}
-                    </div>
-                    <p className='text-xs text-indigo-700'>
-                      Total Tuition Fee: {selectedClass.tuitionFee.toFixed(2)}
-                    </p>
-                  </div>
-                )}
               </div>
 
               <Separator className='my-6' />
