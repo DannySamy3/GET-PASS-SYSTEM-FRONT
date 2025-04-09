@@ -5,12 +5,19 @@ import { useEffect, useState } from "react";
 import { getStudentById, editStudent } from "@/utils/studentController";
 import { getClassById } from "@/utils/classController";
 import { getSponsorById } from "@/utils/sponsorController";
-import { getstudentPayment } from "@/utils/paymentController";
+import { getstudentPayment, editPaymentById } from "@/utils/paymentController";
 import { useDispatch } from "react-redux";
 import { showToast } from "@/utils/toastSlice";
-import { FaPencilAlt, FaMoneyBillWave, FaSave, FaTimes } from "react-icons/fa";
+import {
+  FaPencilAlt,
+  FaMoneyBillWave,
+  FaSave,
+  FaTimes,
+  FaSpinner,
+} from "react-icons/fa";
 import { editImage } from "@/utils/imageController";
 import { getAllPaymentSessions } from "@/utils/paymentSessionController";
+import ToastNotification from "../toastNotification/ToastNotification";
 
 interface Props {
   id: any;
@@ -60,6 +67,7 @@ export const Details: React.FC<Props> = ({ id, setView, setDate }) => {
   const [activeSession, setActiveSession] = useState<PaymentSession | null>(
     null
   );
+  const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
 
   const dispatch = useDispatch();
 
@@ -220,9 +228,13 @@ export const Details: React.FC<Props> = ({ id, setView, setDate }) => {
     }
   };
 
-  const handlePaymentSubmit = () => {
+  const handlePaymentSubmit = async () => {
+    // Add debugging to see if the function is being called
+    console.log("handlePaymentSubmit called");
+
     // Implement your payment submission logic here
     if (!activeSession || !paymentAmount) {
+      console.log("Validation failed:", { activeSession, paymentAmount });
       dispatch(
         showToast({
           message: "Please select a session and enter payment amount",
@@ -232,28 +244,72 @@ export const Details: React.FC<Props> = ({ id, setView, setDate }) => {
       return;
     }
 
-    // Mock API call - replace with your actual payment API
-    console.log("Payment submitted:", {
-      studentId: student?._id,
-      sessionId: activeSession._id,
-      amount: parseFloat(paymentAmount),
-      paymentType: paymentType,
-    });
+    if (!student?._id) {
+      console.log("Student ID is missing");
+      dispatch(
+        showToast({
+          message: "Student information is missing",
+          type: "error",
+        })
+      );
+      return;
+    }
 
-    dispatch(
-      showToast({
-        message: "Payment recorded successfully",
-        type: "success",
-      })
-    );
+    try {
+      // Set loading state to true
+      setIsSubmitting(true);
 
-    // Reset payment form
-    setPaymentAmount("");
-    setPaymentType("");
-    setShowPaymentOptions(false);
+      // Prepare payment data
+      const paymentData = {
+        studentId: student._id,
+        sessionId: activeSession._id,
+        amount: parseFloat(paymentAmount),
+        paymentType: paymentType,
+      };
 
-    // Refresh student details to update payment information
-    getDetails();
+      console.log("Submitting payment:", paymentData);
+
+      // Call editPaymentById with the student ID and payment data
+      const response = await editPaymentById(student._id, paymentData);
+
+      console.log("Payment response:", response);
+
+      // Add a small delay before showing the toast to ensure it's visible
+      setTimeout(() => {
+        console.log("Dispatching success toast");
+        dispatch(
+          showToast({
+            message: "Payment recorded successfully",
+            type: "success",
+          })
+        );
+      }, 500);
+
+      // Reset payment form
+      setPaymentAmount("");
+      setPaymentType("");
+      setShowPaymentOptions(false);
+
+      // Refresh student details to update payment information
+      getDetails();
+    } catch (error) {
+      const err = error as { response: { data: { message: string } } };
+      console.error("Error submitting payment:", error);
+
+      // Add a small delay before showing the error toast
+      setTimeout(() => {
+        console.log("Dispatching error toast");
+        dispatch(
+          showToast({
+            message: err.response?.data?.message || "Failed to submit payment",
+            type: "error",
+          })
+        );
+      }, 500);
+    } finally {
+      // Set loading state back to false regardless of success or failure
+      setIsSubmitting(false);
+    }
   };
 
   const togglePaymentOptions = () => {
@@ -553,9 +609,6 @@ export const Details: React.FC<Props> = ({ id, setView, setDate }) => {
                             Payment Amount
                           </label>
                           <div className='relative'>
-                            <span className='absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500'>
-                              TSH
-                            </span>
                             <input
                               type='number'
                               value={paymentAmount}
@@ -573,10 +626,26 @@ export const Details: React.FC<Props> = ({ id, setView, setDate }) => {
 
                     <div className='flex justify-end mt-6'>
                       <button
-                        onClick={handlePaymentSubmit}
-                        className='w-full sm:w-auto px-6 py-3 bg-green-500 text-white rounded-md hover:bg-green-600 transition-colors flex items-center justify-center gap-2 text-base font-medium shadow-sm'
+                        onClick={() => {
+                          console.log("Submit payment button clicked");
+                          handlePaymentSubmit();
+                        }}
+                        disabled={isSubmitting}
+                        className={`w-full sm:w-auto px-6 py-3 ${
+                          isSubmitting
+                            ? "bg-gray-400"
+                            : "bg-green-500 hover:bg-green-600"
+                        } text-white rounded-md transition-colors flex items-center justify-center gap-2 text-base font-medium shadow-sm`}
                       >
-                        <FaSave /> Submit Payment
+                        {isSubmitting ? (
+                          <>
+                            <FaSpinner className='animate-spin' /> Processing...
+                          </>
+                        ) : (
+                          <>
+                            <FaSave /> Submit Payment
+                          </>
+                        )}
                       </button>
                     </div>
                   </>
@@ -586,6 +655,7 @@ export const Details: React.FC<Props> = ({ id, setView, setDate }) => {
           </div>
         )}
       </div>
+      <ToastNotification />
     </div>
   );
 };

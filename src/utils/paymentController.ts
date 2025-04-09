@@ -20,3 +20,25 @@ export const createPayment = async (data: any) => {
     throw error;
   }
 };
+
+export const editPayment = async (data: any) => {
+  try {
+    const response = await axiosInstance.patch("/getPass/payments", data);
+    return response.data;
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+};
+
+export const editPaymentById = async (id: string, data: any) => {
+  try {
+    console.log("Calling editPaymentById with ID:", id, "and data:", data);
+    const response = await axiosInstance.patch(`/getPass/payments/${id}`, data);
+    console.log("editPaymentById response:", response.data);
+    return response.data;
+  } catch (error) {
+    console.error("Error in editPaymentById:", error);
+    throw error;
+  }
+};
