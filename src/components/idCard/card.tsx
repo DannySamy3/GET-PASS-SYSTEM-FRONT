@@ -244,7 +244,9 @@ const Card: React.FC<Prop> = ({ studentId, isOpen, onClose }) => {
             "<strong>Name:</strong>",
             "Name:"
           );
+          //@ts-ignore
           nameElement.style.marginBottom = "8px";
+          //@ts-ignore
           nameElement.style.fontWeight = "normal";
         }
 
@@ -253,7 +255,9 @@ const Card: React.FC<Prop> = ({ studentId, isOpen, onClose }) => {
             "<strong>Reg No:</strong>",
             "Reg No:"
           );
+          //@ts-ignore
           regNoElement.style.marginBottom = "8px";
+          //@ts-ignore
           regNoElement.style.fontWeight = "normal";
         }
 
@@ -267,7 +271,9 @@ const Card: React.FC<Prop> = ({ studentId, isOpen, onClose }) => {
         // Replace class with program
         if (classElement) {
           classElement.innerHTML = "Programme: " + student?.className;
+          //@ts-ignore
           classElement.style.marginBottom = "8px";
+          //@ts-ignore
           classElement.style.fontWeight = "normal";
         }
 
