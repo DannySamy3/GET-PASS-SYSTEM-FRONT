@@ -16,7 +16,10 @@ import {
   FaSpinner,
 } from "react-icons/fa";
 import { editImage } from "@/utils/imageController";
-import { getAllPaymentSessions } from "@/utils/paymentSessionController";
+import {
+  getAllPaymentSessions,
+  updatePaymentSession,
+} from "@/utils/paymentSessionController";
 import ToastNotification from "../toastNotification/ToastNotification";
 
 interface Props {
@@ -68,6 +71,7 @@ export const Details: React.FC<Props> = ({ id, setView, setDate }) => {
     null
   );
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
 
   const dispatch = useDispatch();
 
@@ -82,8 +86,9 @@ export const Details: React.FC<Props> = ({ id, setView, setDate }) => {
         );
         if (active) {
           setActiveSession(active);
-          const remainingAmount = active.amount - balance;
-          setPaymentAmount(remainingAmount.toString());
+          // Don't automatically set payment amount here
+          // const remainingAmount = active.amount - balance;
+          // setPaymentAmount(remainingAmount.toString());
         }
       }
     } catch (error) {
@@ -101,6 +106,7 @@ export const Details: React.FC<Props> = ({ id, setView, setDate }) => {
 
   const getDetails = async () => {
     try {
+      setIsLoading(true);
       const result = await getStudentById(id);
 
       if (result) {
@@ -150,14 +156,16 @@ export const Details: React.FC<Props> = ({ id, setView, setDate }) => {
                 const fundedAmount = currentPayment?.amount || 0;
                 setBalance(fundedAmount);
 
-                const remainingAmount = active.amount - fundedAmount;
-                setPaymentAmount(remainingAmount.toString());
+                // Don't automatically set payment amount
+                // const remainingAmount = active.amount - fundedAmount;
+                // setPaymentAmount(remainingAmount.toString());
               } catch (paymentError) {
                 console.error("Error fetching student payment:", paymentError);
                 // If payment fetch fails, set balance to 0
                 setBalance(0);
-                const remainingAmount = active.amount;
-                setPaymentAmount(remainingAmount.toString());
+                // Don't automatically set payment amount
+                // const remainingAmount = active.amount;
+                // setPaymentAmount(remainingAmount.toString());
               }
             }
           }
@@ -183,6 +191,8 @@ export const Details: React.FC<Props> = ({ id, setView, setDate }) => {
           type: "error",
         })
       );
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -274,6 +284,32 @@ export const Details: React.FC<Props> = ({ id, setView, setDate }) => {
 
       console.log("Payment response:", response);
 
+      // Update the payment session
+      if (activeSession._id) {
+        try {
+          // Prepare session update data
+          const sessionUpdateData = {
+            sessionName: activeSession.sessionName,
+            startDate: activeSession.startDate,
+            endDate: activeSession.endDate,
+            amount: activeSession.amount,
+            activeStatus: activeSession.activeStatus,
+            grace: activeSession.grace,
+            gracePeriodDays: activeSession.gracePeriodDays,
+          };
+
+          // Call updatePaymentSession
+          const sessionResponse = await updatePaymentSession(
+            activeSession._id,
+            sessionUpdateData
+          );
+          console.log("Session update response:", sessionResponse);
+        } catch (sessionError) {
+          console.error("Error updating payment session:", sessionError);
+          // Continue with the payment process even if session update fails
+        }
+      }
+
       // Add a small delay before showing the toast to ensure it's visible
       setTimeout(() => {
         console.log("Dispatching success toast");
@@ -286,7 +322,8 @@ export const Details: React.FC<Props> = ({ id, setView, setDate }) => {
       }, 500);
 
       // Reset payment form
-      setPaymentAmount("");
+      // Don't reset payment amount here
+      // setPaymentAmount("");
       setPaymentType("");
       setShowPaymentOptions(false);
 
@@ -328,20 +365,23 @@ export const Details: React.FC<Props> = ({ id, setView, setDate }) => {
     setShowPaymentOptions(!showPaymentOptions);
     if (!showPaymentOptions) {
       fetchActiveSession();
-      // Set payment amount to the remaining amount
-      if (activeSession?.amount) {
-        const remainingAmount = activeSession.amount - balance;
-        setPaymentAmount(remainingAmount.toString());
-      }
+      // Don't automatically set payment amount here
+      // if (activeSession?.amount) {
+      //   const remainingAmount = activeSession.amount - balance;
+      //   setPaymentAmount(remainingAmount.toString());
+      // }
     } else {
-      setPaymentAmount("");
+      // Don't reset payment amount when closing
+      // setPaymentAmount("");
       setPaymentType("");
     }
   };
 
   const isPaymentDisabled = () => {
     return (
-      student?.sponsorName === "Metfund" || student?.sponsorName === "Hesbl"
+      student?.sponsorName === "Metfund" ||
+      student?.sponsorName === "Hesbl" ||
+      student?.status === "REGISTERED"
     );
   };
 
@@ -357,7 +397,8 @@ export const Details: React.FC<Props> = ({ id, setView, setDate }) => {
 
   useEffect(() => {
     if (activeSession) {
-      getDetails();
+      // Don't call getDetails here as it would reset the payment amount
+      // getDetails();
     }
   }, [activeSession]);
 
@@ -375,28 +416,37 @@ export const Details: React.FC<Props> = ({ id, setView, setDate }) => {
             Student Details
           </h2>
           <div className='flex flex-col sm:flex-row gap-2 w-full md:w-auto'>
-            <button
-              onClick={() => {
-                setView((prev: any) => ({ ...prev, view: false }));
-                setDate(false);
-              }}
-              className='w-full sm:w-auto px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600 transition-colors flex items-center justify-center gap-2'
-            >
-              <FaTimes /> Cancel
-            </button>
+            {!isLoading ? (
+              <>
+                <button
+                  onClick={() => {
+                    setView((prev: any) => ({ ...prev, view: false }));
+                    setDate(false);
+                  }}
+                  className='w-full sm:w-auto px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600 transition-colors flex items-center justify-center gap-2'
+                >
+                  <FaTimes /> Cancel
+                </button>
 
-            {!isPaymentDisabled() && (
-              <button
-                onClick={togglePaymentOptions}
-                className={`w-full sm:w-auto px-4 py-2 ${
-                  showPaymentOptions
-                    ? "bg-amber-500 hover:bg-amber-600"
-                    : "bg-blue-500 hover:bg-blue-600"
-                } text-white rounded-md transition-colors flex items-center justify-center gap-2`}
-              >
-                <FaMoneyBillWave />{" "}
-                {showPaymentOptions ? "Cancel Payment" : "Payment"}
-              </button>
+                {!isPaymentDisabled() && (
+                  <button
+                    onClick={togglePaymentOptions}
+                    className={`w-full sm:w-auto px-4 py-2 ${
+                      showPaymentOptions
+                        ? "bg-amber-500 hover:bg-amber-600"
+                        : "bg-blue-500 hover:bg-blue-600"
+                    } text-white rounded-md transition-colors flex items-center justify-center gap-2`}
+                  >
+                    <FaMoneyBillWave />{" "}
+                    {showPaymentOptions ? "Cancel Payment" : "Payment"}
+                  </button>
+                )}
+              </>
+            ) : (
+              <div className='flex items-center justify-center'>
+                <div className='animate-spin rounded-full h-6 w-6 border-t-2 border-b-2 border-blue-500'></div>
+                <span className='ml-2 text-gray-600'>Loading...</span>
+              </div>
             )}
           </div>
         </div>
@@ -610,7 +660,7 @@ export const Details: React.FC<Props> = ({ id, setView, setDate }) => {
                           </label>
                           <div className='relative'>
                             <input
-                              type='number'
+                              type='text'
                               value={paymentAmount}
                               onChange={(e) => setPaymentAmount(e.target.value)}
                               placeholder='Enter amount'
