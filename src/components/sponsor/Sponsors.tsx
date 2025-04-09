@@ -1,20 +1,7 @@
 "use client";
 
-import type React from "react";
-import { useEffect, useState } from "react";
-import { getSponsors, deleteSponsors } from "@/utils/sponsorController";
-import {
-  getAllPaymentSessions,
-  createPaymentSession,
-  updatePaymentSession,
-  deletePaymentSession,
-} from "@/utils/paymentSessionController";
-import type {
-  PaymentSession,
-  PaymentSessionResponse,
-  SinglePaymentSessionResponse,
-  CreatePaymentSessionData,
-} from "@/utils/paymentSessionController";
+import React, { useState } from "react";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   Card,
   CardContent,
@@ -22,20 +9,9 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Pencil, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { showToast } from "@/utils/toastSlice";
-import ToastNotification from "../toastNotification/ToastNotification";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { Switch } from "@/components/ui/switch";
 import { Separator } from "@/components/ui/separator";
 import {
   Table,
@@ -45,110 +21,54 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Badge } from "@/components/ui/badge";
-import { Pencil, Trash2, Plus, Save } from "lucide-react";
-import { useDispatch } from "react-redux";
-
-interface SponsorData {
-  id?: string;
-  name: string;
-  paymentSession?: string;
-  _id?: string;
-  [key: string]: string | undefined;
-}
-
-interface ApiResponse {
-  data: {
-    data: SponsorData[];
-  };
-}
-
-interface PaymentSessionWithEditing extends PaymentSession {
-  isEditing?: boolean;
-  _id?: string;
-  activeStatus?: boolean;
-  grace?: boolean;
-  graceRemainingDays?: number;
-}
+import ToastNotification from "../toastNotification/ToastNotification";
+import { useSponsors } from "@/hooks/useSponsors";
+import { SponsorForm } from "./SponsorForm";
+import { PaymentSessionForm } from "./PaymentSessionForm";
+import { PaymentSettings } from "./PaymentSettings";
+import type {
+  SponsorData,
+  NewSessionData,
+  PaymentSessionWithEditing,
+} from "@/types/sponsor.types";
 
 const Sponsors = () => {
-  const [sponsors, setSponsors] = useState<SponsorData[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  const [isEditing, setIsEditing] = useState(false);
-  const [sponsorData, setSponsorData] = useState<SponsorData>({
-    name: "",
-  });
-  const [paymentSessions, setPaymentSessions] = useState<
-    PaymentSessionWithEditing[]
-  >([]);
-  const [currentSession, setCurrentSession] = useState<string>("");
-  const [enableGracePeriod, setEnableGracePeriod] = useState(false);
-  const [gracePeriodDays, setGracePeriodDays] = useState("14");
   const [activeTab, setActiveTab] = useState("sponsors");
-  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isEditing, setIsEditing] = useState(false);
+  const [sponsorData, setSponsorData] = useState<SponsorData>({ name: "" });
   const [editingSessionId, setEditingSessionId] = useState<string | null>(null);
-  const [newSession, setNewSession] = useState({
+  const [selectedSession, setSelectedSession] =
+    useState<PaymentSessionWithEditing | null>(null);
+  const [newSession, setNewSession] = useState<NewSessionData>({
     name: "",
     startDate: "",
     endDate: "",
     amount: "",
   });
-  const [selectedSession, setSelectedSession] =
-    useState<PaymentSessionWithEditing | null>(null);
-  const dispatch = useDispatch();
+  const [enableGracePeriod, setEnableGracePeriod] = useState(false);
+  const [gracePeriodDays, setGracePeriodDays] = useState("14");
 
-  const fetchPaymentSessions = async () => {
-    try {
-      const response = await getAllPaymentSessions();
-      console.log("this is the response", response);
-      if (response?.data?.data) {
-        //@ts-ignore
-        const sessions = response.data.data.sessions.map(
-          (session: PaymentSession) => ({
-            ...session,
-            //@ts-ignore
-            _id: session._id,
-            isEditing: false,
-          })
-        );
-        setPaymentSessions(sessions);
+  const {
+    sponsors,
+    isLoading,
+    error,
+    paymentSessions,
+    currentSession,
+    isSessionUpdating,
+    isSubmitting,
+    isSavingSettings,
+    setCurrentSession,
+    handleDeleteSponsor,
+    handleAddSession,
+    handleUpdateSession,
+    handleDeleteSession,
+    setSponsors,
+    setIsSavingSettings,
+  } = useSponsors();
 
-        console.log("this is the sessions", sessions);
-        // Set the current session to the one with activeStatus true, or null if none
-        const activeSession = sessions.find(
-          (session: PaymentSessionWithEditing) => session.activeStatus === true
-        );
-
-        // console.log("this is the active session", activeSession);
-        setCurrentSession(activeSession ? activeSession._id : "");
-      }
-    } catch (error) {
-      const err = error as { response: { data: { message: string } } };
-      dispatch(
-        showToast({
-          message:
-            err.response?.data?.message || "Failed to fetch payment sessions",
-          type: "error",
-        })
-      );
-    }
-  };
-  console.log("this is current session", currentSession);
-  const fetchSponsors = async () => {
-    try {
-      setIsLoading(true);
-      setError(null);
-      const response = (await getSponsors()) as ApiResponse;
-      if (response && response.data) {
-        setSponsors(response.data.data || []);
-      }
-    } catch (error) {
-      setError("Failed to fetch sponsors. Please try again later.");
-      console.error("Error fetching sponsors:", error);
-    } finally {
-      setIsLoading(false);
-    }
+  const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = event.target;
+    setSponsorData((prev) => ({ ...prev, [name]: value }));
   };
 
   const handleCreateOrUpdateSponsor = () => {
@@ -159,8 +79,8 @@ const Sponsors = () => {
 
     if (isEditing && sponsorData.id) {
       // Update existing sponsor
-      setSponsors((prev) =>
-        prev.map((sponsor) =>
+      setSponsors((prev: SponsorData[]) =>
+        prev.map((sponsor: SponsorData) =>
           sponsor._id === sponsorData.id
             ? {
                 ...sponsor,
@@ -173,12 +93,12 @@ const Sponsors = () => {
       alert("Sponsor updated successfully!");
     } else {
       // Create new sponsor
-      const newSponsor = {
+      const newSponsor: SponsorData = {
         _id: Date.now().toString(),
         name: sponsorData.name,
         paymentSession: currentSession,
       };
-      setSponsors((prev) => [...prev, newSponsor]);
+      setSponsors((prev: SponsorData[]) => [...prev, newSponsor]);
       alert("Sponsor created successfully!");
     }
     resetForm();
@@ -197,159 +117,131 @@ const Sponsors = () => {
     }
   };
 
-  const handleDelete = async (id: string) => {
-    try {
-      await deleteSponsors(id);
-      setSponsors((prev) => prev.filter((sponsor) => sponsor._id !== id));
-      dispatch(
-        // @ts-ignore
-        showToast({ message: response.data.message, type: "success" })
-      );
-      // alert("Sponsor deleted successfully");
-    } catch (error) {
-      const err = error as { response: { data: { message: string } } };
-      dispatch(
-        showToast({ message: err.response?.data?.message, type: "error" })
-      );
-    }
-  };
-
   const resetForm = () => {
     setSponsorData({ name: "" });
     setIsEditing(false);
   };
 
-  const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = event.target;
-    setSponsorData((prev) => ({ ...prev, [name]: value }));
+  const handleSessionChange = (field: keyof NewSessionData, value: string) => {
+    setNewSession((prev) => ({
+      ...prev,
+      [field]: value,
+    }));
   };
 
-  const handleAddSession = async () => {
-    try {
-      setIsSubmitting(true);
-
-      // Validate required fields
-      if (!newSession.name.trim()) {
-        dispatch(
-          showToast({
-            message: "Session name is required",
-            type: "error",
-          })
-        );
-        return;
-      }
-
-      if (!newSession.startDate || !newSession.endDate) {
-        dispatch(
-          showToast({
-            message: "Start date and end date are required",
-            type: "error",
-          })
-        );
-        return;
-      }
-
-      const amount = Number(newSession.amount);
-      if (isNaN(amount) || amount <= 0) {
-        dispatch(
-          showToast({
-            message: "Amount must be greater than 0",
-            type: "error",
-          })
-        );
-        return;
-      }
-
-      const response = await createPaymentSession({
-        sessionName: newSession.name,
-        startDate: newSession.startDate,
-        endDate: newSession.endDate,
-        amount: amount,
-      });
-      console.log("this is the response", response);
-      if (response?.status === 201) {
-        //@ts-ignore
-        const sessionData = response.data.data.session;
-        console.log("this is the session data", sessionData);
-
-        // Ensure both id and _id are set to the same value
-        const sessionId = sessionData._id;
-
-        const createdSession: PaymentSessionWithEditing = {
-          id: sessionId,
-          _id: sessionId,
-          sessionName: sessionData.sessionName,
-          startDate: sessionData.startDate,
-          endDate: sessionData.endDate,
-          amount: sessionData.amount,
-          isEditing: false,
-        };
-
-        dispatch(
-          showToast({
-            message: "Payment session created successfully",
-            type: "success",
-          })
-        );
-        setPaymentSessions((prev) => [...prev, createdSession]);
-        setNewSession({
-          name: "",
-          startDate: "",
-          endDate: "",
-          amount: "",
-        });
-      }
-    } catch (error) {
-      const err = error as { response: { data: { message: string } } };
-      console.log("this is the error", err);
-      dispatch(
-        showToast({
-          message:
-            err.response?.data?.message || "Failed to create payment session",
-          type: "error",
-        })
-      );
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
-
-  const handleAmountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value;
-    // Only allow numbers and empty string
-    if (value === "" || /^\d+$/.test(value)) {
-      setNewSession((prev) => ({
-        ...prev,
-        amount: value,
-      }));
-    }
-  };
-
-  const handleSessionChange = (
+  const handleSelectedSessionChange = (
     field: keyof PaymentSessionWithEditing,
     value: string | number
   ) => {
     if (!selectedSession) return;
+    setSelectedSession((prev) => ({
+      ...prev!,
+      [field]: value,
+    }));
+  };
 
-    const updatedSession = { ...selectedSession };
+  const handleEditSession = (sessionId: string) => {
+    const session = paymentSessions.find((s) => s._id === sessionId);
+    if (session) {
+      const formattedSession = {
+        ...session,
+        startDate: new Date(session.startDate).toISOString().split("T")[0],
+        endDate: new Date(session.endDate).toISOString().split("T")[0],
+      };
+      setEditingSessionId(sessionId);
+      setSelectedSession(formattedSession);
+    }
+  };
 
-    if (field === "amount") {
-      const amount = Number(value);
-      if (isNaN(amount)) {
-        dispatch(
-          showToast({
-            message: "Input should be a number",
-            type: "error",
-          })
-        );
+  const handleCancelEdit = () => {
+    setEditingSessionId(null);
+    setSelectedSession(null);
+  };
+
+  const handleSaveSession = async () => {
+    if (!selectedSession) return;
+
+    try {
+      const updateData = {
+        sessionName: selectedSession.sessionName,
+        startDate: selectedSession.startDate,
+        endDate: selectedSession.endDate,
+        amount: Number(selectedSession.amount),
+      };
+      await handleUpdateSession(selectedSession._id!, updateData);
+      setEditingSessionId(null);
+      setSelectedSession(null);
+    } catch (error) {
+      console.error("Failed to update session:", error);
+    }
+  };
+
+  const handleCurrentSessionChange = async (sessionId: string) => {
+    try {
+      const sessionToActivate = paymentSessions.find(
+        (session) => session._id === sessionId || session.id === sessionId
+      );
+
+      if (!sessionToActivate) {
         return;
       }
-      updatedSession.amount = amount;
-    } else {
-      (updatedSession[field] as any) = value;
-    }
 
-    setSelectedSession(updatedSession);
+      const updateData = {
+        sessionName: sessionToActivate.sessionName,
+        startDate: sessionToActivate.startDate,
+        endDate: sessionToActivate.endDate,
+        amount: Number(sessionToActivate.amount),
+        activeStatus: true,
+      };
+
+      setCurrentSession(sessionId);
+      const sessionIdToUse = sessionToActivate._id || sessionToActivate.id;
+      await handleUpdateSession(sessionIdToUse, updateData);
+    } catch (error) {
+      setCurrentSession("");
+      console.error("Failed to update active session:", error);
+    }
+  };
+
+  const handleGracePeriodChange = (checked: boolean) => {
+    setEnableGracePeriod(checked);
+  };
+
+  const handleGracePeriodDaysChange = (value: string) => {
+    setGracePeriodDays(value);
+  };
+
+  const handleSubmitPaymentSessions = async () => {
+    try {
+      if (!currentSession) {
+        return;
+      }
+
+      const currentSessionData = paymentSessions.find(
+        (session) => session._id === currentSession
+      );
+
+      if (!currentSessionData) {
+        return;
+      }
+
+      setIsSavingSettings(true);
+      const updateData = {
+        sessionName: currentSessionData.sessionName,
+        startDate: currentSessionData.startDate,
+        endDate: currentSessionData.endDate,
+        amount: currentSessionData.amount,
+        grace: enableGracePeriod,
+        gracePeriodDays: enableGracePeriod
+          ? Number(gracePeriodDays)
+          : undefined,
+      };
+
+      await handleUpdateSession(currentSession, updateData);
+      setIsSavingSettings(false);
+    } catch (error) {
+      console.error("Failed to update payment settings:", error);
+    }
   };
 
   const getSessionName = (id: string | undefined) => {
@@ -361,265 +253,6 @@ const Sponsors = () => {
   const formatCurrency = (amount: number) => {
     return new Intl.NumberFormat("en-US").format(amount);
   };
-
-  const handleSubmitPaymentSessions = async () => {
-    try {
-      setIsSubmitting(true);
-
-      if (!currentSession) {
-        dispatch(
-          showToast({
-            message: "Please select a session first",
-            type: "error",
-          })
-        );
-        return;
-      }
-
-      const currentSessionData = paymentSessions.find(
-        (session) => session._id === currentSession
-      );
-
-      if (!currentSessionData) {
-        dispatch(
-          showToast({
-            message: "Session not found",
-            type: "error",
-          })
-        );
-        return;
-      }
-
-      const response = await updatePaymentSession(currentSession, {
-        sessionName: currentSessionData.sessionName,
-        startDate: currentSessionData.startDate,
-        endDate: currentSessionData.endDate,
-        amount: currentSessionData.amount,
-        grace: enableGracePeriod,
-        gracePeriodDays: enableGracePeriod
-          ? Number(gracePeriodDays)
-          : undefined,
-      });
-
-      if (response?.data?.data) {
-        // Update the local state to reflect the change
-        setPaymentSessions((prev) =>
-          prev.map((session) =>
-            session._id === currentSession
-              ? {
-                  ...session,
-                  grace: enableGracePeriod,
-                  graceRemainingDays: enableGracePeriod
-                    ? Number(gracePeriodDays)
-                    : undefined,
-                }
-              : session
-          )
-        );
-
-        dispatch(
-          showToast({
-            message: "Payment settings updated successfully",
-            type: "success",
-          })
-        );
-      }
-    } catch (error) {
-      // Reset the grace period switch to its original state
-      const currentSessionData = paymentSessions.find(
-        (session) => session._id === currentSession
-      );
-      if (currentSessionData) {
-        setEnableGracePeriod(currentSessionData.grace || false);
-      }
-
-      const err = error as { response: { data: { message: string } } };
-      dispatch(
-        showToast({
-          message:
-            err.response?.data?.message || "Failed to update payment settings",
-          type: "error",
-        })
-      );
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
-
-  const handleEditSession = (sessionId: string) => {
-    //@ts-ignore
-    const session = paymentSessions.find((s) => s._id === sessionId);
-    // console.log("this is the session", paymentSessions);
-    if (session) {
-      // Format the dates to YYYY-MM-DD for the input fields
-      const formattedSession = {
-        ...session,
-        startDate: new Date(session.startDate).toISOString().split("T")[0],
-        endDate: new Date(session.endDate).toISOString().split("T")[0],
-      };
-      setEditingSessionId(sessionId);
-      setSelectedSession(formattedSession);
-    }
-  };
-
-  const handleDeleteSession = async (sessionId: string) => {
-    // if (
-    //   window.confirm("Are you sure you want to delete this payment session?")
-    // ) {
-    try {
-      const response = await deletePaymentSession(sessionId);
-
-      if (response?.status === 204) {
-        setPaymentSessions((prev) => prev.filter((s) => s._id !== sessionId));
-        setCurrentSession("");
-        // Update the local state to remove the deleted session
-        dispatch(
-          showToast({
-            message: "Payment session deleted successfully",
-            type: "success",
-          })
-        );
-      }
-    } catch (error) {
-      const err = error as { response: { data: { message: string } } };
-      dispatch(
-        showToast({
-          message:
-            err.response?.data?.message || "Failed to delete payment session",
-          type: "error",
-        })
-      );
-    }
-  };
-
-  const handleSaveSession = async () => {
-    if (!selectedSession) return;
-
-    try {
-      const updateData: CreatePaymentSessionData = {
-        sessionName: selectedSession.sessionName,
-        startDate: selectedSession.startDate,
-        endDate: selectedSession.endDate,
-        amount: Number(selectedSession.amount),
-      };
-      const response = await updatePaymentSession(
-        //@ts-ignore
-        selectedSession._id,
-        updateData
-      );
-      if (response?.data?.data) {
-        setPaymentSessions((prev) =>
-          prev.map((s) =>
-            //@ts-ignore
-            s._id === selectedSession._id ? selectedSession : s
-          )
-        );
-        setEditingSessionId(null);
-        setSelectedSession(null);
-        dispatch(
-          showToast({
-            message: "Payment session updated successfully",
-            type: "success",
-          })
-        );
-      }
-    } catch (error) {
-      const err = error as { response: { data: { message: string } } };
-      dispatch(
-        showToast({
-          message:
-            err.response?.data?.message || "Failed to update payment session",
-          type: "error",
-        })
-      );
-    }
-  };
-
-  const handleCancelEdit = () => {
-    setEditingSessionId(null);
-    setSelectedSession(null);
-  };
-
-  const handleCurrentSessionChange = async (sessionId: string) => {
-    console.log("this is the session id", sessionId);
-    try {
-      // Find the session to activate - check both _id and id properties
-      const sessionToActivate = paymentSessions.find(
-        (session) => session._id === sessionId || session.id === sessionId
-      );
-
-      console.log("this is the session to activate", sessionToActivate);
-      if (!sessionToActivate) {
-        dispatch(
-          showToast({
-            message: "Session not found. Please try again.",
-            type: "error",
-          })
-        );
-        return;
-      }
-
-      // Update the session to active
-      const updateData: CreatePaymentSessionData = {
-        sessionName: sessionToActivate.sessionName,
-        startDate: sessionToActivate.startDate,
-        endDate: sessionToActivate.endDate,
-        amount: Number(sessionToActivate.amount),
-        activeStatus: true,
-      };
-
-      // First, set the current session immediately for better UX
-      setCurrentSession(sessionId);
-
-      // Use either _id or id for the update
-      const sessionIdToUse = sessionToActivate._id || sessionToActivate.id;
-
-      const response = await updatePaymentSession(sessionIdToUse, updateData);
-
-      if (response?.data?.data) {
-        // Fetch the latest sessions to ensure we have the correct active status
-        await fetchPaymentSessions();
-
-        dispatch(
-          showToast({
-            message: "Active session updated successfully",
-            type: "success",
-          })
-        );
-      }
-    } catch (error) {
-      // Revert the current session if there's an error
-      setCurrentSession("");
-      const err = error as { response: { data: { message: string } } };
-      dispatch(
-        showToast({
-          message:
-            err.response?.data?.message || "Failed to update active session",
-          type: "error",
-        })
-      );
-    }
-  };
-
-  const handleGracePeriodChange = (checked: boolean) => {
-    setEnableGracePeriod(checked);
-  };
-
-  useEffect(() => {
-    fetchSponsors();
-    fetchPaymentSessions();
-  }, []);
-
-  useEffect(() => {
-    if (currentSession) {
-      const currentSessionData = paymentSessions.find(
-        (session) => session._id === currentSession
-      );
-      setEnableGracePeriod(currentSessionData?.grace || false);
-    }
-  }, [currentSession, paymentSessions]);
-
-  console.log("this is the current session", currentSession);
 
   return (
     <div className='min-h-screen'>
@@ -647,64 +280,13 @@ const Sponsors = () => {
           </TabsList>
 
           <TabsContent value='sponsors' className='space-y-6 mt-6'>
-            <Card className='border-gray-200 shadow-sm'>
-              <CardHeader className='bg-gradient-to-r from-gray-100 to-white text-gray-800 rounded-t-lg border-b'>
-                <CardTitle>
-                  {isEditing ? "Edit Sponsor" : "Add New Sponsor"}
-                </CardTitle>
-                <CardDescription className='text-gray-600'>
-                  {isEditing
-                    ? "Update the sponsor information below"
-                    : "Enter the details to add a new sponsor"}
-                </CardDescription>
-              </CardHeader>
-              <CardContent className='pt-6'>
-                <div className='grid gap-4'>
-                  <div className='grid grid-cols-1 gap-4'>
-                    <div className='space-y-2'>
-                      <Label htmlFor='name' className='text-gray-700'>
-                        Sponsor Name
-                      </Label>
-                      <Input
-                        id='name'
-                        name='name'
-                        value={sponsorData.name}
-                        onChange={handleInputChange}
-                        placeholder='Enter sponsor name'
-                        className='border-gray-300 focus:border-gray-400'
-                      />
-                    </div>
-                  </div>
-                  <div className='flex justify-end space-x-2'>
-                    {isEditing && (
-                      <Button
-                        variant='outline'
-                        onClick={resetForm}
-                        className='border-gray-300 text-gray-700 hover:bg-gray-100'
-                      >
-                        Cancel
-                      </Button>
-                    )}
-                    <Button
-                      onClick={handleCreateOrUpdateSponsor}
-                      className='bg-gray-200 hover:bg-gray-300 text-gray-800'
-                    >
-                      {isEditing ? (
-                        <>
-                          <Save className='mr-2 h-4 w-4' />
-                          Save Changes
-                        </>
-                      ) : (
-                        <>
-                          <Plus className='mr-2 h-4 w-4' />
-                          Add Sponsor
-                        </>
-                      )}
-                    </Button>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
+            <SponsorForm
+              sponsorData={sponsorData}
+              isEditing={isEditing}
+              onInputChange={handleInputChange}
+              onSubmit={handleCreateOrUpdateSponsor}
+              onCancel={resetForm}
+            />
 
             <Card className='border-gray-200 shadow-sm'>
               <CardHeader className='bg-gradient-to-r from-gray-100 to-white text-gray-800 rounded-t-lg border-b'>
@@ -810,7 +392,9 @@ const Sponsors = () => {
                                     <Button
                                       variant='outline'
                                       size='icon'
-                                      onClick={() => handleDelete(sponsor._id!)}
+                                      onClick={() =>
+                                        handleDeleteSponsor(sponsor._id!)
+                                      }
                                       className='border-red-300 text-red-600 hover:bg-red-50 h-7 w-7 sm:h-8 sm:w-8'
                                     >
                                       <Trash2 className='h-3 w-3 sm:h-4 sm:w-4' />
@@ -838,136 +422,19 @@ const Sponsors = () => {
                 </CardDescription>
               </CardHeader>
               <CardContent className='space-y-6 pt-6'>
-                <div className='space-y-4'>
-                  {/* Session Form */}
-                  <div className='grid grid-cols-1 md:grid-cols-4 gap-4 p-4 border border-gray-200 rounded-md bg-gray-50'>
-                    <div className='space-y-2'>
-                      <Label htmlFor='session-name' className='text-gray-700'>
-                        Session Name
-                      </Label>
-                      <Input
-                        id='session-name'
-                        value={selectedSession?.sessionName || newSession.name}
-                        onChange={(e) =>
-                          selectedSession
-                            ? handleSessionChange("sessionName", e.target.value)
-                            : setNewSession((prev) => ({
-                                ...prev,
-                                name: e.target.value,
-                              }))
-                        }
-                        placeholder='Enter session name'
-                        className='border-gray-300 focus:border-gray-400 bg-white'
-                      />
-                    </div>
-                    <div className='space-y-2'>
-                      <Label htmlFor='start-date' className='text-gray-700'>
-                        Start Date
-                      </Label>
-                      <Input
-                        id='start-date'
-                        type='date'
-                        value={
-                          selectedSession?.startDate || newSession.startDate
-                        }
-                        onChange={(e) =>
-                          selectedSession
-                            ? handleSessionChange("startDate", e.target.value)
-                            : setNewSession((prev) => ({
-                                ...prev,
-                                startDate: e.target.value,
-                              }))
-                        }
-                        className='border-gray-300 focus:border-gray-400 bg-white'
-                      />
-                    </div>
-                    <div className='space-y-2'>
-                      <Label htmlFor='end-date' className='text-gray-700'>
-                        End Date
-                      </Label>
-                      <Input
-                        id='end-date'
-                        type='date'
-                        value={selectedSession?.endDate || newSession.endDate}
-                        onChange={(e) =>
-                          selectedSession
-                            ? handleSessionChange("endDate", e.target.value)
-                            : setNewSession((prev) => ({
-                                ...prev,
-                                endDate: e.target.value,
-                              }))
-                        }
-                        className='border-gray-300 focus:border-gray-400 bg-white'
-                      />
-                    </div>
-                    <div className='space-y-2'>
-                      <Label htmlFor='amount' className='text-gray-700'>
-                        Amount
-                      </Label>
-                      <div className='relative'>
-                        <Input
-                          id='amount'
-                          type='text'
-                          value={selectedSession?.amount || newSession.amount}
-                          onChange={(e) =>
-                            selectedSession
-                              ? handleSessionChange("amount", e.target.value)
-                              : setNewSession((prev) => ({
-                                  ...prev,
-                                  amount: e.target.value,
-                                }))
-                          }
-                          className='border-gray-300 focus:border-gray-400 bg-white pl-8'
-                          min='0'
-                          step='1000'
-                          placeholder='Enter amount'
-                        />
-                        <span className='absolute left-3 top-1/2 -translate-y-1/2 text-gray-600'>
-                          $
-                        </span>
-                      </div>
-                      {/* <p className='text-xs text-gray-600'>
-                        {formatCurrency(
-                          selectedSession?.amount || newSession.amount
-                        )}
-                        /=
-                      </p> */}
-                    </div>
-                  </div>
-
-                  <div className='flex justify-end space-x-2 mt-4'>
-                    {selectedSession && (
-                      <Button
-                        variant='outline'
-                        onClick={handleCancelEdit}
-                        className='border-gray-300 text-gray-700 hover:bg-gray-100'
-                      >
-                        Cancel
-                      </Button>
-                    )}
-                    <Button
-                      onClick={
-                        selectedSession ? handleSaveSession : handleAddSession
-                      }
-                      className='bg-blue-600 hover:bg-blue-700 text-white'
-                      disabled={isSubmitting}
-                    >
-                      {isSubmitting ? (
-                        <>
-                          <span className='animate-spin mr-2'>⏳</span>
-                          {selectedSession ? "Saving..." : "Creating..."}
-                        </>
-                      ) : (
-                        <>
-                          <Save className='mr-2 h-4 w-4' />
-                          {selectedSession
-                            ? "Save Changes"
-                            : "Add Payment Session"}
-                        </>
-                      )}
-                    </Button>
-                  </div>
-                </div>
+                <PaymentSessionForm
+                  newSession={newSession}
+                  selectedSession={selectedSession}
+                  isSubmitting={isSubmitting}
+                  onSessionChange={handleSessionChange}
+                  onSelectedSessionChange={handleSelectedSessionChange}
+                  onSubmit={
+                    selectedSession
+                      ? handleSaveSession
+                      : () => handleAddSession(newSession)
+                  }
+                  onCancel={handleCancelEdit}
+                />
 
                 <Separator className='my-6 bg-gray-200' />
 
@@ -1011,8 +478,6 @@ const Sponsors = () => {
                         {paymentSessions.map((session) => {
                           const startDate = new Date(session.startDate);
                           const endDate = new Date(session.endDate);
-                          const today = new Date();
-                          //@ts-ignore
                           const isActive = session.activeStatus;
 
                           return (
@@ -1044,9 +509,6 @@ const Sponsors = () => {
                                   <span className='font-medium'>
                                     {formatCurrency(session.amount)}
                                   </span>
-                                  {/* <span className='text-xs text-gray-500'>
-                                    USD
-                                  </span> */}
                                 </div>
                               </TableCell>
                               <TableCell>
@@ -1088,8 +550,7 @@ const Sponsors = () => {
                                     variant='outline'
                                     size='icon'
                                     onClick={() =>
-                                      //@ts-ignore
-                                      handleEditSession(session._id)
+                                      handleEditSession(session._id!)
                                     }
                                     className='border-blue-300 text-blue-600 hover:bg-blue-50 h-7 w-7'
                                   >
@@ -1099,8 +560,7 @@ const Sponsors = () => {
                                     variant='outline'
                                     size='icon'
                                     onClick={() =>
-                                      //@ts-ignore
-                                      handleDeleteSession(session._id)
+                                      handleDeleteSession(session._id!)
                                     }
                                     className='border-red-300 text-red-600 hover:bg-red-50 h-7 w-7'
                                   >
@@ -1118,118 +578,18 @@ const Sponsors = () => {
 
                 <Separator className='my-6 bg-gray-200' />
 
-                <div className='space-y-6'>
-                  <div className='space-y-2 bg-gray-50 p-4 rounded-md border border-gray-200'>
-                    <Label htmlFor='current-session' className='text-gray-700'>
-                      Current Payment Session
-                    </Label>
-                    <Select
-                      value={currentSession}
-                      onValueChange={(value) =>
-                        handleCurrentSessionChange(value)
-                      }
-                    >
-                      <SelectTrigger
-                        id='current-session'
-                        className='border-gray-300 focus:ring-gray-400'
-                      >
-                        <SelectValue placeholder='Please select a session'>
-                          {currentSession ? (
-                            <>
-                              {
-                                paymentSessions.find(
-                                  (session) => session._id === currentSession
-                                )?.sessionName
-                              }
-                            </>
-                          ) : (
-                            "Please select a session"
-                          )}
-                        </SelectValue>
-                      </SelectTrigger>
-                      <SelectContent className='border-gray-200'>
-                        {paymentSessions.map((session) => (
-                          <SelectItem
-                            key={session._id!}
-                            value={session._id!}
-                            className={
-                              session._id === currentSession
-                                ? "bg-green-50"
-                                : ""
-                            }
-                          >
-                            {session.sessionName} -{" "}
-                            {formatCurrency(session.amount)}/=
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                    <p className='text-sm text-gray-600 mt-1'>
-                      This is the active payment session for students
-                    </p>
-                  </div>
-
-                  <Separator className='my-6 bg-gray-200' />
-
-                  <div className='space-y-4 bg-gray-50 p-4 rounded-md border border-gray-200'>
-                    <div className='flex items-center justify-between'>
-                      <div>
-                        <Label
-                          htmlFor='grace-period-switch'
-                          className='text-gray-700'
-                        >
-                          Enable Grace Period
-                        </Label>
-                        <p className='text-sm text-gray-600'>
-                          Allow payments to be delayed for a specified period
-                        </p>
-                      </div>
-                      <Switch
-                        id='grace-period-switch'
-                        checked={enableGracePeriod}
-                        onCheckedChange={handleGracePeriodChange}
-                        className='data-[state=checked]:bg-gray-300'
-                      />
-                    </div>
-
-                    {enableGracePeriod && (
-                      <div className='space-y-2 pl-4 border-l-2 border-gray-300'>
-                        <Label htmlFor='grace-days' className='text-gray-700'>
-                          Grace Period (Days)
-                        </Label>
-                        <Input
-                          id='grace-days'
-                          type='number'
-                          min='1'
-                          max='90'
-                          value={gracePeriodDays}
-                          onChange={(e) => setGracePeriodDays(e.target.value)}
-                          className='border-gray-300 focus:border-gray-400 bg-white w-32'
-                        />
-                      </div>
-                    )}
-                  </div>
-
-                  <div className='flex justify-end'>
-                    <Button
-                      className='bg-gray-200 hover:bg-gray-300 text-gray-800'
-                      onClick={handleSubmitPaymentSessions}
-                      disabled={isSubmitting}
-                    >
-                      {isSubmitting ? (
-                        <>
-                          <span className='animate-spin mr-2'>⏳</span>
-                          Saving...
-                        </>
-                      ) : (
-                        <>
-                          <Save className='mr-2 h-4 w-4' />
-                          Save Settings
-                        </>
-                      )}
-                    </Button>
-                  </div>
-                </div>
+                <PaymentSettings
+                  paymentSessions={paymentSessions}
+                  currentSession={currentSession}
+                  enableGracePeriod={enableGracePeriod}
+                  gracePeriodDays={gracePeriodDays}
+                  isSessionUpdating={isSessionUpdating}
+                  isSavingSettings={isSavingSettings}
+                  onCurrentSessionChange={handleCurrentSessionChange}
+                  onGracePeriodChange={handleGracePeriodChange}
+                  onGracePeriodDaysChange={handleGracePeriodDaysChange}
+                  onSaveSettings={handleSubmitPaymentSessions}
+                />
               </CardContent>
             </Card>
           </TabsContent>

@@ -61,6 +61,25 @@ interface PaymentResponse {
   };
 }
 
+// Define API response types
+interface ApiResponse {
+  status: string;
+  data?: {
+    status?: string;
+    [key: string]: any;
+  };
+  [key: string]: any;
+}
+
+interface SessionResponse {
+  status: string;
+  data?: {
+    status?: string;
+    [key: string]: any;
+  };
+  [key: string]: any;
+}
+
 export const Details: React.FC<Props> = ({ id, setView, setDate }) => {
   const [student, setStudent] = useState<any>();
   const [showPaymentOptions, setShowPaymentOptions] = useState(false);
@@ -72,6 +91,9 @@ export const Details: React.FC<Props> = ({ id, setView, setDate }) => {
   );
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [isPaymentInfoLoading, setIsPaymentInfoLoading] =
+    useState<boolean>(true);
+  const [remainingAmount, setRemainingAmount] = useState<number>(0);
 
   const dispatch = useDispatch();
 
@@ -107,6 +129,7 @@ export const Details: React.FC<Props> = ({ id, setView, setDate }) => {
   const getDetails = async () => {
     try {
       setIsLoading(true);
+      setIsPaymentInfoLoading(true);
       const result = await getStudentById(id);
 
       if (result) {
@@ -146,26 +169,58 @@ export const Details: React.FC<Props> = ({ id, setView, setDate }) => {
                   id
                 )) as PaymentResponse;
 
-                // console.log("Payment response:", paymentResponse);
+                console.log("Payment response:", paymentResponse);
 
                 // Extract payment data from the response structure
                 const payments = paymentResponse?.data?.payments || [];
-                const currentPayment = payments.length > 0 ? payments[0] : null;
+
+                // Find the latest payment for the active session
+                const latestPayment = payments.find(
+                  (payment: Payment) => payment.sessionId._id === active._id
+                );
+
+                // If no payment found for active session, look for the most recent payment
+                const currentPayment =
+                  latestPayment || (payments.length > 0 ? payments[0] : null);
 
                 // Set the funded amount from the payment data
                 const fundedAmount = currentPayment?.amount || 0;
                 setBalance(fundedAmount);
 
-                // Don't automatically set payment amount
-                // const remainingAmount = active.amount - fundedAmount;
-                // setPaymentAmount(remainingAmount.toString());
+                // Calculate and set the remaining amount
+                if (
+                  currentPayment &&
+                  currentPayment.remainingAmount !== undefined
+                ) {
+                  setRemainingAmount(currentPayment.remainingAmount);
+                } else {
+                  const calculatedRemaining = active.amount - fundedAmount;
+                  setRemainingAmount(calculatedRemaining);
+                }
+
+                // Set the remaining amount if available
+                if (currentPayment) {
+                  const remainingAmount = currentPayment.remainingAmount;
+                  if (remainingAmount !== undefined) {
+                    setPaymentAmount(remainingAmount.toString());
+                  } else {
+                    // Fallback calculation if remainingAmount is not provided
+                    const calculatedRemaining = active.amount - fundedAmount;
+                    setPaymentAmount(calculatedRemaining.toString());
+                  }
+                } else {
+                  // If no payment exists, set payment amount to full session amount
+                  setPaymentAmount(active.amount.toString());
+                }
               } catch (paymentError) {
                 console.error("Error fetching student payment:", paymentError);
                 // If payment fetch fails, set balance to 0
                 setBalance(0);
-                // Don't automatically set payment amount
-                // const remainingAmount = active.amount;
-                // setPaymentAmount(remainingAmount.toString());
+                // Set remaining amount to full session amount
+                if (active) {
+                  setRemainingAmount(active.amount);
+                  setPaymentAmount(active.amount.toString());
+                }
               }
             }
           }
@@ -193,6 +248,7 @@ export const Details: React.FC<Props> = ({ id, setView, setDate }) => {
       );
     } finally {
       setIsLoading(false);
+      setIsPaymentInfoLoading(false);
     }
   };
 
@@ -268,6 +324,7 @@ export const Details: React.FC<Props> = ({ id, setView, setDate }) => {
     try {
       // Set loading state to true
       setIsSubmitting(true);
+      setIsPaymentInfoLoading(true);
 
       // Prepare payment data
       const paymentData = {
@@ -280,9 +337,19 @@ export const Details: React.FC<Props> = ({ id, setView, setDate }) => {
       console.log("Submitting payment:", paymentData);
 
       // Call editPaymentById with the student ID and payment data
-      const response = await editPaymentById(student._id, paymentData);
-
+      const response = (await editPaymentById(
+        student._id,
+        paymentData
+      )) as ApiResponse;
       console.log("Payment response:", response);
+
+      // Check if the payment was successful
+      const isPaymentSuccess =
+        response?.status === "success" || response?.data?.status === "success";
+
+      if (!isPaymentSuccess) {
+        throw new Error("Payment submission failed");
+      }
 
       // Update the payment session
       if (activeSession._id) {
@@ -299,11 +366,22 @@ export const Details: React.FC<Props> = ({ id, setView, setDate }) => {
           };
 
           // Call updatePaymentSession
-          const sessionResponse = await updatePaymentSession(
+          const sessionResponse = (await updatePaymentSession(
             activeSession._id,
             sessionUpdateData
-          );
+          )) as unknown as SessionResponse;
           console.log("Session update response:", sessionResponse);
+
+          // Check if the session update was successful
+          const isSessionUpdateSuccess =
+            sessionResponse?.status === "success" ||
+            sessionResponse?.data?.status === "success";
+
+          if (!isSessionUpdateSuccess) {
+            console.warn(
+              "Session update may not have been successful, but continuing with payment process"
+            );
+          }
         } catch (sessionError) {
           console.error("Error updating payment session:", sessionError);
           // Continue with the payment process even if session update fails
@@ -322,15 +400,47 @@ export const Details: React.FC<Props> = ({ id, setView, setDate }) => {
       }, 500);
 
       // Reset payment form
-      // Don't reset payment amount here
-      // setPaymentAmount("");
       setPaymentType("");
       setShowPaymentOptions(false);
+
+      // Fetch the latest payment data to update the UI
+      try {
+        const paymentResponse = (await getstudentPayment(
+          student._id
+        )) as PaymentResponse;
+        const payments = paymentResponse?.data?.payments || [];
+
+        // Find the latest payment for the active session
+        const latestPayment = payments.find(
+          (payment: Payment) => payment.sessionId._id === activeSession._id
+        );
+
+        // If no payment found for active session, look for the most recent payment
+        const currentPayment =
+          latestPayment || (payments.length > 0 ? payments[0] : null);
+
+        // Update the balance with the latest payment amount
+        if (currentPayment) {
+          setBalance(currentPayment.amount);
+
+          // Update the remaining amount
+          if (currentPayment.remainingAmount !== undefined) {
+            setRemainingAmount(currentPayment.remainingAmount);
+          } else {
+            const calculatedRemaining =
+              activeSession.amount - currentPayment.amount;
+            setRemainingAmount(calculatedRemaining);
+          }
+        }
+      } catch (error) {
+        console.error("Error fetching updated payment data:", error);
+        // Don't show an error toast here, just log the error
+      }
 
       // Refresh student details to update payment information
       getDetails();
     } catch (error) {
-      const err = error as { response: { data: { message: string } } };
+      const err = error as { response?: { data?: { message?: string } } };
       console.error("Error submitting payment:", error);
 
       // Add a small delay before showing the error toast
@@ -346,6 +456,7 @@ export const Details: React.FC<Props> = ({ id, setView, setDate }) => {
     } finally {
       // Set loading state back to false regardless of success or failure
       setIsSubmitting(false);
+      setIsPaymentInfoLoading(false);
     }
   };
 
@@ -364,15 +475,71 @@ export const Details: React.FC<Props> = ({ id, setView, setDate }) => {
 
     setShowPaymentOptions(!showPaymentOptions);
     if (!showPaymentOptions) {
+      setIsPaymentInfoLoading(true);
       fetchActiveSession();
-      // Don't automatically set payment amount here
-      // if (activeSession?.amount) {
-      //   const remainingAmount = activeSession.amount - balance;
-      //   setPaymentAmount(remainingAmount.toString());
-      // }
+      // Fetch the latest payment data when opening payment options
+      if (student?._id) {
+        getstudentPayment(student._id)
+          .then((paymentResponse: any) => {
+            try {
+              const payments = paymentResponse?.data?.payments || [];
+
+              // Find the latest payment for the active session
+              if (activeSession) {
+                const latestPayment = payments.find(
+                  (payment: Payment) =>
+                    payment.sessionId._id === activeSession._id
+                );
+
+                // If no payment found for active session, look for the most recent payment
+                const currentPayment =
+                  latestPayment || (payments.length > 0 ? payments[0] : null);
+
+                if (currentPayment) {
+                  // Set the remaining amount if available
+                  const remainingAmount = currentPayment.remainingAmount;
+                  if (remainingAmount !== undefined) {
+                    setPaymentAmount(remainingAmount.toString());
+                    setRemainingAmount(remainingAmount);
+                  } else {
+                    // Fallback calculation if remainingAmount is not provided
+                    const fundedAmount = currentPayment.amount || 0;
+                    const calculatedRemaining =
+                      activeSession.amount - fundedAmount;
+                    setPaymentAmount(calculatedRemaining.toString());
+                    setRemainingAmount(calculatedRemaining);
+                  }
+                } else {
+                  // If no payment exists, set payment amount to full session amount
+                  setPaymentAmount(activeSession.amount.toString());
+                  setRemainingAmount(activeSession.amount);
+                }
+              }
+            } catch (parseError) {
+              console.error("Error parsing payment data:", parseError);
+              // If parsing fails, set payment amount to full session amount
+              if (activeSession) {
+                setPaymentAmount(activeSession.amount.toString());
+                setRemainingAmount(activeSession.amount);
+              }
+            }
+          })
+          .catch((error) => {
+            console.error("Error fetching payment data:", error);
+            // If payment fetch fails, set payment amount to full session amount
+            if (activeSession) {
+              setPaymentAmount(activeSession.amount.toString());
+              setRemainingAmount(activeSession.amount);
+            }
+          })
+          .finally(() => {
+            setIsPaymentInfoLoading(false);
+          });
+      } else {
+        setIsPaymentInfoLoading(false);
+      }
     } else {
       // Don't reset payment amount when closing
-      // setPaymentAmount("");
       setPaymentType("");
     }
   };
@@ -559,33 +726,41 @@ export const Details: React.FC<Props> = ({ id, setView, setDate }) => {
               Registration Status
             </label>
             <div>
-              <p className='text-sm text-gray-500 mb-2'>
-                Amount Paid: TSH {balance.toLocaleString()}
-              </p>
-              <p className='text-sm text-gray-500 mb-2'>
-                Remaining Amount: TSH{" "}
-                {activeSession?.amount
-                  ? (activeSession.amount - balance).toLocaleString()
-                  : "0"}
-              </p>
-              {student?.status === "REGISTERED" &&
-                activeSession?.amount &&
-                activeSession.amount - balance > 0 &&
-                activeSession?.grace && (
-                  <p className='text-sm text-amber-600 mb-2'>
-                    Status: Grace Period Active (
-                    {activeSession.graceRemainingDays} days remaining)
+              {isPaymentInfoLoading ? (
+                <div className='flex items-center space-x-2 py-2'>
+                  <div className='animate-spin rounded-full h-4 w-4 border-t-2 border-b-2 border-blue-500'></div>
+                  <span className='text-sm text-gray-500'>
+                    Loading payment information...
+                  </span>
+                </div>
+              ) : (
+                <>
+                  <p className='text-sm text-gray-500 mb-2'>
+                    Amount Paid: TSH {balance.toLocaleString()}
                   </p>
-                )}
-              <p
-                className={`text-base font-semibold ${
-                  student?.status === "NOT REGISTERED"
-                    ? "text-red-600"
-                    : "text-green-600"
-                }`}
-              >
-                {student?.status}
-              </p>
+                  <p className='text-sm text-gray-500 mb-2'>
+                    Remaining Amount: TSH {remainingAmount.toLocaleString()}
+                  </p>
+                  {student?.status === "REGISTERED" &&
+                    activeSession?.amount &&
+                    remainingAmount > 0 &&
+                    activeSession?.grace && (
+                      <p className='text-sm text-amber-600 mb-2'>
+                        Status: Grace Period Active (
+                        {activeSession.graceRemainingDays} days remaining)
+                      </p>
+                    )}
+                  <p
+                    className={`text-base font-semibold ${
+                      student?.status === "NOT REGISTERED"
+                        ? "text-red-600"
+                        : "text-green-600"
+                    }`}
+                  >
+                    {student?.status}
+                  </p>
+                </>
+              )}
             </div>
           </div>
         </div>
