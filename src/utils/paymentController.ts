@@ -1,13 +1,9 @@
 import axiosInstance from "./axioInstance";
 
-export const getstudentPaymentById = async (
-  studentId: string,
-  sessionId: string
-) => {
+export const getstudentPayment = async (studentId: string) => {
   try {
-    const response = await axiosInstance.get(
-      `/getPass/payments/student/${studentId}/${sessionId}`
-    );
+    console.log("Fetching payments for student ID:", studentId);
+    const response = await axiosInstance.get(`/getPass/payments/${studentId}`);
     return response.data;
   } catch (error) {
     console.log(error);

@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 import { getStudentById, editStudent } from "@/utils/studentController";
 import { getClassById } from "@/utils/classController";
 import { getSponsorById } from "@/utils/sponsorController";
-import { getstudentPaymentById } from "@/utils/paymentController";
+import { getstudentPayment } from "@/utils/paymentController";
 import { useDispatch } from "react-redux";
 import { showToast } from "@/utils/toastSlice";
 import { FaPencilAlt, FaMoneyBillWave, FaSave, FaTimes } from "react-icons/fa";
@@ -29,6 +29,26 @@ interface PaymentSession {
   grace?: boolean;
   gracePeriodDays?: number;
   graceRemainingDays?: number;
+}
+
+// Define payment response types
+interface Payment {
+  _id: string;
+  amount: number;
+  sessionId: PaymentSession;
+  studentId: any;
+  paymentStatus: string;
+  remainingAmount: number;
+  createdAt: string;
+  updatedAt: string;
+}
+
+interface PaymentResponse {
+  status: string;
+  results: number;
+  data: {
+    payments: Payment[];
+  };
 }
 
 export const Details: React.FC<Props> = ({ id, setView, setDate }) => {
@@ -90,11 +110,7 @@ export const Details: React.FC<Props> = ({ id, setView, setDate }) => {
           sponsorName: sponsorData?.data.data.name,
         });
 
-        // @ts-ignore
-        const fundedAmount = result.data.student.fundedAmount || 0;
-        setBalance(fundedAmount);
-
-        // Fetch active session and update payment amount
+        // Fetch active session and student payment
         try {
           const response = await getAllPaymentSessions();
           if (response?.data?.data) {
@@ -105,8 +121,36 @@ export const Details: React.FC<Props> = ({ id, setView, setDate }) => {
             );
             if (active) {
               setActiveSession(active);
-              const remainingAmount = active.amount - fundedAmount;
-              setPaymentAmount(remainingAmount.toString());
+
+              // Fetch student payment for the current session
+              try {
+                console.log(
+                  "Student ID being passed to getstudentPayment:",
+                  id
+                );
+                const paymentResponse = (await getstudentPayment(
+                  id
+                )) as PaymentResponse;
+
+                // console.log("Payment response:", paymentResponse);
+
+                // Extract payment data from the response structure
+                const payments = paymentResponse?.data?.payments || [];
+                const currentPayment = payments.length > 0 ? payments[0] : null;
+
+                // Set the funded amount from the payment data
+                const fundedAmount = currentPayment?.amount || 0;
+                setBalance(fundedAmount);
+
+                const remainingAmount = active.amount - fundedAmount;
+                setPaymentAmount(remainingAmount.toString());
+              } catch (paymentError) {
+                console.error("Error fetching student payment:", paymentError);
+                // If payment fetch fails, set balance to 0
+                setBalance(0);
+                const remainingAmount = active.amount;
+                setPaymentAmount(remainingAmount.toString());
+              }
             }
           }
         } catch (error) {
@@ -192,7 +236,7 @@ export const Details: React.FC<Props> = ({ id, setView, setDate }) => {
     console.log("Payment submitted:", {
       studentId: student?._id,
       sessionId: activeSession._id,
-      amount: paymentAmount,
+      amount: parseFloat(paymentAmount),
       paymentType: paymentType,
     });
 
@@ -207,6 +251,9 @@ export const Details: React.FC<Props> = ({ id, setView, setDate }) => {
     setPaymentAmount("");
     setPaymentType("");
     setShowPaymentOptions(false);
+
+    // Refresh student details to update payment information
+    getDetails();
   };
 
   const togglePaymentOptions = () => {
@@ -244,7 +291,7 @@ export const Details: React.FC<Props> = ({ id, setView, setDate }) => {
 
   useEffect(() => {
     getDetails();
-  }, [student?.status]);
+  }, [id]);
 
   useEffect(() => {
     if (showPaymentOptions) {
@@ -258,7 +305,7 @@ export const Details: React.FC<Props> = ({ id, setView, setDate }) => {
     }
   }, [activeSession]);
 
-  console.log("...........", student);
+  // console.log("...........", student);
 
   return (
     <div className='min-h-screen w-full font-montserrat p-4'>
