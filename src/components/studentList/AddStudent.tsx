@@ -9,6 +9,7 @@ import { addStudent } from "@/utils/studentController";
 import { useDispatch } from "react-redux";
 import { showToast } from "@/utils/toastSlice";
 import { useRouter } from "next/navigation";
+import ToastNotification from "../toastNotification/ToastNotification";
 import {
   User,
   Book,
@@ -169,17 +170,20 @@ export const AddStudent = ({
     setIsPageLoaded(true);
     try {
       const response = (await addStudent(formData)) as AddStudentResponse;
+      setIsPageLoaded(false);
+
+      console.log(".....................", response);
+
       if (response.data) {
+        // Dispatch toast before any state changes
         dispatch(
-          showToast({ message: "Student added successfully!", type: "success" })
+          showToast({
+            message: "Student added successfully!",
+            type: "success",
+          })
         );
 
-        // Wait a brief moment for the toast to be processed
-        await new Promise((resolve) => setTimeout(resolve, 100));
-
-        setIsToastShown(true);
-        setIsPageLoaded(false);
-
+        // Reset form state
         setUserInfo({
           firstName: "",
           lastName: "",
@@ -194,11 +198,16 @@ export const AddStudent = ({
           image: null,
         });
 
-        // Change view after showing toast
-        changeView(false);
+        // Wait for toast duration (typically 3000ms) before changing view
+        setTimeout(() => {
+          changeView(false);
+        }, 3000);
       }
     } catch (error) {
+      setIsPageLoaded(false);
       const err = error as { response: { data: { message: string } } };
+
+      // Dispatch error toast
       dispatch(
         showToast({
           message:
@@ -208,10 +217,6 @@ export const AddStudent = ({
         })
       );
 
-      // Wait a brief moment for the toast to be processed
-      await new Promise((resolve) => setTimeout(resolve, 100));
-
-      setIsPageLoaded(false);
       setUserInfo({
         firstName: "",
         lastName: "",
@@ -561,6 +566,7 @@ export const AddStudent = ({
           </Tabs>
         </div>
       </div>
+      <ToastNotification />
     </div>
   );
 };
