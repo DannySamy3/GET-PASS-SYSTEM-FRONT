@@ -222,319 +222,321 @@ export const AddStudent = () => {
   }, []);
 
   return (
-    <div className='min-h-screen w-full flex flex-col'>
-      <div className='flex-1 overflow-y-auto py-4 px-4'>
-        <Tabs defaultValue='sponsors' className='w-full'>
-          <TabsContent value='sponsors' className='h-full'>
-            <Card className='w-full shadow-md rounded-lg border-slate-200'>
-              <CardHeader className='bg-gradient-to-r from-indigo-50 via-blue-50 to-white text-indigo-900 rounded-t-lg border-b border-slate-200'>
-                <CardTitle>Add New Student</CardTitle>
-                <CardDescription className='text-indigo-700'>
-                  Fill in the student's information below
-                </CardDescription>
-              </CardHeader>
-              <CardContent className='p-6'>
-                <div className='grid grid-cols-1 md:grid-cols-2 gap-6'>
-                  <div className='space-y-2'>
-                    <Label
-                      htmlFor='firstName'
-                      className='flex items-center gap-2 text-indigo-900'
-                    >
-                      <User className='h-4 w-4 text-indigo-600' />
-                      First Name <span className='text-red-500'>*</span>
-                    </Label>
-                    <Input
-                      id='firstName'
-                      name='firstName'
-                      value={userInfo.firstName}
-                      onChange={handleChange}
-                      required
-                      placeholder="Enter student's first name"
-                      className='border-indigo-200 focus:border-indigo-500 focus:ring-indigo-500'
-                    />
+    <div className='min-h-screen w-full flex flex-col overflow-hidden'>
+      <div className='flex-1 overflow-y-auto'>
+        <div className='py-4 px-4'>
+          <Tabs defaultValue='sponsors' className='w-full'>
+            <TabsContent value='sponsors' className='h-full'>
+              <Card className='w-full shadow-md rounded-lg border-slate-200'>
+                <CardHeader className='bg-gradient-to-r from-indigo-50 via-blue-50 to-white text-indigo-900 rounded-t-lg border-b border-slate-200'>
+                  <CardTitle>Add New Student</CardTitle>
+                  <CardDescription className='text-indigo-700'>
+                    Fill in the student's information below
+                  </CardDescription>
+                </CardHeader>
+                <CardContent className='p-6'>
+                  <div className='grid grid-cols-1 md:grid-cols-2 gap-6'>
+                    <div className='space-y-2'>
+                      <Label
+                        htmlFor='firstName'
+                        className='flex items-center gap-2 text-indigo-900'
+                      >
+                        <User className='h-4 w-4 text-indigo-600' />
+                        First Name <span className='text-red-500'>*</span>
+                      </Label>
+                      <Input
+                        id='firstName'
+                        name='firstName'
+                        value={userInfo.firstName}
+                        onChange={handleChange}
+                        required
+                        placeholder="Enter student's first name"
+                        className='border-indigo-200 focus:border-indigo-500 focus:ring-indigo-500'
+                      />
+                    </div>
+
+                    <div className='space-y-2'>
+                      <Label
+                        htmlFor='secondName'
+                        className='flex items-center gap-2 text-indigo-900'
+                      >
+                        <User className='h-4 w-4 text-indigo-600' />
+                        Middle Name <span className='text-red-500'>*</span>
+                      </Label>
+                      <Input
+                        id='secondName'
+                        name='secondName'
+                        value={userInfo.secondName}
+                        onChange={handleChange}
+                        required
+                        placeholder="Enter student's middle name"
+                        className='border-indigo-200 focus:border-indigo-500 focus:ring-indigo-500'
+                      />
+                    </div>
+
+                    <div className='space-y-2'>
+                      <Label
+                        htmlFor='lastName'
+                        className='flex items-center gap-2 text-indigo-900'
+                      >
+                        <User className='h-4 w-4 text-indigo-600' />
+                        Surname <span className='text-red-500'>*</span>
+                      </Label>
+                      <Input
+                        id='lastName'
+                        name='lastName'
+                        value={userInfo.lastName}
+                        onChange={handleChange}
+                        required
+                        placeholder="Enter student's last name"
+                        className='border-indigo-200 focus:border-indigo-500 focus:ring-indigo-500'
+                      />
+                    </div>
+
+                    <div className='space-y-2'>
+                      <Label
+                        htmlFor='nationality'
+                        className='flex items-center gap-2 text-indigo-900'
+                      >
+                        <Flag className='h-4 w-4 text-indigo-600' />
+                        Nationality <span className='text-red-500'>*</span>
+                      </Label>
+                      <Select
+                        name='nationality'
+                        value={userInfo.nationality}
+                        onValueChange={(value) =>
+                          handleChange({
+                            target: { name: "nationality", value },
+                          } as React.ChangeEvent<HTMLSelectElement>)
+                        }
+                      >
+                        <SelectTrigger className='border-indigo-200 focus:ring-indigo-500'>
+                          <SelectValue placeholder='Select Country' />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {fetchCountries.map((country, i) => (
+                            <SelectItem key={i} value={country}>
+                              {country}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
+
+                    <div className='space-y-2'>
+                      <Label
+                        htmlFor='gender'
+                        className='flex items-center gap-2 text-indigo-900'
+                      >
+                        <Users className='h-4 w-4 text-indigo-600' />
+                        Gender <span className='text-red-500'>*</span>
+                      </Label>
+                      <Select
+                        name='gender'
+                        value={userInfo.gender}
+                        onValueChange={(value) =>
+                          handleChange({
+                            target: { name: "gender", value },
+                          } as React.ChangeEvent<HTMLSelectElement>)
+                        }
+                      >
+                        <SelectTrigger className='border-indigo-200 focus:ring-indigo-500'>
+                          <SelectValue placeholder='Select Gender' />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value='Female'>Female</SelectItem>
+                          <SelectItem value='Male'>Male</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+
+                    <div className='space-y-2'>
+                      <Label
+                        htmlFor='phoneNumber'
+                        className='flex items-center gap-2 text-indigo-900'
+                      >
+                        <Phone className='h-4 w-4 text-indigo-600' />
+                        Phone Number <span className='text-red-500'>*</span>
+                      </Label>
+                      <Input
+                        id='phoneNumber'
+                        name='phoneNumber'
+                        value={userInfo.phoneNumber}
+                        onChange={handleChange}
+                        required
+                        placeholder='Enter an active mobile number'
+                        className='border-indigo-200 focus:border-indigo-500 focus:ring-indigo-500'
+                      />
+                    </div>
+
+                    <div className='space-y-2'>
+                      <Label
+                        htmlFor='email'
+                        className='flex items-center gap-2 text-indigo-900'
+                      >
+                        <Mail className='h-4 w-4 text-indigo-600' />
+                        Email <span className='text-red-500'>*</span>
+                      </Label>
+                      <Input
+                        id='email'
+                        name='email'
+                        type='email'
+                        value={userInfo.email}
+                        onChange={handleChange}
+                        required
+                        placeholder='Enter an active email'
+                        className='border-indigo-200 focus:border-indigo-500 focus:ring-indigo-500'
+                      />
+                    </div>
+
+                    <div className='space-y-2'>
+                      <Label
+                        htmlFor='classId'
+                        className='flex items-center gap-2 text-indigo-900'
+                      >
+                        <Book className='h-4 w-4 text-indigo-600' />
+                        Class <span className='text-red-500'>*</span>
+                      </Label>
+                      <Select
+                        name='classId'
+                        value={userInfo.classId}
+                        onValueChange={(value) =>
+                          handleChange({
+                            target: { name: "classId", value },
+                          } as React.ChangeEvent<HTMLSelectElement>)
+                        }
+                      >
+                        <SelectTrigger className='border-indigo-200 focus:ring-indigo-500'>
+                          <SelectValue placeholder='Select Class' />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {classes.map((classInfo, i) => (
+                            <SelectItem key={i} value={classInfo._id}>
+                              {classInfo.name}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
+
+                    <div className='space-y-2'>
+                      <Label
+                        htmlFor='sponsorId'
+                        className='flex items-center gap-2 text-indigo-900'
+                      >
+                        <CreditCard className='h-4 w-4 text-indigo-600' />
+                        Sponsor <span className='text-red-500'>*</span>
+                      </Label>
+                      <Select
+                        name='sponsorId'
+                        value={userInfo.sponsorId}
+                        onValueChange={(value) =>
+                          handleChange({
+                            target: { name: "sponsorId", value },
+                          } as React.ChangeEvent<HTMLSelectElement>)
+                        }
+                      >
+                        <SelectTrigger className='border-indigo-200 focus:ring-indigo-500'>
+                          <SelectValue placeholder='Select Sponsor' />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {sponsors.map((sponsor, i) => (
+                            <SelectItem key={i} value={sponsor._id}>
+                              {sponsor.name}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
                   </div>
 
-                  <div className='space-y-2'>
-                    <Label
-                      htmlFor='secondName'
-                      className='flex items-center gap-2 text-indigo-900'
-                    >
-                      <User className='h-4 w-4 text-indigo-600' />
-                      Middle Name <span className='text-red-500'>*</span>
-                    </Label>
-                    <Input
-                      id='secondName'
-                      name='secondName'
-                      value={userInfo.secondName}
-                      onChange={handleChange}
-                      required
-                      placeholder="Enter student's middle name"
-                      className='border-indigo-200 focus:border-indigo-500 focus:ring-indigo-500'
-                    />
-                  </div>
+                  <Separator className='my-6' />
 
                   <div className='space-y-2'>
                     <Label
-                      htmlFor='lastName'
+                      htmlFor='image'
                       className='flex items-center gap-2 text-indigo-900'
                     >
-                      <User className='h-4 w-4 text-indigo-600' />
-                      Surname <span className='text-red-500'>*</span>
+                      <Upload className='h-4 w-4 text-indigo-600' />
+                      Student Photo
                     </Label>
-                    <Input
-                      id='lastName'
-                      name='lastName'
-                      value={userInfo.lastName}
-                      onChange={handleChange}
-                      required
-                      placeholder="Enter student's last name"
-                      className='border-indigo-200 focus:border-indigo-500 focus:ring-indigo-500'
-                    />
+                    <div className='flex items-center gap-4'>
+                      <Button
+                        type='button'
+                        variant='outline'
+                        onClick={() =>
+                          document.getElementById("image-upload")?.click()
+                        }
+                        className='w-full md:w-auto border-indigo-200 text-indigo-700 hover:bg-indigo-50 hover:border-indigo-300'
+                      >
+                        Upload Photo
+                      </Button>
+                      <input
+                        id='image-upload'
+                        name='image'
+                        type='file'
+                        accept='image/*'
+                        onChange={handleChange}
+                        className='hidden'
+                      />
+                      {userInfo.image && (
+                        <div className='flex items-center gap-2'>
+                          <img
+                            src={
+                              URL.createObjectURL(userInfo.image) ||
+                              "/placeholder.svg"
+                            }
+                            alt='Student Photo'
+                            className='h-12 w-12 rounded-full object-cover border border-indigo-200'
+                          />
+                          <span className='text-sm text-indigo-700'>
+                            {userInfo.image.name}
+                          </span>
+                        </div>
+                      )}
+                    </div>
                   </div>
 
-                  <div className='space-y-2'>
-                    <Label
-                      htmlFor='nationality'
-                      className='flex items-center gap-2 text-indigo-900'
-                    >
-                      <Flag className='h-4 w-4 text-indigo-600' />
-                      Nationality <span className='text-red-500'>*</span>
-                    </Label>
-                    <Select
-                      name='nationality'
-                      value={userInfo.nationality}
-                      onValueChange={(value) =>
-                        handleChange({
-                          target: { name: "nationality", value },
-                        } as React.ChangeEvent<HTMLSelectElement>)
-                      }
-                    >
-                      <SelectTrigger className='border-indigo-200 focus:ring-indigo-500'>
-                        <SelectValue placeholder='Select Country' />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {fetchCountries.map((country, i) => (
-                          <SelectItem key={i} value={country}>
-                            {country}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </div>
-
-                  <div className='space-y-2'>
-                    <Label
-                      htmlFor='gender'
-                      className='flex items-center gap-2 text-indigo-900'
-                    >
-                      <Users className='h-4 w-4 text-indigo-600' />
-                      Gender <span className='text-red-500'>*</span>
-                    </Label>
-                    <Select
-                      name='gender'
-                      value={userInfo.gender}
-                      onValueChange={(value) =>
-                        handleChange({
-                          target: { name: "gender", value },
-                        } as React.ChangeEvent<HTMLSelectElement>)
-                      }
-                    >
-                      <SelectTrigger className='border-indigo-200 focus:ring-indigo-500'>
-                        <SelectValue placeholder='Select Gender' />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value='Female'>Female</SelectItem>
-                        <SelectItem value='Male'>Male</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-
-                  <div className='space-y-2'>
-                    <Label
-                      htmlFor='phoneNumber'
-                      className='flex items-center gap-2 text-indigo-900'
-                    >
-                      <Phone className='h-4 w-4 text-indigo-600' />
-                      Phone Number <span className='text-red-500'>*</span>
-                    </Label>
-                    <Input
-                      id='phoneNumber'
-                      name='phoneNumber'
-                      value={userInfo.phoneNumber}
-                      onChange={handleChange}
-                      required
-                      placeholder='Enter an active mobile number'
-                      className='border-indigo-200 focus:border-indigo-500 focus:ring-indigo-500'
-                    />
-                  </div>
-
-                  <div className='space-y-2'>
-                    <Label
-                      htmlFor='email'
-                      className='flex items-center gap-2 text-indigo-900'
-                    >
-                      <Mail className='h-4 w-4 text-indigo-600' />
-                      Email <span className='text-red-500'>*</span>
-                    </Label>
-                    <Input
-                      id='email'
-                      name='email'
-                      type='email'
-                      value={userInfo.email}
-                      onChange={handleChange}
-                      required
-                      placeholder='Enter an active email'
-                      className='border-indigo-200 focus:border-indigo-500 focus:ring-indigo-500'
-                    />
-                  </div>
-
-                  <div className='space-y-2'>
-                    <Label
-                      htmlFor='classId'
-                      className='flex items-center gap-2 text-indigo-900'
-                    >
-                      <Book className='h-4 w-4 text-indigo-600' />
-                      Class <span className='text-red-500'>*</span>
-                    </Label>
-                    <Select
-                      name='classId'
-                      value={userInfo.classId}
-                      onValueChange={(value) =>
-                        handleChange({
-                          target: { name: "classId", value },
-                        } as React.ChangeEvent<HTMLSelectElement>)
-                      }
-                    >
-                      <SelectTrigger className='border-indigo-200 focus:ring-indigo-500'>
-                        <SelectValue placeholder='Select Class' />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {classes.map((classInfo, i) => (
-                          <SelectItem key={i} value={classInfo._id}>
-                            {classInfo.name}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </div>
-
-                  <div className='space-y-2'>
-                    <Label
-                      htmlFor='sponsorId'
-                      className='flex items-center gap-2 text-indigo-900'
-                    >
-                      <CreditCard className='h-4 w-4 text-indigo-600' />
-                      Sponsor <span className='text-red-500'>*</span>
-                    </Label>
-                    <Select
-                      name='sponsorId'
-                      value={userInfo.sponsorId}
-                      onValueChange={(value) =>
-                        handleChange({
-                          target: { name: "sponsorId", value },
-                        } as React.ChangeEvent<HTMLSelectElement>)
-                      }
-                    >
-                      <SelectTrigger className='border-indigo-200 focus:ring-indigo-500'>
-                        <SelectValue placeholder='Select Sponsor' />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {sponsors.map((sponsor, i) => (
-                          <SelectItem key={i} value={sponsor._id}>
-                            {sponsor.name}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </div>
-                </div>
-
-                <Separator className='my-6' />
-
-                <div className='space-y-2'>
-                  <Label
-                    htmlFor='image'
-                    className='flex items-center gap-2 text-indigo-900'
-                  >
-                    <Upload className='h-4 w-4 text-indigo-600' />
-                    Student Photo
-                  </Label>
-                  <div className='flex items-center gap-4'>
+                  <div className='mt-8 mb-8 flex justify-center'>
                     <Button
-                      type='button'
-                      variant='outline'
-                      onClick={() =>
-                        document.getElementById("image-upload")?.click()
-                      }
-                      className='w-full md:w-auto border-indigo-200 text-indigo-700 hover:bg-indigo-50 hover:border-indigo-300'
+                      onClick={addNewStudent}
+                      disabled={isPageLoaded}
+                      className='w-full md:w-1/3 bg-indigo-600 hover:bg-indigo-700 text-white'
                     >
-                      Upload Photo
+                      {isPageLoaded ? (
+                        <div className='flex items-center gap-2'>
+                          <svg
+                            className='animate-spin h-5 w-5'
+                            xmlns='http://www.w3.org/2000/svg'
+                            fill='none'
+                            viewBox='0 0 24 24'
+                          >
+                            <circle
+                              className='opacity-25'
+                              cx='12'
+                              cy='12'
+                              r='10'
+                              stroke='currentColor'
+                              strokeWidth='4'
+                            ></circle>
+                            <path
+                              className='opacity-75'
+                              fill='currentColor'
+                              d='M12 2a10 10 0 00-10 10h4a6 6 0 016-6V2z'
+                            ></path>
+                          </svg>
+                          Processing...
+                        </div>
+                      ) : (
+                        "Register Student"
+                      )}
                     </Button>
-                    <input
-                      id='image-upload'
-                      name='image'
-                      type='file'
-                      accept='image/*'
-                      onChange={handleChange}
-                      className='hidden'
-                    />
-                    {userInfo.image && (
-                      <div className='flex items-center gap-2'>
-                        <img
-                          src={
-                            URL.createObjectURL(userInfo.image) ||
-                            "/placeholder.svg"
-                          }
-                          alt='Student Photo'
-                          className='h-12 w-12 rounded-full object-cover border border-indigo-200'
-                        />
-                        <span className='text-sm text-indigo-700'>
-                          {userInfo.image.name}
-                        </span>
-                      </div>
-                    )}
                   </div>
-                </div>
-
-                <div className='mt-8 mb-4 flex justify-center'>
-                  <Button
-                    onClick={addNewStudent}
-                    disabled={isPageLoaded}
-                    className='w-full md:w-1/3 bg-indigo-600 hover:bg-indigo-700 text-white'
-                  >
-                    {isPageLoaded ? (
-                      <div className='flex items-center gap-2'>
-                        <svg
-                          className='animate-spin h-5 w-5'
-                          xmlns='http://www.w3.org/2000/svg'
-                          fill='none'
-                          viewBox='0 0 24 24'
-                        >
-                          <circle
-                            className='opacity-25'
-                            cx='12'
-                            cy='12'
-                            r='10'
-                            stroke='currentColor'
-                            strokeWidth='4'
-                          ></circle>
-                          <path
-                            className='opacity-75'
-                            fill='currentColor'
-                            d='M12 2a10 10 0 00-10 10h4a6 6 0 016-6V2z'
-                          ></path>
-                        </svg>
-                        Processing...
-                      </div>
-                    ) : (
-                      "Register Student"
-                    )}
-                  </Button>
-                </div>
-              </CardContent>
-            </Card>
-          </TabsContent>
-        </Tabs>
+                </CardContent>
+              </Card>
+            </TabsContent>
+          </Tabs>
+        </div>
       </div>
     </div>
   );
