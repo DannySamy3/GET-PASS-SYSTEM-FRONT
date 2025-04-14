@@ -572,13 +572,10 @@ export const Details: React.FC<Props> = ({ id, setView, setDate }) => {
   // console.log("...........", student);
 
   return (
-    <div className='min-h-screen w-full font-montserrat p-4 flex flex-col overflow-hidden'>
-      <div
-        className={`bg-white shadow-lg rounded-lg p-4 md:p-8 w-full flex-1 flex flex-col ${
-          showPaymentOptions ? "max-h-[90vh]" : ""
-        } overflow-y-auto`}
-      >
-        <div className='flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6 sticky top-0 bg-white z-10'>
+    <div className='h-screen w-full font-montserrat p-4 pb-8 flex flex-col overflow-hidden'>
+      <div className='bg-white shadow-lg rounded-lg p-4 md:p-8 w-full h-[calc(100%-8rem)] flex flex-col'>
+        {/* Fixed Header Section */}
+        <div className='flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6'>
           <h2 className='text-2xl md:text-3xl font-bold text-gray-700'>
             Student Details
           </h2>
@@ -618,7 +615,7 @@ export const Details: React.FC<Props> = ({ id, setView, setDate }) => {
           </div>
         </div>
 
-        {/* Student Image Section */}
+        {/* Fixed Image Section */}
         <div className='flex flex-col md:flex-row justify-center items-center my-6 relative gap-4'>
           {student?.image ? (
             <div className='flex flex-col md:flex-row items-center gap-4 relative'>
@@ -655,230 +652,240 @@ export const Details: React.FC<Props> = ({ id, setView, setDate }) => {
           )}
         </div>
 
-        {/* Student Details Grid */}
-        <div className='grid grid-cols-1 sm:grid-cols-2 gap-4 md:gap-6 mt-6'>
-          <div className='bg-gray-50 p-4 rounded-lg'>
-            <label className='text-sm text-gray-600 font-medium'>
-              Full Name
-            </label>
-            <p className='text-base font-semibold text-gray-800 break-words'>{`${
-              student?.firstName ?? ""
-            } ${student?.secondName ?? ""} ${student?.lastName ?? ""}`}</p>
-          </div>
-
-          <div className='bg-gray-50 p-4 rounded-lg'>
-            <label className='text-sm text-gray-600 font-medium'>Gender</label>
-            <p className='text-base font-semibold text-gray-800'>
-              {student?.gender}
-            </p>
-          </div>
-
-          <div className='bg-gray-50 p-4 rounded-lg'>
-            <label className='text-sm text-gray-600 font-medium'>Email</label>
-            <p className='text-base font-semibold text-gray-800 break-words'>
-              {student?.email}
-            </p>
-          </div>
-
-          <div className='bg-gray-50 p-4 rounded-lg'>
-            <label className='text-sm text-gray-600 font-medium'>
-              Phone Number
-            </label>
-            <p className='text-base font-semibold text-gray-800'>
-              {student?.phoneNumber}
-            </p>
-          </div>
-
-          <div className='bg-gray-50 p-4 rounded-lg'>
-            <label className='text-sm text-gray-600 font-medium'>
-              Nationality
-            </label>
-            <p className='text-base font-semibold text-gray-800'>
-              {student?.nationality}
-            </p>
-          </div>
-
-          <div className='bg-gray-50 p-4 rounded-lg'>
-            <label className='text-sm text-gray-600 font-medium'>Class</label>
-            <p className='text-base font-semibold text-gray-800'>
-              {student?.className}
-            </p>
-          </div>
-
-          <div className='bg-gray-50 p-4 rounded-lg'>
-            <label className='text-sm text-gray-600 font-medium'>
-              Registration Number
-            </label>
-            <p className='text-base font-semibold text-gray-800'>
-              {student?.regNo}
-            </p>
-          </div>
-
-          <div className='bg-gray-50 p-4 rounded-lg'>
-            <label className='text-sm text-gray-600 font-medium'>Sponsor</label>
-            <p className='text-base font-semibold text-gray-800'>
-              {student?.sponsorName}
-            </p>
-          </div>
-
-          <div className='bg-gray-50 p-4 rounded-lg sm:col-span-2'>
-            <label className='text-sm text-gray-600 font-medium'>
-              Registration Status
-            </label>
-            <div>
-              {isPaymentInfoLoading ? (
-                <div className='flex items-center space-x-2 py-2'>
-                  <div className='animate-spin rounded-full h-4 w-4 border-t-2 border-b-2 border-blue-500'></div>
-                  <span className='text-sm text-gray-500'>
-                    Loading payment information...
-                  </span>
-                </div>
-              ) : (
-                <>
-                  <p className='text-sm text-gray-500 mb-2'>
-                    Amount Paid: TSH {balance.toLocaleString()}
-                  </p>
-                  <p className='text-sm text-gray-500 mb-2'>
-                    Remaining Amount: TSH {remainingAmount.toLocaleString()}
-                  </p>
-                  {student?.status === "REGISTERED" &&
-                    activeSession?.amount &&
-                    remainingAmount > 0 &&
-                    activeSession?.grace && (
-                      <p className='text-sm text-amber-600 mb-2'>
-                        Status: Grace Period Active (
-                        {activeSession.graceRemainingDays} days remaining)
-                      </p>
-                    )}
-                  <p
-                    className={`text-base font-semibold ${
-                      student?.status === "NOT REGISTERED"
-                        ? "text-red-600"
-                        : "text-green-600"
-                    }`}
-                  >
-                    {student?.status}
-                  </p>
-                </>
-              )}
+        {/* Scrollable Content Section */}
+        <div className='overflow-y-auto flex-1'>
+          {/* Student Details Grid */}
+          <div className='grid grid-cols-1 sm:grid-cols-2 gap-4 md:gap-6 mt-6'>
+            <div className='bg-gray-50 p-4 rounded-lg'>
+              <label className='text-sm text-gray-600 font-medium'>
+                Full Name
+              </label>
+              <p className='text-base font-semibold text-gray-800 break-words'>{`${
+                student?.firstName ?? ""
+              } ${student?.secondName ?? ""} ${student?.lastName ?? ""}`}</p>
             </div>
-          </div>
-        </div>
 
-        {/* Payment Options Section */}
-        {showPaymentOptions && (
-          <div className='mt-4 p-4 md:p-6 bg-gray-50 rounded-lg border border-gray-200'>
-            <h3 className='text-xl font-semibold text-gray-700 mb-6 flex items-center gap-2'>
-              <FaMoneyBillWave className='text-blue-500' />
-              Payment Details
-            </h3>
+            <div className='bg-gray-50 p-4 rounded-lg'>
+              <label className='text-sm text-gray-600 font-medium'>
+                Gender
+              </label>
+              <p className='text-base font-semibold text-gray-800'>
+                {student?.gender}
+              </p>
+            </div>
 
-            {student?.sponsorName === "Hesbl" ? (
-              <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
-                <div>
-                  <label className='block text-sm font-medium text-gray-700 mb-1'>
-                    Payment Type
-                  </label>
-                  <select
-                    value={paymentType}
-                    onChange={(e) => setPaymentType(e.target.value)}
-                    className='w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500'
-                  >
-                    <option value=''>Select Payment Type</option>
-                    <option value='full'>Full Payment</option>
-                    <option value='partial'>Partial Payment</option>
-                  </select>
-                </div>
+            <div className='bg-gray-50 p-4 rounded-lg'>
+              <label className='text-sm text-gray-600 font-medium'>Email</label>
+              <p className='text-base font-semibold text-gray-800 break-words'>
+                {student?.email}
+              </p>
+            </div>
 
-                {paymentType && (
-                  <div>
-                    <label className='block text-sm font-medium text-gray-700 mb-1'>
-                      Payment Amount
-                    </label>
-                    <input
-                      type='number'
-                      value={paymentAmount}
-                      onChange={(e) => setPaymentAmount(e.target.value)}
-                      placeholder='Enter amount'
-                      className='w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500'
-                    />
+            <div className='bg-gray-50 p-4 rounded-lg'>
+              <label className='text-sm text-gray-600 font-medium'>
+                Phone Number
+              </label>
+              <p className='text-base font-semibold text-gray-800'>
+                {student?.phoneNumber}
+              </p>
+            </div>
+
+            <div className='bg-gray-50 p-4 rounded-lg'>
+              <label className='text-sm text-gray-600 font-medium'>
+                Nationality
+              </label>
+              <p className='text-base font-semibold text-gray-800'>
+                {student?.nationality}
+              </p>
+            </div>
+
+            <div className='bg-gray-50 p-4 rounded-lg'>
+              <label className='text-sm text-gray-600 font-medium'>Class</label>
+              <p className='text-base font-semibold text-gray-800'>
+                {student?.className}
+              </p>
+            </div>
+
+            <div className='bg-gray-50 p-4 rounded-lg'>
+              <label className='text-sm text-gray-600 font-medium'>
+                Registration Number
+              </label>
+              <p className='text-base font-semibold text-gray-800'>
+                {student?.regNo}
+              </p>
+            </div>
+
+            <div className='bg-gray-50 p-4 rounded-lg'>
+              <label className='text-sm text-gray-600 font-medium'>
+                Sponsor
+              </label>
+              <p className='text-base font-semibold text-gray-800'>
+                {student?.sponsorName}
+              </p>
+            </div>
+
+            <div className='bg-gray-50 p-4 rounded-lg sm:col-span-2'>
+              <label className='text-sm text-gray-600 font-medium'>
+                Registration Status
+              </label>
+              <div>
+                {isPaymentInfoLoading ? (
+                  <div className='flex items-center space-x-2 py-2'>
+                    <div className='animate-spin rounded-full h-4 w-4 border-t-2 border-b-2 border-blue-500'></div>
+                    <span className='text-sm text-gray-500'>
+                      Loading payment information...
+                    </span>
                   </div>
-                )}
-              </div>
-            ) : (
-              <div className='space-y-6'>
-                {activeSession && (
+                ) : (
                   <>
-                    <div className='bg-white p-4 rounded-lg border border-gray-200 shadow-sm'>
-                      <div className='grid grid-cols-1 md:grid-cols-2 gap-6'>
-                        <div>
-                          <label className='block text-sm font-medium text-gray-700 mb-2'>
-                            Current Session
-                          </label>
-                          <div className='bg-blue-50 p-3 rounded-md border border-blue-100'>
-                            <p className='font-medium text-gray-800 text-lg'>
-                              {activeSession.sessionName}
-                            </p>
-                            <p className='text-sm text-blue-600 mt-1 font-medium'>
-                              Required Amount: TSH{" "}
-                              {activeSession?.amount
-                                ? (
-                                    activeSession.amount - balance
-                                  ).toLocaleString()
-                                : "0"}
-                            </p>
-                          </div>
-                        </div>
-                        <div>
-                          <label className='block text-sm font-medium text-gray-700 mb-2'>
-                            Payment Amount
-                          </label>
-                          <div className='relative'>
-                            <input
-                              type='text'
-                              value={paymentAmount}
-                              onChange={(e) => setPaymentAmount(e.target.value)}
-                              placeholder='Enter amount'
-                              className='w-full pl-8 p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-lg font-medium'
-                            />
-                          </div>
-                          <p className='text-sm text-gray-500 mt-2'>
-                            Pay the remaining amount to get registered
-                          </p>
-                        </div>
-                      </div>
-                    </div>
-
-                    <div className='flex justify-end mt-6 sticky bottom-0 bg-gray-50 pb-4 z-10'>
-                      <button
-                        onClick={() => {
-                          console.log("Submit payment button clicked");
-                          handlePaymentSubmit();
-                        }}
-                        disabled={isSubmitting}
-                        className={`w-full sm:w-auto px-6 py-3 ${
-                          isSubmitting
-                            ? "bg-gray-400"
-                            : "bg-green-500 hover:bg-green-600"
-                        } text-white rounded-md transition-colors flex items-center justify-center gap-2 text-base font-medium shadow-sm`}
-                      >
-                        {isSubmitting ? (
-                          <>
-                            <FaSpinner className='animate-spin' /> Processing...
-                          </>
-                        ) : (
-                          <>
-                            <FaSave /> Submit Payment
-                          </>
-                        )}
-                      </button>
-                    </div>
+                    <p className='text-sm text-gray-500 mb-2'>
+                      Amount Paid: TSH {balance.toLocaleString()}
+                    </p>
+                    <p className='text-sm text-gray-500 mb-2'>
+                      Remaining Amount: TSH {remainingAmount.toLocaleString()}
+                    </p>
+                    {student?.status === "REGISTERED" &&
+                      activeSession?.amount &&
+                      remainingAmount > 0 &&
+                      activeSession?.grace && (
+                        <p className='text-sm text-amber-600 mb-2'>
+                          Status: Grace Period Active (
+                          {activeSession.graceRemainingDays} days remaining)
+                        </p>
+                      )}
+                    <p
+                      className={`text-base font-semibold ${
+                        student?.status === "NOT REGISTERED"
+                          ? "text-red-600"
+                          : "text-green-600"
+                      }`}
+                    >
+                      {student?.status}
+                    </p>
                   </>
                 )}
               </div>
-            )}
+            </div>
           </div>
-        )}
+
+          {/* Payment Options Section */}
+          {showPaymentOptions && (
+            <div className='mt-4 p-4 md:p-6 bg-gray-50 rounded-lg border border-gray-200'>
+              <h3 className='text-xl font-semibold text-gray-700 mb-6 flex items-center gap-2'>
+                <FaMoneyBillWave className='text-blue-500' />
+                Payment Details
+              </h3>
+
+              {student?.sponsorName === "Hesbl" ? (
+                <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
+                  <div>
+                    <label className='block text-sm font-medium text-gray-700 mb-1'>
+                      Payment Type
+                    </label>
+                    <select
+                      value={paymentType}
+                      onChange={(e) => setPaymentType(e.target.value)}
+                      className='w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500'
+                    >
+                      <option value=''>Select Payment Type</option>
+                      <option value='full'>Full Payment</option>
+                      <option value='partial'>Partial Payment</option>
+                    </select>
+                  </div>
+
+                  {paymentType && (
+                    <div>
+                      <label className='block text-sm font-medium text-gray-700 mb-1'>
+                        Payment Amount
+                      </label>
+                      <input
+                        type='number'
+                        value={paymentAmount}
+                        onChange={(e) => setPaymentAmount(e.target.value)}
+                        placeholder='Enter amount'
+                        className='w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500'
+                      />
+                    </div>
+                  )}
+                </div>
+              ) : (
+                <div className='space-y-6'>
+                  {activeSession && (
+                    <>
+                      <div className='bg-white p-4 rounded-lg border border-gray-200 shadow-sm'>
+                        <div className='grid grid-cols-1 md:grid-cols-2 gap-6'>
+                          <div>
+                            <label className='block text-sm font-medium text-gray-700 mb-2'>
+                              Current Session
+                            </label>
+                            <div className='bg-blue-50 p-3 rounded-md border border-blue-100'>
+                              <p className='font-medium text-gray-800 text-lg'>
+                                {activeSession.sessionName}
+                              </p>
+                              <p className='text-sm text-blue-600 mt-1 font-medium'>
+                                Required Amount: TSH{" "}
+                                {activeSession?.amount
+                                  ? (
+                                      activeSession.amount - balance
+                                    ).toLocaleString()
+                                  : "0"}
+                              </p>
+                            </div>
+                          </div>
+                          <div>
+                            <label className='block text-sm font-medium text-gray-700 mb-2'>
+                              Payment Amount
+                            </label>
+                            <div className='relative'>
+                              <input
+                                type='text'
+                                value={paymentAmount}
+                                onChange={(e) =>
+                                  setPaymentAmount(e.target.value)
+                                }
+                                placeholder='Enter amount'
+                                className='w-full pl-8 p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-lg font-medium'
+                              />
+                            </div>
+                            <p className='text-sm text-gray-500 mt-2'>
+                              Pay the remaining amount to get registered
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className='flex justify-end mt-6 sticky bottom-0 bg-gray-50 pb-4 z-10'>
+                        <button
+                          onClick={() => {
+                            console.log("Submit payment button clicked");
+                            handlePaymentSubmit();
+                          }}
+                          disabled={isSubmitting}
+                          className={`w-full sm:w-auto px-6 py-3 ${
+                            isSubmitting
+                              ? "bg-gray-400"
+                              : "bg-green-500 hover:bg-green-600"
+                          } text-white rounded-md transition-colors flex items-center justify-center gap-2 text-base font-medium shadow-sm`}
+                        >
+                          {isSubmitting ? (
+                            <>
+                              <FaSpinner className='animate-spin' />{" "}
+                              Processing...
+                            </>
+                          ) : (
+                            <>
+                              <FaSave /> Submit Payment
+                            </>
+                          )}
+                        </button>
+                      </div>
+                    </>
+                  )}
+                </div>
+              )}
+            </div>
+          )}
+        </div>
       </div>
       <ToastNotification />
     </div>
