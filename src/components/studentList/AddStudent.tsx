@@ -222,18 +222,18 @@ export const AddStudent = () => {
   }, []);
 
   return (
-    <div className='min-h-screen w-full py-4'>
-      <Tabs defaultValue='sponsors' className='w-full'>
-        <TabsContent value='sponsors' className='px-1'>
-          <Card className='w-full shadow-md rounded-lg border-slate-200'>
+    <div className='min-h-screen w-full py-4 flex flex-col'>
+      <Tabs defaultValue='sponsors' className='w-full flex-1'>
+        <TabsContent value='sponsors' className='px-1 h-full'>
+          <Card className='w-full shadow-md rounded-lg border-slate-200 h-full flex flex-col'>
             <CardHeader className='bg-gradient-to-r from-indigo-50 via-blue-50 to-white text-indigo-900 rounded-t-lg border-b border-slate-200'>
               <CardTitle>Add New Student</CardTitle>
               <CardDescription className='text-indigo-700'>
                 Fill in the student's information below
               </CardDescription>
             </CardHeader>
-            <CardContent className='p-6'>
-              <div className='grid grid-cols-1 md:grid-cols-2 gap-6'>
+            <CardContent className='p-6 flex-1 flex flex-col'>
+              <div className='grid grid-cols-1 md:grid-cols-2 gap-6 flex-1'>
                 <div className='space-y-2'>
                   <Label
                     htmlFor='firstName'
@@ -495,7 +495,7 @@ export const AddStudent = () => {
                 </div>
               </div>
 
-              <div className='mt-8 flex justify-center'>
+              <div className='mt-8 flex justify-center sticky bottom-0'>
                 <Button
                   onClick={addNewStudent}
                   disabled={isPageLoaded}
