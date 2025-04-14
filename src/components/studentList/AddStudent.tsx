@@ -499,7 +499,7 @@ export const AddStudent = () => {
                 <Button
                   onClick={addNewStudent}
                   disabled={isPageLoaded}
-                  className='w-full md:w-1/3 bg-indigo-600 hover:bg-indigo-700 text-white fixed bottom-4 left-1/2 -translate-x-1/2 max-w-[calc(100%-2rem)] md:static md:translate-x-0 md:max-w-none'
+                  className='w-full md:w-1/3 bg-indigo-600 hover:bg-indigo-700 text-white'
                 >
                   {isPageLoaded ? (
                     <div className='flex items-center gap-2'>
