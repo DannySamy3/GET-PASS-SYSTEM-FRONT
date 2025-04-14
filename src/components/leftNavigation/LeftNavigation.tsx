@@ -85,36 +85,38 @@ const LeftNavigation: React.FC<props> = ({
 
         {/* Logo and University Name */}
         <div
-          className={`flex items-center gap-3 ${
-            isCollapsed ? "justify-center" : ""
-          }`}
+          className={`flex flex-col items-center ${
+            isCollapsed ? "px-1" : "px-4"
+          } pt-1 pb-3`}
         >
-          <div className={`${isCollapsed ? "w-12" : "w-16"} mb-4`}>
+          <div className={`${isCollapsed ? "w-12" : "w-24"} -mt-1`}>
             <Image
               src='/logo.png'
               alt='GET PASS Logo'
-              width={131}
-              height={127}
+              width={200}
+              height={194}
               className='w-full h-full'
               priority
             />
           </div>
           {!isCollapsed && (
-            <div className='flex flex-col'>
-              <h1 className='text-lg font-semibold text-[#0066CC]'>
+            <div className='mt-1'>
+              <h1 className='text-[18px] font-bold text-[#0066CC] tracking-normal text-center'>
                 Dar es Salaam
               </h1>
-              <p className='text-sm text-gray-600'>Marine Institute (DMI)</p>
+              <p className='text-[13px] font-medium text-gray-700 -mt-1 text-center'>
+                Marine Institute (DMI)
+              </p>
             </div>
           )}
         </div>
       </div>
 
       {/* Sidebar Links */}
-      <nav className='mt-4 flex-grow'>
+      <nav className='flex-grow'>
         <ul
-          className={`flex flex-col gap-2 lg:w-auto items-center lg:block lg:mx-0 space-y-1 px-4 ${
-            isCollapsed ? "px-2" : ""
+          className={`flex flex-col gap-0.5 lg:w-auto items-center lg:block lg:mx-0 ${
+            isCollapsed ? "px-1.5" : "px-3"
           }`}
         >
           <li className='w-full lg:w-auto md:w-auto'>
