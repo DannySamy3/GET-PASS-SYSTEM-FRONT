@@ -495,11 +495,11 @@ export const AddStudent = () => {
                 </div>
               </div>
 
-              <div className='mt-8 flex justify-center sticky bottom-0'>
+              <div className='mt-8 flex justify-center'>
                 <Button
                   onClick={addNewStudent}
                   disabled={isPageLoaded}
-                  className='w-full md:w-1/3 bg-indigo-600 hover:bg-indigo-700 text-white'
+                  className='w-full md:w-1/3 bg-indigo-600 hover:bg-indigo-700 text-white fixed bottom-4 left-0 right-0 md:static md:bottom-auto md:left-auto md:right-auto'
                 >
                   {isPageLoaded ? (
                     <div className='flex items-center gap-2'>
