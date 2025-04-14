@@ -222,7 +222,7 @@ export const AddStudent = () => {
   }, []);
 
   return (
-    <div className='min-h-screen w-full py-4 flex flex-col overflow-auto'>
+    <div className='min-h-screen w-full py-4 flex flex-col overflow-auto pb-20 md:pb-4'>
       <Tabs defaultValue='sponsors' className='w-full flex-1'>
         <TabsContent value='sponsors' className='px-1 h-full'>
           <Card className='w-full shadow-md rounded-lg border-slate-200 h-full flex flex-col'>
