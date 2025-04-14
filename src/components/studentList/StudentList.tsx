@@ -218,7 +218,7 @@ export const StudentList = () => {
           )}
         </div>
 
-        {changeView && !viewDetails.view && <AddStudent />}
+        {changeView && !viewDetails.view && <AddStudent changeView={setChangeView} />}
 
         {viewDetails.view && (
           <Details

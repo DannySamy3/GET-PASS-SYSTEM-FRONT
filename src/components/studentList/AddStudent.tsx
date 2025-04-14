@@ -79,7 +79,11 @@ interface SponsorInfo {
   name: string;
 }
 
-export const AddStudent = () => {
+export const AddStudent = ({
+  changeView,
+}: {
+  changeView: (view: boolean) => void;
+}) => {
   const [userInfo, setUserInfo] = useState<UserInfo>({
     firstName: "",
     lastName: "",
@@ -229,10 +233,21 @@ export const AddStudent = () => {
             <TabsContent value='sponsors' className='h-full'>
               <Card className='w-full shadow-md rounded-lg border-slate-200'>
                 <CardHeader className='bg-gradient-to-r from-indigo-50 via-blue-50 to-white text-indigo-900 rounded-t-lg border-b border-slate-200'>
-                  <CardTitle>Add New Student</CardTitle>
-                  <CardDescription className='text-indigo-700'>
-                    Fill in the student's information below
-                  </CardDescription>
+                  <div className='flex justify-between items-center'>
+                    <div>
+                      <CardTitle>Add New Student</CardTitle>
+                      <CardDescription className='text-indigo-700'>
+                        Fill in the student's information below
+                      </CardDescription>
+                    </div>
+                    <Button
+                      onClick={() => changeView(false)}
+                      className='bg-red-500 hover:bg-red-600 text-white flex items-center gap-2 px-4 py-2 rounded-md transition-colors duration-200'
+                    >
+                      <X className='h-4 w-4' />
+                      Cancel
+                    </Button>
+                  </div>
                 </CardHeader>
                 <CardContent className='p-6'>
                   <div className='grid grid-cols-1 md:grid-cols-2 gap-6'>
