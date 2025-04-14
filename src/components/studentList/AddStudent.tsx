@@ -174,6 +174,9 @@ export const AddStudent = ({
           showToast({ message: "Student added successfully!", type: "success" })
         );
 
+        // Wait a brief moment for the toast to be processed
+        await new Promise((resolve) => setTimeout(resolve, 100));
+
         setIsToastShown(true);
         setIsPageLoaded(false);
 
@@ -191,7 +194,8 @@ export const AddStudent = ({
           image: null,
         });
 
-        router.push("/");
+        // Change view after showing toast
+        changeView(false);
       }
     } catch (error) {
       const err = error as { response: { data: { message: string } } };
@@ -203,6 +207,10 @@ export const AddStudent = ({
           type: "error",
         })
       );
+
+      // Wait a brief moment for the toast to be processed
+      await new Promise((resolve) => setTimeout(resolve, 100));
+
       setIsPageLoaded(false);
       setUserInfo({
         firstName: "",
