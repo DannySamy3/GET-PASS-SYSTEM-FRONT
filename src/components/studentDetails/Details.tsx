@@ -572,13 +572,13 @@ export const Details: React.FC<Props> = ({ id, setView, setDate }) => {
   // console.log("...........", student);
 
   return (
-    <div className='min-h-screen w-full font-montserrat p-4'>
+    <div className='min-h-screen w-full font-montserrat p-4 flex flex-col overflow-hidden'>
       <div
-        className={`bg-white shadow-lg rounded-lg p-4 md:p-8 w-full ${
-          showPaymentOptions ? "max-h-[90vh] overflow-y-auto" : ""
-        }`}
+        className={`bg-white shadow-lg rounded-lg p-4 md:p-8 w-full flex-1 flex flex-col ${
+          showPaymentOptions ? "max-h-[90vh]" : ""
+        } overflow-y-auto`}
       >
-        <div className='flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6'>
+        <div className='flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6 sticky top-0 bg-white z-10'>
           <h2 className='text-2xl md:text-3xl font-bold text-gray-700'>
             Student Details
           </h2>
@@ -849,7 +849,7 @@ export const Details: React.FC<Props> = ({ id, setView, setDate }) => {
                       </div>
                     </div>
 
-                    <div className='flex justify-end mt-6'>
+                    <div className='flex justify-end mt-6 sticky bottom-0 bg-gray-50 pb-4 z-10'>
                       <button
                         onClick={() => {
                           console.log("Submit payment button clicked");

@@ -89,13 +89,17 @@ const LeftNavigation: React.FC<props> = ({
             isCollapsed ? "justify-center" : ""
           }`}
         >
-          <div className={`${isCollapsed ? "w-20" : "w-24"} flex items-center`}>
+          <div
+            className={`${
+              isCollapsed ? "w-14" : "w-20"
+            } flex items-center justify-center`}
+          >
             <Image
               src='/logo.png'
               alt='GET PASS Logo'
               width={171}
               height={167}
-              className='w-full h-full'
+              className='w-full h-auto object-contain'
               priority
             />
           </div>
