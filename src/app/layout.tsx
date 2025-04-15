@@ -3,7 +3,8 @@
 import "./globals.css";
 import { useState, useEffect } from "react";
 import LeftNavigation from "@/components/leftNavigation/LeftNavigation";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
+import AutoLogoutWarning from "@/components/AutoLogoutWarning";
 
 import "react-toastify/dist/ReactToastify.css"; // Import the Toastify CSS
 import { useRouter } from "next/navigation"; // Use usePathname
@@ -11,17 +12,33 @@ import { useRouter } from "next/navigation"; // Use usePathname
 import { selectLogin, selectSync } from "@/utils/authenticatorSlice";
 import { Provider } from "react-redux";
 import { store } from "@/utils/store"; // Redux store import
+import { setupAutoLogout } from "@/utils/autoLogout";
 
 // RootLayout Component
 function RootLayout({ children }: { children: React.ReactNode }) {
   const router = useRouter();
+  const dispatch = useDispatch();
 
   const [isCollapsed, setIsCollapsed] = useState(false);
+  const [showLogoutWarning, setShowLogoutWarning] = useState(false);
+  const [remainingTime, setRemainingTime] = useState(0);
 
   // Access Redux state
-
   const LoggedIn = useSelector(selectLogin); // Check login status
   const isSynced = useSelector(selectSync);
+
+  useEffect(() => {
+    if (LoggedIn) {
+      const cleanup = setupAutoLogout(
+        dispatch,
+        (show: boolean, time: number) => {
+          setShowLogoutWarning(show);
+          setRemainingTime(time);
+        }
+      );
+      return cleanup;
+    }
+  }, [LoggedIn, dispatch]);
 
   const toggleCollapse = () => {
     setIsCollapsed(!isCollapsed);
@@ -68,6 +85,17 @@ function RootLayout({ children }: { children: React.ReactNode }) {
           <div className='flex-grow overflow-y-auto transition-all duration-300 '>
             <div>{children}</div>
           </div>
+
+          {/* Auto-logout warning modal */}
+          {showLogoutWarning && (
+            <AutoLogoutWarning
+              remainingTime={remainingTime}
+              onStayActive={() => {
+                // Simulate user activity to reset the timer
+                window.dispatchEvent(new Event("mousemove"));
+              }}
+            />
+          )}
 
           {/* Main Content */}
           {LoggedIn && isSynced && !isCollapsed && (
