@@ -366,84 +366,74 @@ const Card: React.FC<Prop> = ({ studentId, isOpen, onClose }) => {
       // Add magnetic strip at the top
       const magneticStrip = document.createElement("div");
       magneticStrip.style.width = "100%";
-      magneticStrip.style.height = "40px";
+      magneticStrip.style.height = "30px";
       magneticStrip.style.backgroundColor = "#000000";
-      magneticStrip.style.marginBottom = "15px";
+      magneticStrip.style.marginBottom = "8px";
 
       // Create content for the back
       const backContent = document.createElement("div");
-      backContent.style.padding = "0 15px 15px 15px";
+      backContent.style.padding = "0 20px 8px 20px";
       backContent.style.display = "flex";
       backContent.style.flexDirection = "column";
+      backContent.style.position = "relative";
 
       // Add disclaimer text
       const disclaimer = document.createElement("div");
-      disclaimer.style.fontSize = "11px";
-      disclaimer.style.marginBottom = "5px";
-      disclaimer.style.textAlign = "center";
+      disclaimer.style.fontSize = "10px";
+      disclaimer.style.marginBottom = "8px";
+      disclaimer.style.textAlign = "left";
       disclaimer.innerHTML =
         "This Identity Card is the property of DMI and is not transferable, if LOST and FOUND kindly inform:";
 
       // Add RECTOR text
       const rector = document.createElement("div");
-      rector.style.fontSize = "12px";
+      rector.style.fontSize = "11px";
       rector.style.fontWeight = "bold";
-      rector.style.textAlign = "center";
-      rector.style.marginBottom = "5px";
+      rector.style.textAlign = "left";
+      rector.style.marginBottom = "4px";
       rector.innerHTML = "RECTOR";
 
       // Add institute name for back
       const instituteBack = document.createElement("div");
-      instituteBack.style.fontSize = "12px";
+      instituteBack.style.fontSize = "11px";
       instituteBack.style.fontWeight = "bold";
-      instituteBack.style.textAlign = "center";
-      instituteBack.style.marginBottom = "10px";
+      instituteBack.style.textAlign = "left";
+      instituteBack.style.marginBottom = "8px";
       instituteBack.innerHTML = "DAR ES SALAAM MARITIME INSTITUTE";
 
       // Add contact information
       const contactInfo = document.createElement("div");
       contactInfo.style.fontSize = "10px";
-      contactInfo.style.textAlign = "center";
+      contactInfo.style.textAlign = "left";
       contactInfo.style.marginBottom = "10px";
+      contactInfo.style.lineHeight = "1.4";
       contactInfo.innerHTML =
         "Sokoine Drive, P.O Box 6727 Tel: +255 22 2133645<br>Dar es Salaam, Tanzania Website: www.dmi.ac.tz<br>Email: info@dmi.ac.tz";
 
-      // Create a container for the QR code and serial number
-      const qrContainer = document.createElement("div");
-      qrContainer.style.display = "flex";
-      qrContainer.style.justifyContent = "center";
-      qrContainer.style.alignItems = "center";
-      qrContainer.style.marginBottom = "15px";
-
-      // Add QR code to the right
+      // Add QR code to the right bottom
       const qrCodeElement = document.createElement("div");
       qrCodeElement.style.position = "absolute";
       qrCodeElement.style.right = "15px";
-      qrCodeElement.style.top = "70px";
-      qrCodeElement.style.width = "80px";
-      qrCodeElement.style.height = "80px";
+      qrCodeElement.style.bottom = "8px";
+      qrCodeElement.style.width = "55px";
+      qrCodeElement.style.height = "55px";
       qrCodeElement.style.backgroundColor = "#ffffff";
       qrCodeElement.style.display = "flex";
       qrCodeElement.style.alignItems = "center";
       qrCodeElement.style.justifyContent = "center";
+      qrCodeElement.style.padding = "0";
+      qrCodeElement.style.margin = "0";
 
       // Create a QR code for the back using the same data as the front
       const qrCodeSvg = document.createElement("div");
-      // Create a simple representation of the QR code with the actual data
-      const qrValue = JSON.stringify(qrData);
-      qrCodeSvg.innerHTML = `
-  <div style="background: white; padding: 10px; font-size: 8px; text-align: center;">
-    <div style="margin-bottom: 5px; font-weight: bold;">QR Code</div>
-    <div style="font-size: 7px; overflow-wrap: break-word; word-break: break-all;">${qrValue}</div>
-    <div style="margin-top: 5px; font-style: italic;">Scan for student details</div>
-  </div>
-`;
-
       // If we have a QR code in the UI, try to use its SVG content
       if (qrCode) {
         const svgElement = qrCode.querySelector("svg");
         if (svgElement) {
-          qrCodeSvg.innerHTML = svgElement.outerHTML;
+          const svgClone = svgElement.cloneNode(true) as SVGElement;
+          svgClone.setAttribute("width", "55");
+          svgClone.setAttribute("height", "55");
+          qrCodeSvg.innerHTML = svgClone.outerHTML;
         }
       }
 
@@ -452,66 +442,15 @@ const Card: React.FC<Prop> = ({ studentId, isOpen, onClose }) => {
       // Add serial number
       const serialNumber = document.createElement("div");
       serialNumber.style.fontSize = "10px";
-      serialNumber.style.textAlign = "center";
-      serialNumber.style.marginTop = "10px";
+      serialNumber.style.textAlign = "left";
+      serialNumber.style.position = "absolute";
+      serialNumber.style.left = "20px";
+      serialNumber.style.bottom = "8px";
       serialNumber.innerHTML = `SN:${new Date().getFullYear()}#${
         new Date().getFullYear() + 1
       }-${Math.floor(Math.random() * 10000000000)
         .toString()
         .padStart(11, "0")}`;
-
-      // Add signature lines
-      const signaturesContainer = document.createElement("div");
-      signaturesContainer.style.display = "flex";
-      signaturesContainer.style.justifyContent = "space-between";
-      signaturesContainer.style.marginTop = "20px";
-      signaturesContainer.style.padding = "0 15px";
-
-      // Principal's signature
-      const principalSignature = document.createElement("div");
-      principalSignature.style.display = "flex";
-      principalSignature.style.flexDirection = "column";
-      principalSignature.style.alignItems = "center";
-      principalSignature.style.width = "40%";
-
-      const principalLine = document.createElement("div");
-      principalLine.style.width = "100%";
-      principalLine.style.borderBottom = "1px solid #000";
-      principalLine.style.marginBottom = "5px";
-      principalLine.innerHTML = "&nbsp;";
-
-      const principalText = document.createElement("div");
-      principalText.style.fontSize = "9px";
-      principalText.style.fontWeight = "bold";
-      principalText.innerHTML = "Principal's Signature";
-
-      principalSignature.appendChild(principalLine);
-      principalSignature.appendChild(principalText);
-
-      // Student's signature
-      const studentSignature = document.createElement("div");
-      studentSignature.style.display = "flex";
-      studentSignature.style.flexDirection = "column";
-      studentSignature.style.alignItems = "center";
-      studentSignature.style.width = "40%";
-
-      const studentLine = document.createElement("div");
-      studentLine.style.width = "100%";
-      studentLine.style.borderBottom = "1px solid #000";
-      studentLine.style.marginBottom = "5px";
-      studentLine.innerHTML = "&nbsp;";
-
-      const studentText = document.createElement("div");
-      studentText.style.fontSize = "9px";
-      studentText.style.fontWeight = "bold";
-      studentText.innerHTML = "Student's Signature";
-
-      studentSignature.appendChild(studentLine);
-      studentSignature.appendChild(studentText);
-
-      // Add signatures to container
-      signaturesContainer.appendChild(principalSignature);
-      signaturesContainer.appendChild(studentSignature);
 
       // Assemble the back content
       backContent.appendChild(disclaimer);
@@ -524,7 +463,6 @@ const Card: React.FC<Prop> = ({ studentId, isOpen, onClose }) => {
       // Assemble the back of the card
       backContainer.appendChild(magneticStrip);
       backContainer.appendChild(backContent);
-      backContainer.appendChild(signaturesContainer);
 
       // Add both front and back to the print window
       printWindow?.document.write(frontContainer.outerHTML);
@@ -608,9 +546,6 @@ const Card: React.FC<Prop> = ({ studentId, isOpen, onClose }) => {
               <br />
               Email: info@dmi.ac.tz
             </div>
-            {/* <div className='absolute right-4 top-16'>
-              <QRCode value={JSON.stringify(qrData)} size={80} />
-            </div> */}
             <div className='text-center text-xs mt-4'>
               SN:{new Date().getFullYear()}#{new Date().getFullYear() + 1}-
               {Math.floor(Math.random() * 10000000000)
