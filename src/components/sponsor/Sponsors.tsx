@@ -318,7 +318,7 @@ const Sponsors = () => {
                     </Table>
                     <div className='h-[180px] sm:h-[200px] md:h-[220px] lg:h-[142px] overflow-auto'>
                       <Table>
-                        <TableBody>
+                        <TableBody key='sponsors-body'>
                           {isLoading ? (
                             <TableRow>
                               <TableCell
@@ -474,7 +474,7 @@ const Sponsors = () => {
                           </TableHead>
                         </TableRow>
                       </TableHeader>
-                      <TableBody>
+                      <TableBody key='payment-sessions-body'>
                         {paymentSessions.map((session) => {
                           const startDate = new Date(session.startDate);
                           const endDate = new Date(session.endDate);
