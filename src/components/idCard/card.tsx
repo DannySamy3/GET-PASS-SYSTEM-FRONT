@@ -16,6 +16,16 @@ const Card: React.FC<Prop> = ({ studentId, isOpen, onClose }) => {
   const [isFront, setIsFront] = useState(true);
   const cardRef = useRef<HTMLDivElement>(null); // Ref to the card modal for printing
 
+  // Generate serial number based on academic years
+  const generateSerialNumber = (validDate: Date) => {
+    const validYear = validDate.getFullYear();
+    const startYear = validYear - 1;
+    const randomDigits = Math.floor(Math.random() * 100000)
+      .toString()
+      .padStart(5, "0");
+    return `SN:${startYear}/${validYear}-${randomDigits}`;
+  };
+
   // Data to encode into the QR code (can be student regNo or any other data)
   const qrData = {
     studentId,
@@ -303,14 +313,23 @@ const Card: React.FC<Prop> = ({ studentId, isOpen, onClose }) => {
         }
 
         // Add validity date
+        const validityDate = new Date(
+          new Date().setFullYear(new Date().getFullYear() + 1)
+        );
         const validityElement = document.createElement("div");
         validityElement.style.fontSize = "12px";
         validityElement.style.marginBottom = "8px";
         validityElement.innerHTML =
-          "Valid up to: " +
-          new Date(
-            new Date().setFullYear(new Date().getFullYear() + 1)
-          ).toLocaleDateString();
+          "Valid up to: " + validityDate.toLocaleDateString();
+
+        // Add serial number
+        const serialNumber = document.createElement("div");
+        serialNumber.style.fontSize = "10px";
+        serialNumber.style.textAlign = "left";
+        serialNumber.style.position = "absolute";
+        serialNumber.style.left = "20px";
+        serialNumber.style.bottom = "8px";
+        serialNumber.innerHTML = generateSerialNumber(validityDate);
 
         // Clear the details and add elements in the right order
         detailsClone.innerHTML = "";
@@ -474,11 +493,9 @@ const Card: React.FC<Prop> = ({ studentId, isOpen, onClose }) => {
       serialNumber.style.position = "absolute";
       serialNumber.style.left = "20px";
       serialNumber.style.bottom = "8px";
-      serialNumber.innerHTML = `SN:${new Date().getFullYear()}#${
-        new Date().getFullYear() + 1
-      }-${Math.floor(Math.random() * 10000000000)
-        .toString()
-        .padStart(11, "0")}`;
+      serialNumber.innerHTML = generateSerialNumber(
+        new Date(new Date().setFullYear(new Date().getFullYear() + 1))
+      );
 
       // Assemble the back content
       backContent.appendChild(disclaimer);
@@ -575,10 +592,9 @@ const Card: React.FC<Prop> = ({ studentId, isOpen, onClose }) => {
               Email: info@dmi.ac.tz
             </div>
             <div className='text-center text-xs mt-4'>
-              SN:{new Date().getFullYear()}#{new Date().getFullYear() + 1}-
-              {Math.floor(Math.random() * 10000000000)
-                .toString()
-                .padStart(11, "0")}
+              {generateSerialNumber(
+                new Date(new Date().setFullYear(new Date().getFullYear() + 1))
+              )}
             </div>
             <div className='flex justify-between mt-8 px-4'>
               <div className='w-2/5 text-center'>
