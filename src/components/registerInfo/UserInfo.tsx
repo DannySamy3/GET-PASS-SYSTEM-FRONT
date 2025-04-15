@@ -19,9 +19,9 @@ export const UserInfo = () => {
 
   return (
     <div className='bg-white h-screen overflow-y-hidden'>
-      <article className='flex flex-col mt-9'>
-        <section className='font-[500] text-black mt-20 ml-44 mb-[95px] flex items-center text-3xl justify-center'>
-          CREATE ACCOUNT
+      <article className='flex flex-col mt-4 lg:mt-9'>
+        <section className='font-[500] text-black mt-8 lg:mt-20 ml-4 lg:ml-44 mb-8 lg:mb-[95px] flex items-center text-xl lg:text-3xl justify-center bg-gradient-to-b from-blue-50 to-white lg:bg-none py-8 lg:py-0'>
+          <div className='text-center'>CREATE ACCOUNT</div>
         </section>
 
         {isSectionOne && (
