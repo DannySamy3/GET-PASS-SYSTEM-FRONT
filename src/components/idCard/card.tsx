@@ -52,9 +52,31 @@ const Card: React.FC<Prop> = ({ studentId, isOpen, onClose }) => {
     if (cardRef.current) {
       const printWindow = window.open("", "_blank");
       printWindow?.document.write("<html><head><title>Print</title>");
-      printWindow?.document.write(
-        "<style>@page { size: landscape; margin: 0; } body { margin: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; font-family: Arial, sans-serif; }</style>"
-      );
+      printWindow?.document.write(`
+        <style>
+          @page { 
+            size: landscape; 
+            margin: 0; 
+          }
+          @media print {
+            body { 
+              margin: 0;
+              display: flex;
+              flex-direction: column;
+              align-items: center;
+              justify-content: center;
+              height: 100vh;
+              font-family: Arial, sans-serif;
+              -webkit-print-color-adjust: exact;
+              print-color-adjust: exact;
+            }
+            * {
+              -webkit-print-color-adjust: exact;
+              print-color-adjust: exact;
+            }
+          }
+        </style>
+      `);
       printWindow?.document.write("</head><body>");
 
       // Clone the card content
@@ -80,19 +102,21 @@ const Card: React.FC<Prop> = ({ studentId, isOpen, onClose }) => {
       // Create a container for the front of the ID card
       const frontContainer = document.createElement("div");
       frontContainer.style.display = "flex";
-      frontContainer.style.flexDirection = "column"; // Changed to column to separate header and content
-      frontContainer.style.width = "3.375in"; // Standard ID card width
-      frontContainer.style.height = "2.125in"; // Standard ID card height
+      frontContainer.style.flexDirection = "column";
+      frontContainer.style.width = "3.375in";
+      frontContainer.style.height = "2.125in";
       frontContainer.style.padding = "0";
-      frontContainer.style.background = "#29b6f6"; // More vibrant blue matching the image
+      frontContainer.style.background = "#29b6f6";
+      frontContainer.style.backgroundColor = "#29b6f6";
       frontContainer.style.backgroundImage =
-        'url(\'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%"><path d="M0,80 Q100,40 200,80 T400,80" fill="none" stroke="rgba(255,255,255,0.3)" strokeWidth="3"/><path d="M0,100 Q100,60 200,100 T400,100" fill="none" stroke="rgba(255,255,255,0.3)" strokeWidth="3"/></svg>\'), linear-gradient(135deg, #29b6f6 0%, #4fc3f7 100%)';
+        'url(\'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%"><defs><linearGradient id="grad" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" style="stop-color:%2329b6f6;stop-opacity:1" /><stop offset="100%" style="stop-color:%234fc3f7;stop-opacity:1" /></linearGradient></defs><rect width="100%" height="100%" fill="url(%23grad)"/><path d="M0,80 Q100,40 200,80 T400,80" fill="none" stroke="rgba(255,255,255,0.3)" stroke-width="3"/><path d="M0,100 Q100,60 200,100 T400,100" fill="none" stroke="rgba(255,255,255,0.3)" stroke-width="3"/></svg>\')';
       frontContainer.style.backgroundSize = "cover";
       frontContainer.style.borderRadius = "8px";
       frontContainer.style.overflow = "hidden";
       frontContainer.style.boxShadow = "0 4px 8px rgba(0, 0, 0, 0.2)";
       frontContainer.style.position = "relative";
-      frontContainer.style.marginBottom = "20px"; // Add space between front and back
+      frontContainer.style.marginBottom = "20px";
+      frontContainer.style.color = "#000000";
 
       // Create a header container for the top part
       const headerContainer = document.createElement("div");
@@ -230,8 +254,9 @@ const Card: React.FC<Prop> = ({ studentId, isOpen, onClose }) => {
       if (details) {
         const detailsClone = details.cloneNode(true) as HTMLElement;
         detailsClone.style.fontSize = "12px";
-        detailsClone.style.color = "black";
+        detailsClone.style.color = "#000000";
         detailsClone.style.marginTop = "0";
+        detailsClone.style.backgroundColor = "transparent";
 
         // Get the detail elements
         const nameElement = detailsClone.querySelector("div:nth-child(1)");
@@ -353,21 +378,24 @@ const Card: React.FC<Prop> = ({ studentId, isOpen, onClose }) => {
       const backContainer = document.createElement("div");
       backContainer.style.display = "flex";
       backContainer.style.flexDirection = "column";
-      backContainer.style.width = "3.375in"; // Standard ID card width
-      backContainer.style.height = "2.125in"; // Standard ID card height
+      backContainer.style.width = "3.375in";
+      backContainer.style.height = "2.125in";
       backContainer.style.padding = "0";
-      backContainer.style.background = "#ffffff"; // White background
+      backContainer.style.background = "#ffffff";
+      backContainer.style.backgroundColor = "#ffffff";
       backContainer.style.borderRadius = "8px";
       backContainer.style.overflow = "hidden";
       backContainer.style.boxShadow = "0 4px 8px rgba(0, 0, 0, 0.2)";
       backContainer.style.position = "relative";
       backContainer.style.fontFamily = "Arial, sans-serif";
+      backContainer.style.color = "#000000";
 
       // Add magnetic strip at the top
       const magneticStrip = document.createElement("div");
       magneticStrip.style.width = "100%";
       magneticStrip.style.height = "30px";
       magneticStrip.style.backgroundColor = "#000000";
+      magneticStrip.style.background = "#000000";
       magneticStrip.style.marginBottom = "8px";
 
       // Create content for the back
