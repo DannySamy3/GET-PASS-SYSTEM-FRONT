@@ -12,7 +12,7 @@ import { useRouter } from "next/navigation"; // Use usePathname
 import { selectLogin, selectSync } from "@/utils/authenticatorSlice";
 import { Provider } from "react-redux";
 import { store } from "@/utils/store"; // Redux store import
-import { setupAutoLogout } from "@/utils/autoLogout";
+import { setupAutoLogout, resetAutoLogout } from "@/utils/autoLogout";
 
 // RootLayout Component
 function RootLayout({ children }: { children: React.ReactNode }) {
@@ -39,6 +39,10 @@ function RootLayout({ children }: { children: React.ReactNode }) {
       return cleanup;
     }
   }, [LoggedIn, dispatch]);
+
+  const handleStayActive = () => {
+    resetAutoLogout();
+  };
 
   const toggleCollapse = () => {
     setIsCollapsed(!isCollapsed);
@@ -90,10 +94,7 @@ function RootLayout({ children }: { children: React.ReactNode }) {
           {showLogoutWarning && (
             <AutoLogoutWarning
               remainingTime={remainingTime}
-              onStayActive={() => {
-                // Simulate user activity to reset the timer
-                window.dispatchEvent(new Event("mousemove"));
-              }}
+              onStayActive={handleStayActive}
             />
           )}
 
