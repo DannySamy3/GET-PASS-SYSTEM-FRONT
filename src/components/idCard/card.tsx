@@ -622,12 +622,6 @@ const Card: React.FC<Prop> = ({ studentId, isOpen, onClose }) => {
           >
             Print
           </button>
-          <button
-            className='px-4 py-2 bg-green-500 text-white rounded-md ml-2'
-            onClick={() => setIsFront(!isFront)} // Toggle between front and back side
-          >
-            {isFront ? "Show Back" : "Show Front"}
-          </button>
         </div>
       </div>
     </div>
