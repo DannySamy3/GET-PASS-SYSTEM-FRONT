@@ -1,5 +1,9 @@
 "use client"; // Mark as a client component since we are using hooks
 
+import { config } from "@fortawesome/fontawesome-svg-core";
+import "@fortawesome/fontawesome-svg-core/styles.css";
+config.autoAddCss = false;
+
 import "./globals.css";
 import { useState, useEffect } from "react";
 import LeftNavigation from "@/components/leftNavigation/LeftNavigation";
