@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const axiosInstance = axios.create({
-  baseURL: "https://getpass-system.duckdns.org",
+  baseURL: "http://getpass-system.duckdns.org",
   timeout: 30000, // Increased timeout to 30 seconds
   headers: {
     "Content-Type": "application/json", // Default content type
