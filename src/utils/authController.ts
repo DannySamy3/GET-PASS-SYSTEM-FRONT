@@ -47,11 +47,14 @@ export const completeRegister = async (data: any) => {
 };
 
 export const handleLogin = async (data: any) => {
+  console.log("Attempting login with data:", data);
   try {
+    console.log("Making API call to:", "getPass/auth/login");
     const response = await axiosInstance.post("getPass/auth/login", data);
-    console.log("sending..");
+    console.log("API Response:", response);
     return response;
   } catch (error) {
+    // console.error("Login API error:", error);
     throw error;
   }
 };

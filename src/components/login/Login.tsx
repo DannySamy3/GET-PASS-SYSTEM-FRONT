@@ -42,13 +42,31 @@ const Login = () => {
   };
 
   const implementLogin = async () => {
+    console.log("Button clicked - Starting login process");
+    console.log("Current input state:", input);
+
+    if (!input.email || !input.password) {
+      console.log("Email or password is empty");
+      dispatch(
+        showToast({ message: "Email and password are required", type: "error" })
+      );
+      return;
+    }
+
     try {
-      const response = await handleLogin({
+      console.log("Attempting login with:", {
         email: input.email,
         password: input.password,
       });
 
+      const response = await handleLogin({
+        email: input.email,
+        password: input.password,
+      });
+      console.log("Login response:", response);
+
       if (response.status === 200) {
+        console.log("Login successful, navigating to dashboard");
         router.replace("/dashboard");
 
         dispatch(
@@ -61,9 +79,14 @@ const Login = () => {
         );
       }
     } catch (error) {
+      // console.error("Login error:", error);
       const err = error as { response: { data: { message: string } } };
       dispatch(
-        showToast({ message: err.response?.data?.message, type: "error" })
+        showToast({
+          message:
+            err.response?.data?.message || "Login failed. Please try again.",
+          type: "error",
+        })
       );
     }
   };
