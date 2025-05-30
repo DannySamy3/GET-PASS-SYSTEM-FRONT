@@ -20,6 +20,7 @@ import {
 import { useSelector } from "react-redux";
 import ToastNotification from "../toastNotification/ToastNotification";
 import { useRouter } from "next/navigation";
+
 interface Country {
   name: {
     common: string;
@@ -35,6 +36,9 @@ export const SectionTwo = () => {
   const lastName = useSelector(selectLastName);
   const password = useSelector(selectPassword);
   const email = useSelector(selectEmail);
+  const phoneNumber = useSelector(selectPhoneNumber);
+  const country = useSelector(selectCountry);
+  const gender = useSelector(selectGender);
 
   const finalizeRegister = async () => {
     try {
@@ -56,7 +60,7 @@ export const SectionTwo = () => {
         );
         setTimeout(() => {
           router.push("/");
-        }, 4000); // Delay navigation for 3 seconds
+        }, 4000);
       }
     } catch (error) {
       const err = error as { response: { data: { message: string } } };
@@ -66,82 +70,112 @@ export const SectionTwo = () => {
     }
   };
 
-  const phoneNumber = useSelector(selectPhoneNumber);
-  const country = useSelector(selectCountry);
-  const gender = useSelector(selectGender);
-
   return (
-    <section className='w-[98%] mx-auto grid grid-cols-[0.18fr_0.4fr] items-center justify-center gap-y-6'>
-      <label className='text-[#515253] font-[500]'>Email</label>
-      <label className=' text-[#515253] font-[500]'>{email}</label>
+    <section className='w-full lg:w-[48%] mx-auto px-4 sm:px-6 lg:px-0 py-6'>
+      <div className='bg-white rounded-lg shadow-sm p-6 space-y-6'>
+        {/* Email field */}
+        <div className='space-y-6'>
+          <div className='flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-8'>
+            <label className='text-gray-700 font-medium w-full sm:w-32 text-left'>
+              Email
+            </label>
+            <div className='w-full sm:flex-1'>
+              <p className='text-gray-600 font-medium'>{email}</p>
+            </div>
+          </div>
 
-      <label className='text-[#515253] font-[500]'>Gender</label>
-      <select
-        value={gender}
-        onChange={(e) => {
-          dispatch(setGender(e.target.value));
-        }}
-        className='select select-bordered text-[#515253] font-[500]'
-      >
-        <option value='' className='text-[#515253] '>
-          Select Gender
-        </option>
-        <option className='text-[#515253] ' value='Male'>
-          Male
-        </option>
-        <option value='Female'>Female</option>
-      </select>
+          {/* Gender field */}
+          <div className='flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-8'>
+            <label className='text-gray-700 font-medium w-full sm:w-32 text-left'>
+              Gender
+            </label>
+            <select
+              value={gender}
+              onChange={(e) => {
+                dispatch(setGender(e.target.value));
+              }}
+              className='select select-bordered w-full sm:flex-1 text-gray-700 bg-white border-gray-300 focus:border-green-500 focus:ring-1 focus:ring-green-500'
+            >
+              <option value='' className='text-gray-500'>
+                Select Gender
+              </option>
+              <option value='Male' className='text-gray-700'>
+                Male
+              </option>
+              <option value='Female' className='text-gray-700'>
+                Female
+              </option>
+            </select>
+          </div>
 
-      <label className='text-[#515253] font-[500]'>Country</label>
-      <select
-        value={country}
-        onChange={(e) => {
-          dispatch(setCountry(e.target.value));
-        }}
-        className='select select-bordered text-[#515253] font-[500]'
-      >
-        <option value=''>Select Country</option>
-        {fetchCountries.map((country, i) => (
-          <option key={i} value={country}>
-            {country}
-          </option>
-        ))}
-      </select>
+          {/* Country field */}
+          <div className='flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-8'>
+            <label className='text-gray-700 font-medium w-full sm:w-32 text-left'>
+              Country
+            </label>
+            <select
+              value={country}
+              onChange={(e) => {
+                dispatch(setCountry(e.target.value));
+              }}
+              className='select select-bordered w-full sm:flex-1 text-gray-700 bg-white border-gray-300 focus:border-green-500 focus:ring-1 focus:ring-green-500'
+            >
+              <option value='' className='text-gray-500'>
+                Select Country
+              </option>
+              {fetchCountries.map((country, i) => (
+                <option key={i} value={country} className='text-gray-700'>
+                  {country}
+                </option>
+              ))}
+            </select>
+          </div>
 
-      <label className='text-[#515253] font-[500]'>Phone Number</label>
-      <div className='relative'>
-        <input
-          value={phoneNumber}
-          onChange={(e) => {
-            dispatch(setPhoneNumber(e.target.value));
-          }}
-          name='text'
-          placeholder=' Enter Phone Number'
-          className='input input-bordered text-sm w-full pr-10 text-[#515253]font-[500]'
-          required
-        />
+          {/* Phone Number field */}
+          <div className='flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-8'>
+            <label className='text-gray-700 font-medium w-full sm:w-32 text-left'>
+              Phone Number
+            </label>
+            <div className='w-full sm:flex-1'>
+              <input
+                value={phoneNumber}
+                onChange={(e) => {
+                  dispatch(setPhoneNumber(e.target.value));
+                }}
+                type='tel'
+                placeholder='Enter Phone Number'
+                className='input input-bordered w-full text-gray-700 bg-white border-gray-300 focus:border-green-500 focus:ring-1 focus:ring-green-500'
+                required
+              />
+            </div>
+          </div>
+
+          {/* Register Button */}
+          <div className='flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-8'>
+            <div className='w-full sm:w-32'></div>
+            <div className='w-full sm:flex-1'>
+              <button
+                onClick={() => {
+                  if (!phoneNumber || !country || !gender) {
+                    dispatch(
+                      showToast({
+                        message: "Please fill in all required fields",
+                        type: "error",
+                      })
+                    );
+                    return;
+                  }
+                  finalizeRegister();
+                }}
+                className='w-full bg-green-600 hover:bg-green-700 text-white font-semibold py-3 px-6 rounded-lg transition duration-200 ease-in-out transform hover:scale-[1.02] focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-opacity-50'
+              >
+                Register
+              </button>
+            </div>
+          </div>
+        </div>
+        <ToastNotification />
       </div>
-
-      <div className='w-[100%] my-3 col-start-2'>
-        <button
-          onClick={() => {
-            if (!phoneNumber || !country || !gender) {
-              dispatch(
-                showToast({
-                  message: "Missing input(s)",
-                  type: "error",
-                })
-              );
-              return;
-            }
-            finalizeRegister();
-          }}
-          className='bg-[#4CAF50] text-[14px] font-[600] border w-full py-3 text-white rounded-lg'
-        >
-          Register
-        </button>
-      </div>
-      <ToastNotification />
     </section>
   );
 };
