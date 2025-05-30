@@ -34,8 +34,8 @@ export const SectionOne: React.FC<props> = ({
   const rePassword = useSelector(selectRePassword);
 
   return (
-    <section className='w-[98%] mx-auto grid grid-cols-1 lg:grid-cols-[0.18fr_0.4fr] items-center justify-center gap-y-6 px-6 lg:px-0 max-w-2xl'>
-      <div className='space-y-6'>
+    <section className='w-[98%] mx-auto flex flex-col items-center justify-center gap-y-6 px-6 lg:px-0 max-w-2xl'>
+      <div className='space-y-6 w-full'>
         <div className='space-y-2'>
           <label className='text-[#292727] font-[500]'>First Name</label>
           <input
@@ -45,7 +45,7 @@ export const SectionOne: React.FC<props> = ({
               dispatch(setFirstName(e.target.value));
             }}
             type='text'
-            placeholder='Enter First Name'
+            placeholder='Enter user email'
             className='input input-bordered text-lg w-full px-4 py-3 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500'
             required
           />
@@ -60,7 +60,7 @@ export const SectionOne: React.FC<props> = ({
             value={secondName}
             name='secondName'
             type='text'
-            placeholder='Second Name'
+            placeholder='Enter user email'
             className='input input-bordered text-lg w-full px-4 py-3 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500'
             required
           />
@@ -75,7 +75,7 @@ export const SectionOne: React.FC<props> = ({
             name='lastName'
             value={lastName}
             type='text'
-            placeholder='Last Name'
+            placeholder='Enter Last Namel'
             className='input input-bordered text-lg w-full px-4 py-3 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500'
             required
           />
@@ -91,7 +91,7 @@ export const SectionOne: React.FC<props> = ({
               name='password'
               value={password}
               type={isPasswordVisible.pass ? "text" : "password"}
-              placeholder='Password'
+              placeholder='Create Password'
               className='input input-bordered text-lg w-full pr-10 px-4 py-3 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500'
               required
             />
