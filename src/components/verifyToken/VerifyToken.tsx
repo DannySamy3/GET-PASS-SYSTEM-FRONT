@@ -31,7 +31,12 @@ const VerifyToken = () => {
 
       const response = (await verifyCode(email, tokenCode)) as {
         status: number;
-        data: { message: string };
+        data: {
+          message: string;
+          data: {
+            email: string;
+          };
+        };
       };
 
       console.log("Verification response:", response);
