@@ -26,16 +26,25 @@ const VerifyToken = () => {
   const verifyToken = async () => {
     setLoading(true);
     try {
-      const response = await verifyCode(email, tokenCode);
+      console.log("Verifying code for email:", email);
+      console.log("Verification code:", tokenCode);
 
-      if (response.statusText) {
+      const response = (await verifyCode(email, tokenCode)) as {
+        status: number;
+        data: { message: string };
+      };
+
+      console.log("Verification response:", response);
+
+      if (response.status >= 200 && response.status < 300) {
+        console.log("Verification successful, navigating to registerDetails");
         dispatch(
-          // @ts-ignore
-          showToast({ message: response?.data.message, type: "success" })
+          showToast({ message: response.data.message, type: "success" })
         );
         router.push("/registerDetails");
       }
     } catch (error) {
+      console.error("Verification error:", error);
       const err = error as { response: { data: { message: string } } };
       dispatch(
         showToast({ message: err.response?.data?.message, type: "error" })
