@@ -27,6 +27,13 @@ interface Country {
   };
 }
 
+interface RegisterResponse {
+  status: number;
+  data: {
+    message: string;
+  };
+}
+
 export const SectionTwo = () => {
   const router = useRouter();
   const [countries, setCountries] = useState<Country[]>([]);
@@ -42,7 +49,7 @@ export const SectionTwo = () => {
 
   const finalizeRegister = async () => {
     try {
-      const response = await completeRegister({
+      const response = (await completeRegister({
         email,
         phoneNumber,
         password,
@@ -51,21 +58,25 @@ export const SectionTwo = () => {
         lastName,
         secondName,
         firstName,
-      });
+      })) as RegisterResponse;
 
-      if (response.statusText) {
+      if (response.status === 200 || response.status === 201) {
         dispatch(
-          // @ts-ignore
           showToast({ message: response?.data.message, type: "success" })
         );
         setTimeout(() => {
           router.push("/");
-        }, 4000);
+        }, 2000);
+      } else {
+        throw new Error("Registration failed");
       }
     } catch (error) {
       const err = error as { response: { data: { message: string } } };
       dispatch(
-        showToast({ message: err.response?.data?.message, type: "error" })
+        showToast({
+          message: err.response?.data?.message || "Registration failed",
+          type: "error",
+        })
       );
     }
   };
