@@ -46,7 +46,7 @@ export const SectionOne: React.FC<props> = ({
             }}
             type='text'
             placeholder='Enter First Name'
-            className='input input-bordered text-base w-full'
+            className='input input-bordered text-lg w-full px-4 py-3 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500'
             required
           />
         </div>
@@ -61,7 +61,7 @@ export const SectionOne: React.FC<props> = ({
             name='secondName'
             type='text'
             placeholder='Second Name'
-            className='input input-bordered w-full text-base'
+            className='input input-bordered text-lg w-full px-4 py-3 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500'
             required
           />
         </div>
@@ -76,7 +76,7 @@ export const SectionOne: React.FC<props> = ({
             value={lastName}
             type='text'
             placeholder='Last Name'
-            className='input input-bordered w-full text-base'
+            className='input input-bordered text-lg w-full px-4 py-3 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500'
             required
           />
         </div>
@@ -92,7 +92,7 @@ export const SectionOne: React.FC<props> = ({
               value={password}
               type={isPasswordVisible.pass ? "text" : "password"}
               placeholder='Password'
-              className='input input-bordered text-base w-full pr-10'
+              className='input input-bordered text-lg w-full pr-10 px-4 py-3 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500'
               required
             />
             <button
@@ -141,7 +141,7 @@ export const SectionOne: React.FC<props> = ({
               name='password'
               type={isPasswordVisible.rePass ? "text" : "password"}
               placeholder='Re-Enter the Password'
-              className='input input-bordered text-base w-full pr-10'
+              className='input input-bordered text-lg w-full pr-10 px-4 py-3 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500'
               required
             />
             <button
