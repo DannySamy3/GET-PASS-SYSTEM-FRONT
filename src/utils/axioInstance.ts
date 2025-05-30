@@ -16,7 +16,7 @@ const axiosInstance = axios.create({
 //   baseURL: "http://localhost:8000/",
 //   timeout: 30000,
 //   headers: {
-//     "Content-Type": "multipart/form-data", // Ensure correct content type
+//     "Content-Type": "application/json",
 //   },
 // });
 // Add an interceptor to handle multipart/form-data requests

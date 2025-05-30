@@ -54,12 +54,14 @@ const Register = () => {
   const requestToken = async () => {
     setLoading(true);
     try {
-      const response = await sendToken(email);
+      const response = (await sendToken(email)) as {
+        status: number;
+        data: { message: string };
+      };
 
-      if (response.statusText) {
+      if (response.status >= 200 && response.status < 300) {
         dispatch(
-          // @ts-ignore
-          showToast({ message: response?.data.message, type: "success" })
+          showToast({ message: response.data.message, type: "success" })
         );
         router.push("/verifyToken");
       }
