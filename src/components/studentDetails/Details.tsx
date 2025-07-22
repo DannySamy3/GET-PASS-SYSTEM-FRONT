@@ -83,7 +83,7 @@ interface SessionResponse {
 export const Details: React.FC<Props> = ({ id, setView, setDate }) => {
   const [student, setStudent] = useState<any>();
   const [showPaymentOptions, setShowPaymentOptions] = useState(false);
-  const [paymentAmount, setPaymentAmount] = useState<string>("");
+  const [paymentAmount, setPaymentAmount] = useState<string>("0");
   const [paymentType, setPaymentType] = useState<string>("");
   const [balance, setBalance] = useState<number>(0);
   const [activeSession, setActiveSession] = useState<PaymentSession | null>(
@@ -202,15 +202,15 @@ export const Details: React.FC<Props> = ({ id, setView, setDate }) => {
                 if (currentPayment) {
                   const remainingAmount = currentPayment.remainingAmount;
                   if (remainingAmount !== undefined) {
-                    setPaymentAmount(remainingAmount.toString());
+                    // setPaymentAmount(remainingAmount.toString());
                   } else {
                     // Fallback calculation if remainingAmount is not provided
                     const calculatedRemaining = active.amount - fundedAmount;
-                    setPaymentAmount(calculatedRemaining.toString());
+                    // setPaymentAmount(calculatedRemaining.toString());
                   }
                 } else {
                   // If no payment exists, set payment amount to full session amount
-                  setPaymentAmount(active.amount.toString());
+                  // setPaymentAmount(active.amount.toString());
                 }
               } catch (paymentError) {
                 console.error("Error fetching student payment:", paymentError);
@@ -219,7 +219,7 @@ export const Details: React.FC<Props> = ({ id, setView, setDate }) => {
                 // Set remaining amount to full session amount
                 if (active) {
                   setRemainingAmount(active.amount);
-                  setPaymentAmount(active.amount.toString());
+                  // setPaymentAmount(active.amount.toString());
                 }
               }
             }
@@ -499,19 +499,19 @@ export const Details: React.FC<Props> = ({ id, setView, setDate }) => {
                   // Set the remaining amount if available
                   const remainingAmount = currentPayment.remainingAmount;
                   if (remainingAmount !== undefined) {
-                    setPaymentAmount(remainingAmount.toString());
+                    // setPaymentAmount(remainingAmount.toString());
                     setRemainingAmount(remainingAmount);
                   } else {
                     // Fallback calculation if remainingAmount is not provided
                     const fundedAmount = currentPayment.amount || 0;
                     const calculatedRemaining =
                       activeSession.amount - fundedAmount;
-                    setPaymentAmount(calculatedRemaining.toString());
+                    // setPaymentAmount(calculatedRemaining.toString());
                     setRemainingAmount(calculatedRemaining);
                   }
                 } else {
                   // If no payment exists, set payment amount to full session amount
-                  setPaymentAmount(activeSession.amount.toString());
+                  // setPaymentAmount(activeSession.amount.toString());
                   setRemainingAmount(activeSession.amount);
                 }
               }
@@ -519,7 +519,7 @@ export const Details: React.FC<Props> = ({ id, setView, setDate }) => {
               console.error("Error parsing payment data:", parseError);
               // If parsing fails, set payment amount to full session amount
               if (activeSession) {
-                setPaymentAmount(activeSession.amount.toString());
+                // setPaymentAmount(activeSession.amount.toString());
                 setRemainingAmount(activeSession.amount);
               }
             }
@@ -528,7 +528,7 @@ export const Details: React.FC<Props> = ({ id, setView, setDate }) => {
             console.error("Error fetching payment data:", error);
             // If payment fetch fails, set payment amount to full session amount
             if (activeSession) {
-              setPaymentAmount(activeSession.amount.toString());
+              // setPaymentAmount(activeSession.amount.toString());
               setRemainingAmount(activeSession.amount);
             }
           })
@@ -742,7 +742,11 @@ export const Details: React.FC<Props> = ({ id, setView, setDate }) => {
                       Amount Paid: TSH {balance.toLocaleString()}
                     </p>
                     <p className='text-sm text-gray-500 mb-2'>
-                      Remaining Amount: TSH {remainingAmount.toLocaleString()}
+                      Remaining Amount: TSH   {activeSession?.amount
+                                  ? (
+                                      activeSession.amount - balance
+                                    ).toLocaleString()
+                                  : "0"}
                     </p>
                     {student?.status === "REGISTERED" &&
                       activeSession?.amount &&
