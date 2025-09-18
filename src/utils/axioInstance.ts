@@ -2,7 +2,7 @@ import axios from "axios";
 import https from "https";
 
 const axiosInstance = axios.create({
-  baseURL: "https://getpass.duckdns.org/",
+  baseURL: "https://getpass-system.duckdns.org/",
   timeout: 30000,
   headers: {
     "Content-Type": "application/json",
